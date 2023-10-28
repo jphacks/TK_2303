@@ -6,7 +6,7 @@
 //
 
 import Foundation
-struct SensorData: Decodable {
+struct SensorDataJson: Decodable {
     var temperature: Double
     var humidity: Double
     var co2: Int
@@ -15,6 +15,10 @@ struct SensorData: Decodable {
 
 struct BathStatusRequestJson: Decodable {
     var status: BathStatus
+}
+
+struct PhoneNumberJson: Decodable {
+    var number: String
 }
 
 enum BathStatus: String, Decodable {
