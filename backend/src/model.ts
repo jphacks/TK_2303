@@ -1,7 +1,13 @@
-import { Alart, DeviceStatus, SensorData, SensorDataWithTime } from './types';
+import {
+  Alart,
+  DeviceStatus,
+  PhoneNumberData,
+  SensorData,
+  SensorDataWithTime,
+} from './types';
 
 const KEY_PREFIX = 'dev:v0';
-type KeyKind = 'status' | 'sensor';
+type KeyKind = 'status' | 'sensor' | 'phonenumber';
 const generateKey = (id: string, kind: KeyKind) => {
   return `${KEY_PREFIX}:${kind}:${id}`;
 };
@@ -64,6 +70,29 @@ export const updateSensorData = async (
   await KV.put(generateKey(id, 'sensor'), value);
 
   return dataWithTime;
+};
+
+export const getPhoneNumber = async (
+  KV: KVNamespace,
+  id: string
+): Promise<PhoneNumberData | undefined> => {
+  const value = await KV.get(generateKey(id, 'phonenumber'));
+  if (!value) {
+    return undefined;
+  }
+
+  const data: PhoneNumberData = JSON.parse(value);
+
+  return data;
+};
+
+export const updatePhoneNumber = async (
+  KV: KVNamespace,
+  id: string,
+  phoneNumber: PhoneNumberData
+) => {
+  const value = JSON.stringify(phoneNumber);
+  await KV.put(generateKey(id, 'phonenumber'), value);
 };
 
 export const sendAlart = async (KV: KVNamespace, id: string, alart: Alart) => {
