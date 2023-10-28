@@ -1,0 +1,12 @@
+{
+  "image": "mcr.microsoft.com/vscode/devcontainers/universal:linux",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "GitHub.copilot",
+        "42Crunch.vscode-openapi",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  }
+}
