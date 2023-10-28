@@ -13,6 +13,8 @@
 		C517FFFF2AEC9B9300FB2E73 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C517FFFE2AEC9B9300FB2E73 /* Preview Assets.xcassets */; };
 		C5718E932AECA1BB002AF495 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E922AECA1BB002AF495 /* HomeView.swift */; };
 		C5718E962AECA39D002AF495 /* Color+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E952AECA39D002AF495 /* Color+ex.swift */; };
+		C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E972AECAB1D002AF495 /* HomeViewModel.swift */; };
+		C5718E9A2AECAC1C002AF495 /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E992AECAC1C002AF495 /* HomeModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +25,8 @@
 		C517FFFE2AEC9B9300FB2E73 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C5718E922AECA1BB002AF495 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		C5718E952AECA39D002AF495 /* Color+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ex.swift"; sourceTree = "<group>"; };
+		C5718E972AECAB1D002AF495 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		C5718E992AECAC1C002AF495 /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +65,7 @@
 				C5718E942AECA38B002AF495 /* Helper */,
 				C517FFFB2AEC9B9300FB2E73 /* Assets.xcassets */,
 				C517FFFD2AEC9B9300FB2E73 /* Preview Content */,
+				C5718E992AECAC1C002AF495 /* HomeModel.swift */,
 			);
 			path = BathCare;
 			sourceTree = "<group>";
@@ -77,6 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				C5718E922AECA1BB002AF495 /* HomeView.swift */,
+				C5718E972AECAB1D002AF495 /* HomeViewModel.swift */,
 			);
 			path = HomeView;
 			sourceTree = "<group>";
@@ -161,7 +167,9 @@
 			files = (
 				C5718E962AECA39D002AF495 /* Color+ex.swift in Sources */,
 				C5718E932AECA1BB002AF495 /* HomeView.swift in Sources */,
+				C5718E9A2AECAC1C002AF495 /* HomeModel.swift in Sources */,
 				C517FFFA2AEC9B9200FB2E73 /* ContentView.swift in Sources */,
+				C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */,
 				C517FFF82AEC9B9200FB2E73 /* BathCareApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

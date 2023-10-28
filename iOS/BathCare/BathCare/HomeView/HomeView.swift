@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    @ObservedObject var viewModel: HomeViewModel
     var body: some View {
         ZStack {
             Color.backgroundColor
@@ -36,7 +37,7 @@ struct HomeView: View {
                         Text("2023年10月28日")
                             .font(.headline)
                             .foregroundStyle(Color.gray)
-                        Text("入浴中")
+                        Text(viewModel.bathStatusString)
                             .font(.largeTitle)
                             .foregroundStyle(Color.font)
                             .bold()
@@ -45,7 +46,7 @@ struct HomeView: View {
                                 Text("温度")
                                     .font(.body)
                                     .foregroundStyle(Color.black.opacity(0.6))
-                                Text("45°")
+                                Text(String(format: "%.1f", viewModel.temperature) + "°")
                                     .font(.title2)
                                     .foregroundStyle(Color.black.opacity(0.7))
                             }
@@ -53,7 +54,7 @@ struct HomeView: View {
                                 Text("湿度")
                                     .font(.body)
                                     .foregroundStyle(Color.black.opacity(0.6))
-                                Text("45%")
+                                Text(String(format: "%.1f", viewModel.humidity) + "°")
                                     .font(.title2)
                                     .foregroundStyle(Color.black.opacity(0.7))
                             }
@@ -69,5 +70,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
+    HomeView(viewModel: .init())
 }
