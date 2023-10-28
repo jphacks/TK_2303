@@ -30,11 +30,6 @@ struct HomeView: View {
                             .foregroundStyle(Color.font)
                         Spacer()
                         Button {
-                            // TODO: 消す
-                            withAnimation(.default) {
-                                viewModel.isAlertViewPresented = true
-                                print("hello")
-                            }
                         } label: {
                             Image(systemName: "bell.fill")
                                 .resizable()
@@ -81,6 +76,7 @@ struct HomeView: View {
                         .frame(maxWidth: .infinity)
                         .padding(24)
                         .background(Color.white)
+                        HomeNotificationListView()
                     }
                     .refreshable {
                         Task { @MainActor in
@@ -155,6 +151,7 @@ struct HomeAlertView: View {
                     .background(Color.white)
                     .cornerRadius(16)
                     .padding(24)
+                    .padding(.bottom, 24)
                 }
             }
         }.onAppear{
@@ -162,6 +159,100 @@ struct HomeAlertView: View {
                 makeImpact()
             }
         }
+    }
+}
+
+struct HomeNotificationListView: View {
+    var body: some View {
+        VStack {
+            Divider()
+            HStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .frame(width: 64, height: 64)
+                        .foregroundStyle(Color.gray.opacity(0.2))
+                    Image(systemName: "bathtub.fill")
+                        .resizable()
+                        .frame(width: 48, height: 32)
+                        .foregroundStyle(.red)
+                        .padding(.top, 8)
+                }
+                VStack(alignment: .leading) {
+                    Text("危険が検知されました！\n注意してください")
+                    Text("8分前")
+                        .font(.caption)
+                        .foregroundStyle(Color.black.opacity(0.5))
+                }
+                Spacer()
+            }
+            .padding(8)
+            Divider()
+            HStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .frame(width: 64, height: 64)
+                        .foregroundStyle(Color.gray.opacity(0.2))
+                    Image(systemName: "bathtub.fill")
+                        .resizable()
+                        .frame(width: 48, height: 32)
+                        .foregroundStyle(.font)
+                        .padding(.top, 8)
+                }
+                VStack(alignment: .leading) {
+                    Text("お風呂に入ったようです")
+                    Text("38分前")
+                        .font(.caption)
+                        .foregroundStyle(Color.black.opacity(0.5))
+                }
+                Spacer()
+            }
+            .padding(8)
+            Divider()
+            HStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .frame(width: 64, height: 64)
+                        .foregroundStyle(Color.gray.opacity(0.2))
+                    Image(systemName: "bathtub.fill")
+                        .resizable()
+                        .frame(width: 48, height: 32)
+                        .foregroundStyle(.gray)
+                        .padding(.top, 8)
+                }
+                VStack(alignment: .leading) {
+                    Text("お風呂を出たようです")
+                    Text("1日前")
+                        .font(.caption)
+                        .foregroundStyle(Color.black.opacity(0.5))
+                }
+                Spacer()
+            }
+            .padding(8)
+            Divider()
+            HStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .frame(width: 64, height: 64)
+                        .foregroundStyle(Color.gray.opacity(0.2))
+                    Image(systemName: "bathtub.fill")
+                        .resizable()
+                        .frame(width: 48, height: 32)
+                        .foregroundStyle(.font)
+                        .padding(.top, 8)
+                }
+                VStack(alignment: .leading) {
+                    Text("お風呂に入ったようです")
+                    Text("1日前")
+                        .font(.caption)
+                        .foregroundStyle(Color.black.opacity(0.5))
+                }
+                Spacer()
+            }
+            .padding(8)
+            Divider()
+        }
+        .padding(.horizontal, 16)
+        .background(Color.white)
     }
 }
 
@@ -182,6 +273,10 @@ struct HeatShockPopupView: View {
                 }
             }
     }
+}
+
+#Preview {
+    HomeNotificationListView()
 }
 
 #Preview {
