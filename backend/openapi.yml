@@ -1,0 +1,191 @@
+openapi: 3.0.4
+
+info: 
+  title: Server
+  version: 0.0.1
+
+servers:
+  - url: http://localhost:8787/api/v0
+
+paths:
+  "/status/{id}":
+    get:
+      summary: Status check
+      description: |
+        ステータスの取得を行う
+        
+        ステータスは以下の値を取る
+        - in: 入浴中
+        - out: 入浴していない
+        - danger: 危険
+        - unknown: 不明
+
+        デバイスはidによって識別される
+      operationId: getStatusById
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [in, out, danger, unknown]
+    post:
+      summary: Update status
+      description: |
+        ステータスの更新を行う
+        
+        ステータスは以下の値にセット可能
+        - in: 入浴中
+        - out: 入浴していない
+        - danger: 危険
+
+        デバイスはidによって識別される
+      operationId: updateStatusById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [in, out, danger]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [in, out, danger]
+  "/sensors/{id}":
+    get:
+      summary: get sensor data
+      description: |
+        センサーデータの取得を行う
+      operationId: getSensorData
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  temperature:
+                    type: number
+                    example: 28.5
+                    description: 温度 (℃)
+                  humidity:
+                    type: number
+                    example: 84.2
+                    description: 湿度 (%)
+                  co2:
+                    type: number
+                    example: 1000
+                    description: CO2濃度 (ppm)
+                  lastUpdate:
+                    type: string
+                    format: date-time
+                    description: 最後にアップデートした時刻
+    post:
+      summary: update sensor data
+      description: |
+        センサーデータをアップデートする
+      operationId: updateSensorData
+      requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  temperature:
+                    type: number
+                    example: 28.5
+                    description: 温度 (℃)
+                  humidity:
+                    type: number
+                    example: 84.2
+                    description: 湿度 (%)
+                  co2:
+                    type: number
+                    example: 1000
+                    description: CO2濃度 (ppm)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  temperature:
+                    type: number
+                    example: 28.5
+                    description: 温度 (℃)
+                  humidity:
+                    type: number
+                    example: 84.2
+                    description: 湿度 (%)
+                  co2:
+                    type: number
+                    example: 1000
+                    description: CO2濃度 (ppm)
+                  lastUpdate:
+                    type: string
+                    format: date-time
+                    description: 最後にアップデートした時刻
+  "/alart/{id}":
+    post:
+      summary: Send alart
+      description: |
+        デバイスからスマホに対してアラートを送信する
+
+        デバイスはidによって識別される
+
+        json形式で以下のようなメッセージを送信できる
+
+        ```json
+        {
+          "message": "浴室で大きな音が検知されました"
+        }
+        ```
+      operationId: sendAlartById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - "Alart sent."
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - "Alart system is down."
