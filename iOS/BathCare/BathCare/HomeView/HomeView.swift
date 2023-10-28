@@ -15,7 +15,8 @@ struct HomeView: View {
             HomeAlertView(
                 namespace: namespace,
                 showingAlertView: $viewModel.isAlertViewPresented,
-                makeCall: viewModel.makeCall
+                makeCall: viewModel.makeCall,
+                makeImpact: viewModel.makeImpact
             )
         } else {
             ZStack {
@@ -86,7 +87,7 @@ struct HomeView: View {
                             await viewModel.makeRequest()
                         }
                     }
-                    HeatShockPopupView(showingPopup: true)
+                    HeatShockPopupView(showingPopup: viewModel.isHighHeatShockPossiblity)
                 }
             }
             .onAppear {
@@ -104,6 +105,7 @@ struct HomeAlertView: View {
     var namespace: Namespace.ID
     @Binding var showingAlertView: Bool
     var makeCall: () -> ()
+    var makeImpact: () -> ()
     var body: some View {
         ZStack(alignment: .topTrailing) {
             Color.red.ignoresSafeArea()
@@ -155,6 +157,10 @@ struct HomeAlertView: View {
                     .padding(24)
                 }
             }
+        }.onAppear{
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                makeImpact()
+            }
         }
     }
 }
@@ -182,7 +188,8 @@ struct HeatShockPopupView: View {
     HomeAlertView(
         namespace: Namespace().wrappedValue,
         showingAlertView: .constant(true),
-        makeCall: { print("makeCall") }
+        makeCall: { print("makeCall") },
+        makeImpact: { print("makeImpact") }
     )
 }
 

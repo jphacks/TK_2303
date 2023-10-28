@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AudioToolbox
 class HomeViewModel: ObservableObject {
     let baseUrl = "https://bathcare.tsubame.workers.dev"
     @Published var humidity: Double = 62.0
@@ -16,6 +17,7 @@ class HomeViewModel: ObservableObject {
     @Published var isHighHeatShockPossiblity = false
     @Published var isAlertViewPresented = false
     private var phoneNumber: String?
+    private var heatShockPopupShowed = false
     
     let id = 9910
     
@@ -56,6 +58,15 @@ class HomeViewModel: ObservableObject {
                 await self.makeRequest()
             }
         }
+        print("appeared: ", heatShockPopupShowed, isHighHeatShockPossiblity)
+        if !heatShockPopupShowed {
+            withAnimation(.default.delay(1.0)) {
+                self.isHighHeatShockPossiblity = true
+            }
+            heatShockPopupShowed = true
+        } else {
+            isHighHeatShockPossiblity = false
+        }
     }
     
     func onDisapear() {
@@ -66,6 +77,10 @@ class HomeViewModel: ObservableObject {
         guard let phoneNumber else { return }
         guard let url = URL(string: "tel://" + phoneNumber) else { return }
         UIApplication.shared.open(url)
+    }
+    
+    func makeImpact() {
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
     }
     
     func makeRequest() async {
@@ -91,9 +106,6 @@ class HomeViewModel: ObservableObject {
             withAnimation(.default.delay(2.0)){
                 self.isAlertViewPresented = true
             }
-        }
-        withAnimation {
-            self.isHighHeatShockPossiblity = true
         }
     }
     
