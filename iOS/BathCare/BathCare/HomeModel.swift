@@ -6,10 +6,11 @@
 //
 
 import Foundation
-struct BathData: Decodable {
+struct SensorData: Decodable {
     var temperature: Double
     var humidity: Double
-    var status: BathStatus
+    var co2: Int
+    var lastUpdate: String
 }
 
 struct BathStatusRequestJson: Decodable {
