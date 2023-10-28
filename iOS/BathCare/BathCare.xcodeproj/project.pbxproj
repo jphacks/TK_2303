@@ -11,6 +11,8 @@
 		C517FFFA2AEC9B9200FB2E73 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C517FFF92AEC9B9200FB2E73 /* ContentView.swift */; };
 		C517FFFC2AEC9B9300FB2E73 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C517FFFB2AEC9B9300FB2E73 /* Assets.xcassets */; };
 		C517FFFF2AEC9B9300FB2E73 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C517FFFE2AEC9B9300FB2E73 /* Preview Assets.xcassets */; };
+		C5718E932AECA1BB002AF495 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E922AECA1BB002AF495 /* HomeView.swift */; };
+		C5718E962AECA39D002AF495 /* Color+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E952AECA39D002AF495 /* Color+ex.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +21,8 @@
 		C517FFF92AEC9B9200FB2E73 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C517FFFB2AEC9B9300FB2E73 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C517FFFE2AEC9B9300FB2E73 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		C5718E922AECA1BB002AF495 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		C5718E952AECA39D002AF495 /* Color+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ex.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +57,8 @@
 			children = (
 				C517FFF72AEC9B9200FB2E73 /* BathCareApp.swift */,
 				C517FFF92AEC9B9200FB2E73 /* ContentView.swift */,
+				C5718E912AECA1AD002AF495 /* HomeView */,
+				C5718E942AECA38B002AF495 /* Helper */,
 				C517FFFB2AEC9B9300FB2E73 /* Assets.xcassets */,
 				C517FFFD2AEC9B9300FB2E73 /* Preview Content */,
 			);
@@ -65,6 +71,22 @@
 				C517FFFE2AEC9B9300FB2E73 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		C5718E912AECA1AD002AF495 /* HomeView */ = {
+			isa = PBXGroup;
+			children = (
+				C5718E922AECA1BB002AF495 /* HomeView.swift */,
+			);
+			path = HomeView;
+			sourceTree = "<group>";
+		};
+		C5718E942AECA38B002AF495 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				C5718E952AECA39D002AF495 /* Color+ex.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -137,6 +159,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5718E962AECA39D002AF495 /* Color+ex.swift in Sources */,
+				C5718E932AECA1BB002AF495 /* HomeView.swift in Sources */,
 				C517FFFA2AEC9B9200FB2E73 /* ContentView.swift in Sources */,
 				C517FFF82AEC9B9200FB2E73 /* BathCareApp.swift in Sources */,
 			);
