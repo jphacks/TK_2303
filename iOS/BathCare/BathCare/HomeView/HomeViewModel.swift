@@ -10,9 +10,12 @@ class HomeViewModel: ObservableObject {
     let baseUrl = "https://bathcare.tsubame.workers.dev"
     @Published var humidity: Double = 62.0
     @Published var temperature: Double = 25.0
+    @Published var co2: Int = 0
+    @Published var lastUpdate: String = ""
     @Published var bathStatus: BathStatus = .outBath
     @Published var isHighHeatShockPossiblity = false
     @Published var isAlertViewPresented = false
+    private var phoneNumber: String?
     
     let id = 9910
     
@@ -59,10 +62,17 @@ class HomeViewModel: ObservableObject {
         timer?.invalidate()
     }
     
+    func makeCall() {
+        guard let phoneNumber else { return }
+        guard let url = URL(string: "tel://" + phoneNumber) else { return }
+        UIApplication.shared.open(url)
+    }
+    
     func makeRequest() async {
         do {
             try await getStatus()
             try await getSensorDatas()
+            try await getPhoneNumber()
         } catch(let error) {
             print("error: \(error)")
         }
@@ -78,11 +88,13 @@ class HomeViewModel: ObservableObject {
         print(response)
         self.bathStatus = response.status
         if self.bathStatus == .danger {
-            withAnimation(.default.delay(1.0)){
+            withAnimation(.default.delay(2.0)){
                 self.isAlertViewPresented = true
             }
         }
-        self.isHighHeatShockPossiblity = true
+        withAnimation {
+            self.isHighHeatShockPossiblity = true
+        }
     }
     
     func getSensorDatas() async throws {
@@ -90,9 +102,23 @@ class HomeViewModel: ObservableObject {
         print("post url: ", urlString)
         let url = URL(string: urlString)!
         let (data, _) = try await URLSession.shared.data(from: url, delegate: nil)
-        print(String(decoding: data, as: UTF8.self))
         let decoder = JSONDecoder()
-        let response = try decoder.decode(SensorData.self, from: data)
+        let response = try decoder.decode(SensorDataJson.self, from: data)
+        self.humidity = response.humidity
+        self.temperature = response.temperature
+        self.co2 = response.co2
+        self.lastUpdate = response.lastUpdate
+        print(response)
+    }
+    
+    func getPhoneNumber() async throws {
+        let urlString = baseUrl + "/phonenumber/" + String(id)
+        print("post url: ", urlString)
+        let url = URL(string: urlString)!
+        let (data, _) = try await URLSession.shared.data(from: url, delegate: nil)
+        let decoder = JSONDecoder()
+        let response = try decoder.decode(PhoneNumberJson.self, from: data)
+        self.phoneNumber = response.number
         print(response)
     }
 }

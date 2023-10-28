@@ -12,7 +12,11 @@ struct HomeView: View {
     @Namespace private var namespace
     var body: some View {
         if viewModel.isAlertViewPresented {
-            HomeAlertView(namespace: namespace, showingAlertView: $viewModel.isAlertViewPresented)
+            HomeAlertView(
+                namespace: namespace,
+                showingAlertView: $viewModel.isAlertViewPresented,
+                makeCall: viewModel.makeCall
+            )
         } else {
             ZStack {
                 Color.backgroundColor
@@ -99,6 +103,7 @@ struct HomeView: View {
 struct HomeAlertView: View {
     var namespace: Namespace.ID
     @Binding var showingAlertView: Bool
+    var makeCall: () -> ()
     var body: some View {
         ZStack(alignment: .topTrailing) {
             Color.red.ignoresSafeArea()
@@ -111,27 +116,45 @@ struct HomeAlertView: View {
                     .resizable()
                     .frame(width: 32, height: 32)
                     .padding(24)
-                    .foregroundStyle(Color.black.opacity(0.5))
-            }
-            VStack {
-                Text("危険")
-                    .font(.largeTitle)
-                    .foregroundStyle(.white)
-                    .padding(.bottom, 48)
-                    .bold()
-                Image(systemName: "bell.fill")
-                    .resizable()
-                    .matchedGeometryEffect(id: "bell", in: namespace)
-                    .frame(width: 128, height: 128)
                     .foregroundStyle(Color.white)
-                Text("入浴時間が長くなっています\n確認してください")
-                    .font(.title)
-                    .foregroundStyle(Color.white)
-                    .bold()
-                    .multilineTextAlignment(.center)
-                    .padding()
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            ZStack(alignment: .bottom){
+                VStack {
+                    Text("危険")
+                        .font(.largeTitle)
+                        .foregroundStyle(.white)
+                        .padding(.bottom, 48)
+                        .bold()
+                    Image(systemName: "bell.fill")
+                        .resizable()
+                        .matchedGeometryEffect(id: "bell", in: namespace)
+                        .frame(width: 128, height: 128)
+                        .foregroundStyle(Color.white)
+                    Text("入浴時間が長くなっています\n確認してください")
+                        .font(.title)
+                        .foregroundStyle(Color.white)
+                        .bold()
+                        .multilineTextAlignment(.center)
+                        .padding()
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                
+                Button {
+                    makeCall()
+                } label: {
+                    HStack {
+                        Image(systemName: "phone.fill")
+                            .foregroundStyle(.red)
+                        Text("緊急連絡先へ連絡する")
+                            .foregroundStyle(Color.red)
+                            .bold()
+                    }
+                    .padding(24)
+                    .background(Color.white)
+                    .cornerRadius(16)
+                    .padding(24)
+                }
+            }
         }
     }
 }
@@ -156,7 +179,11 @@ struct HeatShockPopupView: View {
 }
 
 #Preview {
-    HomeAlertView(namespace: Namespace().wrappedValue, showingAlertView: .constant(true))
+    HomeAlertView(
+        namespace: Namespace().wrappedValue,
+        showingAlertView: .constant(true),
+        makeCall: { print("makeCall") }
+    )
 }
 
 #Preview {
