@@ -12,9 +12,13 @@ struct BathData: Decodable {
     var status: BathStatus
 }
 
+struct BathStatusRequestJson: Decodable {
+    var status: BathStatus
+}
+
 enum BathStatus: String, Decodable {
-    case inBath
-    case outBath
+    case inBath = "in"
+    case outBath = "out"
     case danger
     case unknown
 }

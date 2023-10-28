@@ -39,7 +39,7 @@ struct HomeView: View {
                             .foregroundStyle(Color.gray)
                         Text(viewModel.bathStatusString)
                             .font(.largeTitle)
-                            .foregroundStyle(Color.font)
+                            .foregroundStyle(viewModel.bathStatusColor)
                             .bold()
                         HStack(spacing: 40) {
                             VStack {
@@ -64,8 +64,28 @@ struct HomeView: View {
                     .padding(24)
                     .background(Color.white)
                 }
+                HeatShockPopupView(showingPopup: true)
             }
         }
+    }
+}
+
+struct HeatShockPopupView: View {
+    @State var showingPopup: Bool = true
+    var body: some View {
+        Text("気温が低下しています。\nヒートショックに気をつけてください")
+            .foregroundStyle(Color.black.opacity(0.6))
+            .multilineTextAlignment(.center)
+            .padding(16)
+            .background(Color.red.opacity(0.4))
+            .cornerRadius(16)
+            .padding(16)
+            .opacity(showingPopup ? 1.0 : 0.0)
+            .onAppear {
+                withAnimation(.default.delay(2.0)) {
+                    showingPopup = false
+                }
+            }
     }
 }
 
