@@ -42,24 +42,22 @@
 ## 開発技術
 ### 活用した技術
 #### アプリ
-* 
-* 
+* Swift
+* Apple Push Notification Server
 
 #### サーバ
-* 
-* 
+* Cloudflare Workers
+* Workers KV
+* Firebase Cloud Messaging
 
 #### デバイス
 * ESP32
-* 温度、気圧、湿度、CO2センサ
-* 音圧センサ
+* 温度、気圧、湿度、CO2センサ(BME280)
+* PDMマイク(SPH0641LU4H)
 * FreeRTOS
 
 ### 独自技術
 #### ハッカソンで開発した独自機能・技術
 * 独自で開発したものの内容をこちらに記載してください
-* 特に力を入れた部分をファイルリンク、またはcommit_idを記載してください。
-
-#### 製品に取り入れた研究内容（データ・ソフトウェアなど）（※アカデミック部門の場合のみ提出必須）
-* 
-* 
+* [ESP32でPDMマイクを直接読み取るコード](https://github.com/jphacks/TK_2303/blob/master/hardware/device/Mic.h)
+  * ESP32のライブラリの仕様が変わった影響でネット上の情報が当てにならず苦労した
