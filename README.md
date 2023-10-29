@@ -1,6 +1,6 @@
-# お風呂でホッと
+# ホッとお風呂
 
-[![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2023/07/JPHACKS2023_ogp.png)](https://www.youtube.com/watch?v=yYRQEdfGjEg)
+![header](images/header.png)
 
 ## 製品概要
 ### 背景
@@ -16,6 +16,8 @@
 ハードウェアはお風呂に取り付けることができ、気圧、温度、湿度、CO2、音圧センサが実装されています。それらのデータから、お風呂に入っているかどうかという状態を推定し、音圧から転倒などの危険を検知します。
 
 長くお風呂に入っている時や大きな音が出た時は、サーバーを通してユーザーにそのことが通知されます。これにより事故を未然に防いだり、万が一事故が発生したとしてもいち早く察知することができます。
+
+![device and app](images/app_and_device.png)
 
 ### 特長
 #### 1. プライバシー保護
@@ -41,6 +43,9 @@
 
 ## 開発技術
 ### 活用した技術
+
+![architecture](images/architecture.png)
+
 #### アプリ
 * Swift
 * Apple Push Notification Server
