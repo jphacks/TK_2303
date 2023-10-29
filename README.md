@@ -54,6 +54,8 @@
 * Cloudflare Workers
 * Workers KV
 * Firebase Cloud Messaging
+* GitHub ActionsでAPIドキュメントをビルドし、[GitHub Pagesで公開](https://jphacks.github.io/TK_2303/api-document.html)
+
 
 #### デバイス
 * ESP32
