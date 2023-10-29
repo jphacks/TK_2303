@@ -1,0 +1,36 @@
+on:
+  push:
+    paths:
+      - "backend/openapi.yml"
+      - ".github/workflows/api-schema.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npx -y @redocly/cli build-docs backend/openapi.yml -o output/api-document.html
+      - uses: actions/upload-artifact@v3
+        with:
+          name: redocly-html
+          path: output/
+      - uses: actions/upload-pages-artifact@v1
+        with:
+          path: output/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/deploy-pages@v1
+        id: deployment
