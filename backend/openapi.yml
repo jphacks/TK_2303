@@ -2,10 +2,10 @@ openapi: 3.0.4
 
 info: 
   title: Server
-  version: 0.0.1
+  version: 0.0.3
 
 servers:
-  - url: http://localhost:8787/api/v0
+  - url: http://localhost:8787/
 
 paths:
   "/status/{id}":
@@ -237,3 +237,28 @@ paths:
                 properties:
                   number:
                     type: string
+  "/history/{id}":
+    get:
+      summary: get status history
+      description: |
+        ステータスの履歴を取得する
+      operationId: getStatusHistory
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  history:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        action:
+                          type: string
+                          enum: ["goIntoBath", "goOutOfBath", "becomeDanger"]
+                        date:
+                          type: string
+                          format: date-time
