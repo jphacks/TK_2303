@@ -17,10 +17,10 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: redocly-html
-          path: output/api-document.html
+          path: output/
       - uses: actions/upload-pages-artifact@v1
         with:
-          path: output/api-document.html
+          path: output/
 
   deploy:
     needs: build
