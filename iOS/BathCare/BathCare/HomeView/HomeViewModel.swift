@@ -54,7 +54,7 @@ class HomeViewModel: ObservableObject {
     }
     
     func onAppear() {
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
             Task { @MainActor in
                 await self.makeRequest()
             }
