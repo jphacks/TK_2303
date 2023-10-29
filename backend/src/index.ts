@@ -85,7 +85,12 @@ app.post('/alart/:id', async (c) => {
   try {
     const alart = AlartSchema.parse(await c.req.json<Alart>());
 
-    model.sendAlart(c.env.DEVICE_STATUSES, deviceId, alart);
+    await model.sendAlart(
+      c.env.FIREBASE_KEY_FILE,
+      c.env.IOS_TOKEN,
+      deviceId,
+      alart
+    );
 
     return c.json<Alart>(alart);
   } catch (err) {
@@ -140,6 +145,27 @@ app.post('/phonenumber/:id', async (c) => {
       return c.json({ message: 'Internal Server Error' });
     }
   }
+});
+
+app.get('/history/:id', async (c) => {
+  const deviceId = c.req.param('id');
+
+  const history = await model.getHistory(c.env.DEVICE_STATUSES, deviceId);
+
+  return c.json<History>(history);
+});
+
+// Delete all data
+app.post('/dangerous/deleteAll', async (c) => {
+  await model.dangerousDeleteAll(c.env.DEVICE_STATUSES);
+  return c.json({ message: 'OK' });
+});
+
+// Delete data by id
+app.post('/dangerous/delete/:id', async (c) => {
+  const deviceId = c.req.param('id');
+  await model.dangerousDeleteById(c.env.DEVICE_STATUSES, deviceId);
+  return c.json({ message: 'OK' });
 });
 
 export default app;

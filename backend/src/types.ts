@@ -43,3 +43,15 @@ export type PhoneNumberData = {
 export const PhoneNumberDataSchema = z.object({
   number: z.string(),
 });
+
+export type HistoryEntry = {
+  date: string;
+  action: 'goIntoBath' | 'goOutOfBath' | 'becomeDanger';
+};
+
+export const HistoryEntrySchema = z.object({
+  date: z.string(),
+  action: z.enum(['goIntoBath', 'goOutOfBath', 'becomeDanger']),
+});
+
+export type History = { history: HistoryEntry[] };
