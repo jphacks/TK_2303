@@ -66,3 +66,5 @@
 * 独自で開発したものの内容をこちらに記載してください
 * [ESP32でPDMマイクを直接読み取るコード](https://github.com/jphacks/TK_2303/blob/master/hardware/device/Mic.h)
   * ESP32のライブラリの仕様が変わった影響でネット上の情報が当てにならず苦労した
+* [Cloudflare Workers上でのFirebaseの利用](https://github.com/jphacks/TK_2303/blob/d92fb7b4c212a5a55339ab0f3a365487967f2cfd/backend/src/model.ts#L114)
+  * Firebaseの公式ライブラリはNode.jsのAPIに依存しておりCloudflare Workersからは利用できない。そこでOAuth2の認証から自前で実装し、Firebaseの通知APIを利用できるようにした。
