@@ -47,6 +47,9 @@
 		C5660C1D2AEE76BB000E5CD0 /* BathStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C1C2AEE76BB000E5CD0 /* BathStatus.swift */; };
 		C5660C232AEE7732000E5CD0 /* HistoryJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C222AEE7732000E5CD0 /* HistoryJson.swift */; };
 		C5660C252AEE777C000E5CD0 /* ActionNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C242AEE777C000E5CD0 /* ActionNotification.swift */; };
+		C5660C272AEE7845000E5CD0 /* HomeNotificationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C262AEE7845000E5CD0 /* HomeNotificationListView.swift */; };
+		C5660C292AEE7894000E5CD0 /* HeatShockPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C282AEE7894000E5CD0 /* HeatShockPopupView.swift */; };
+		C5660C2B2AEE78CB000E5CD0 /* HomeAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C2A2AEE78CB000E5CD0 /* HomeAlertView.swift */; };
 		C5718E932AECA1BB002AF495 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E922AECA1BB002AF495 /* HomeView.swift */; };
 		C5718E962AECA39D002AF495 /* Color+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E952AECA39D002AF495 /* Color+ex.swift */; };
 		C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E972AECAB1D002AF495 /* HomeViewModel.swift */; };
@@ -68,6 +71,9 @@
 		C5660C1C2AEE76BB000E5CD0 /* BathStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BathStatus.swift; sourceTree = "<group>"; };
 		C5660C222AEE7732000E5CD0 /* HistoryJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryJson.swift; sourceTree = "<group>"; };
 		C5660C242AEE777C000E5CD0 /* ActionNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionNotification.swift; sourceTree = "<group>"; };
+		C5660C262AEE7845000E5CD0 /* HomeNotificationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeNotificationListView.swift; sourceTree = "<group>"; };
+		C5660C282AEE7894000E5CD0 /* HeatShockPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatShockPopupView.swift; sourceTree = "<group>"; };
+		C5660C2A2AEE78CB000E5CD0 /* HomeAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAlertView.swift; sourceTree = "<group>"; };
 		C5718E922AECA1BB002AF495 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		C5718E952AECA39D002AF495 /* Color+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ex.swift"; sourceTree = "<group>"; };
 		C5718E972AECAB1D002AF495 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -202,6 +208,9 @@
 			children = (
 				C5718E922AECA1BB002AF495 /* HomeView.swift */,
 				C5718E972AECAB1D002AF495 /* HomeViewModel.swift */,
+				C5660C262AEE7845000E5CD0 /* HomeNotificationListView.swift */,
+				C5660C282AEE7894000E5CD0 /* HeatShockPopupView.swift */,
+				C5660C2A2AEE78CB000E5CD0 /* HomeAlertView.swift */,
 			);
 			path = HomeView;
 			sourceTree = "<group>";
@@ -320,12 +329,15 @@
 			files = (
 				C5660C192AEE7684000E5CD0 /* BathStatusJson.swift in Sources */,
 				C5718E962AECA39D002AF495 /* Color+ex.swift in Sources */,
+				C5660C292AEE7894000E5CD0 /* HeatShockPopupView.swift in Sources */,
 				C5718E932AECA1BB002AF495 /* HomeView.swift in Sources */,
 				C5660C172AEE7669000E5CD0 /* SensorDataJson.swift in Sources */,
+				C5660C272AEE7845000E5CD0 /* HomeNotificationListView.swift in Sources */,
 				C5660C1B2AEE769C000E5CD0 /* PhoneNumberJson.swift in Sources */,
 				C5660C232AEE7732000E5CD0 /* HistoryJson.swift in Sources */,
 				C5660C1D2AEE76BB000E5CD0 /* BathStatus.swift in Sources */,
 				C517FFFA2AEC9B9200FB2E73 /* ContentView.swift in Sources */,
+				C5660C2B2AEE78CB000E5CD0 /* HomeAlertView.swift in Sources */,
 				C5660C112AECFEE8000E5CD0 /* AppDelegate.swift in Sources */,
 				C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */,
 				C5660C142AEE0A09000E5CD0 /* Date+ex.swift in Sources */,
