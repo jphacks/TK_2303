@@ -40,6 +40,7 @@
 		C5660C0D2AECFC21000E5CD0 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = C5660C0C2AECFC21000E5CD0 /* FirebaseStorage */; };
 		C5660C0F2AECFC21000E5CD0 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = C5660C0E2AECFC21000E5CD0 /* FirebaseStorageCombine-Community */; };
 		C5660C112AECFEE8000E5CD0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C102AECFEE8000E5CD0 /* AppDelegate.swift */; };
+		C5660C142AEE0A09000E5CD0 /* Date+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C132AEE0A09000E5CD0 /* Date+ex.swift */; };
 		C5718E932AECA1BB002AF495 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E922AECA1BB002AF495 /* HomeView.swift */; };
 		C5718E962AECA39D002AF495 /* Color+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E952AECA39D002AF495 /* Color+ex.swift */; };
 		C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E972AECAB1D002AF495 /* HomeViewModel.swift */; };
@@ -55,6 +56,7 @@
 		C5660BD72AECFBD2000E5CD0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C5660C102AECFEE8000E5CD0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C5660C122AED06FD000E5CD0 /* BathCare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BathCare.entitlements; sourceTree = "<group>"; };
+		C5660C132AEE0A09000E5CD0 /* Date+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+ex.swift"; sourceTree = "<group>"; };
 		C5718E922AECA1BB002AF495 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		C5718E952AECA39D002AF495 /* Color+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ex.swift"; sourceTree = "<group>"; };
 		C5718E972AECAB1D002AF495 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				C5718E952AECA39D002AF495 /* Color+ex.swift */,
+				C5660C132AEE0A09000E5CD0 /* Date+ex.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -266,6 +269,7 @@
 				C517FFFA2AEC9B9200FB2E73 /* ContentView.swift in Sources */,
 				C5660C112AECFEE8000E5CD0 /* AppDelegate.swift in Sources */,
 				C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */,
+				C5660C142AEE0A09000E5CD0 /* Date+ex.swift in Sources */,
 				C517FFF82AEC9B9200FB2E73 /* BathCareApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
