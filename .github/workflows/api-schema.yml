@@ -1,7 +1,7 @@
 on:
   push:
     paths:
-      - "backend/openapi.yaml"
+      - "backend/openapi.yml"
   workflow_dispatch:
 
 jobs:
