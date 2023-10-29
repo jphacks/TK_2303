@@ -24,15 +24,17 @@ struct HomeView: View {
                     .ignoresSafeArea()
                 VStack(spacing: 0) {
                     HStack {
-                        Text("BathCare")
+                        Text("ホッとお風呂")
                             .font(.title)
                             .bold()
                             .foregroundStyle(Color.font)
                         Spacer()
                         NavigationLink {
-                            VStack {
-                                HomeNotificationListView(notifications: viewModel.notifications)
-                                Spacer()
+                            ScrollView {
+                                VStack {
+                                    HomeNotificationListView(notifications: viewModel.notifications)
+                                    Spacer()
+                                }
                             }
                         } label: {
                             Image(systemName: "bell.fill")
@@ -132,7 +134,7 @@ struct HomeAlertView: View {
                         .matchedGeometryEffect(id: "bell", in: namespace)
                         .frame(width: 128, height: 128)
                         .foregroundStyle(Color.white)
-                    Text("入浴時間が長くなっています\n確認してください")
+                    Text("大きな音が検知されました\n確認してください")
                         .font(.title)
                         .foregroundStyle(Color.white)
                         .bold()
