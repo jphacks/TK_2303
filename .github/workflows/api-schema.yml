@@ -12,8 +12,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-      - run: npx -y @redocly/cli build-docs backend/openapi.yaml -o output/index.html
+      - run: npx -y @redocly/cli build-docs backend/openapi.yml -o output/api-document.html
       - uses: actions/upload-artifact@v3
         with:
           name: redocly-html
-          path: output/index.html
+          path: output/api-document.html
