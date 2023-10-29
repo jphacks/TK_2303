@@ -98,7 +98,7 @@ class HomeViewModel: ObservableObject {
             let url = URL(string: urlString)!
             let (data, _) = try await URLSession.shared.data(from: url, delegate: nil)
             let decoder = JSONDecoder()
-            let response = try decoder.decode(BathStatusRequestJson.self, from: data)
+            let response = try decoder.decode(BathStatusJson.self, from: data)
             print(response)
             self.bathStatus = response.status
             if self.bathStatus == .danger {

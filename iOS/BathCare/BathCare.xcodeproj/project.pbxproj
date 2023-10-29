@@ -41,10 +41,15 @@
 		C5660C0F2AECFC21000E5CD0 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = C5660C0E2AECFC21000E5CD0 /* FirebaseStorageCombine-Community */; };
 		C5660C112AECFEE8000E5CD0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C102AECFEE8000E5CD0 /* AppDelegate.swift */; };
 		C5660C142AEE0A09000E5CD0 /* Date+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C132AEE0A09000E5CD0 /* Date+ex.swift */; };
+		C5660C172AEE7669000E5CD0 /* SensorDataJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C162AEE7669000E5CD0 /* SensorDataJson.swift */; };
+		C5660C192AEE7684000E5CD0 /* BathStatusJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C182AEE7684000E5CD0 /* BathStatusJson.swift */; };
+		C5660C1B2AEE769C000E5CD0 /* PhoneNumberJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C1A2AEE769C000E5CD0 /* PhoneNumberJson.swift */; };
+		C5660C1D2AEE76BB000E5CD0 /* BathStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C1C2AEE76BB000E5CD0 /* BathStatus.swift */; };
+		C5660C232AEE7732000E5CD0 /* HistoryJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C222AEE7732000E5CD0 /* HistoryJson.swift */; };
+		C5660C252AEE777C000E5CD0 /* ActionNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C242AEE777C000E5CD0 /* ActionNotification.swift */; };
 		C5718E932AECA1BB002AF495 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E922AECA1BB002AF495 /* HomeView.swift */; };
 		C5718E962AECA39D002AF495 /* Color+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E952AECA39D002AF495 /* Color+ex.swift */; };
 		C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E972AECAB1D002AF495 /* HomeViewModel.swift */; };
-		C5718E9A2AECAC1C002AF495 /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E992AECAC1C002AF495 /* HomeModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,10 +62,15 @@
 		C5660C102AECFEE8000E5CD0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C5660C122AED06FD000E5CD0 /* BathCare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BathCare.entitlements; sourceTree = "<group>"; };
 		C5660C132AEE0A09000E5CD0 /* Date+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+ex.swift"; sourceTree = "<group>"; };
+		C5660C162AEE7669000E5CD0 /* SensorDataJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDataJson.swift; sourceTree = "<group>"; };
+		C5660C182AEE7684000E5CD0 /* BathStatusJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BathStatusJson.swift; sourceTree = "<group>"; };
+		C5660C1A2AEE769C000E5CD0 /* PhoneNumberJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumberJson.swift; sourceTree = "<group>"; };
+		C5660C1C2AEE76BB000E5CD0 /* BathStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BathStatus.swift; sourceTree = "<group>"; };
+		C5660C222AEE7732000E5CD0 /* HistoryJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryJson.swift; sourceTree = "<group>"; };
+		C5660C242AEE777C000E5CD0 /* ActionNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionNotification.swift; sourceTree = "<group>"; };
 		C5718E922AECA1BB002AF495 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		C5718E952AECA39D002AF495 /* Color+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ex.swift"; sourceTree = "<group>"; };
 		C5718E972AECAB1D002AF495 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
-		C5718E992AECAC1C002AF495 /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,7 +137,7 @@
 				C5718E942AECA38B002AF495 /* Helper */,
 				C517FFFB2AEC9B9300FB2E73 /* Assets.xcassets */,
 				C517FFFD2AEC9B9300FB2E73 /* Preview Content */,
-				C5718E992AECAC1C002AF495 /* HomeModel.swift */,
+				C5660C152AEE7654000E5CD0 /* HomeModel */,
 				C5660BD72AECFBD2000E5CD0 /* GoogleService-Info.plist */,
 				C5660C102AECFEE8000E5CD0 /* AppDelegate.swift */,
 			);
@@ -140,6 +150,51 @@
 				C517FFFE2AEC9B9300FB2E73 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		C5660C152AEE7654000E5CD0 /* HomeModel */ = {
+			isa = PBXGroup;
+			children = (
+				C5660C212AEE7728000E5CD0 /* History */,
+				C5660C1F2AEE770F000E5CD0 /* SensorData */,
+				C5660C1E2AEE76DB000E5CD0 /* BathStatus */,
+				C5660C202AEE771C000E5CD0 /* PhoneNumber */,
+			);
+			path = HomeModel;
+			sourceTree = "<group>";
+		};
+		C5660C1E2AEE76DB000E5CD0 /* BathStatus */ = {
+			isa = PBXGroup;
+			children = (
+				C5660C182AEE7684000E5CD0 /* BathStatusJson.swift */,
+				C5660C1C2AEE76BB000E5CD0 /* BathStatus.swift */,
+			);
+			path = BathStatus;
+			sourceTree = "<group>";
+		};
+		C5660C1F2AEE770F000E5CD0 /* SensorData */ = {
+			isa = PBXGroup;
+			children = (
+				C5660C162AEE7669000E5CD0 /* SensorDataJson.swift */,
+			);
+			path = SensorData;
+			sourceTree = "<group>";
+		};
+		C5660C202AEE771C000E5CD0 /* PhoneNumber */ = {
+			isa = PBXGroup;
+			children = (
+				C5660C1A2AEE769C000E5CD0 /* PhoneNumberJson.swift */,
+			);
+			path = PhoneNumber;
+			sourceTree = "<group>";
+		};
+		C5660C212AEE7728000E5CD0 /* History */ = {
+			isa = PBXGroup;
+			children = (
+				C5660C222AEE7732000E5CD0 /* HistoryJson.swift */,
+				C5660C242AEE777C000E5CD0 /* ActionNotification.swift */,
+			);
+			path = History;
 			sourceTree = "<group>";
 		};
 		C5718E912AECA1AD002AF495 /* HomeView */ = {
@@ -263,13 +318,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5660C192AEE7684000E5CD0 /* BathStatusJson.swift in Sources */,
 				C5718E962AECA39D002AF495 /* Color+ex.swift in Sources */,
 				C5718E932AECA1BB002AF495 /* HomeView.swift in Sources */,
-				C5718E9A2AECAC1C002AF495 /* HomeModel.swift in Sources */,
+				C5660C172AEE7669000E5CD0 /* SensorDataJson.swift in Sources */,
+				C5660C1B2AEE769C000E5CD0 /* PhoneNumberJson.swift in Sources */,
+				C5660C232AEE7732000E5CD0 /* HistoryJson.swift in Sources */,
+				C5660C1D2AEE76BB000E5CD0 /* BathStatus.swift in Sources */,
 				C517FFFA2AEC9B9200FB2E73 /* ContentView.swift in Sources */,
 				C5660C112AECFEE8000E5CD0 /* AppDelegate.swift in Sources */,
 				C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */,
 				C5660C142AEE0A09000E5CD0 /* Date+ex.swift in Sources */,
+				C5660C252AEE777C000E5CD0 /* ActionNotification.swift in Sources */,
 				C517FFF82AEC9B9200FB2E73 /* BathCareApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
