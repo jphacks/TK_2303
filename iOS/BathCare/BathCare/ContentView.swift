@@ -10,7 +10,8 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         NavigationStack {
-            HomeView(viewModel: .init())
+            // HomeView(viewModel: .init())
+            OnboardingView()
         }
     }
 }

@@ -50,6 +50,10 @@
 		C5660C272AEE7845000E5CD0 /* HomeNotificationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C262AEE7845000E5CD0 /* HomeNotificationListView.swift */; };
 		C5660C292AEE7894000E5CD0 /* HeatShockPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C282AEE7894000E5CD0 /* HeatShockPopupView.swift */; };
 		C5660C2B2AEE78CB000E5CD0 /* HomeAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5660C2A2AEE78CB000E5CD0 /* HomeAlertView.swift */; };
+		C56B6C782AF3D4370013F504 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56B6C772AF3D4370013F504 /* OnboardingView.swift */; };
+		C56B6C7A2AF3D4460013F504 /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56B6C792AF3D4460013F504 /* PageViewController.swift */; };
+		C56B6C7C2AF3D5140013F504 /* FirstView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56B6C7B2AF3D5140013F504 /* FirstView.swift */; };
+		C56B6C7E2AF3D5290013F504 /* SecondView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56B6C7D2AF3D5290013F504 /* SecondView.swift */; };
 		C5718E932AECA1BB002AF495 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E922AECA1BB002AF495 /* HomeView.swift */; };
 		C5718E962AECA39D002AF495 /* Color+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E952AECA39D002AF495 /* Color+ex.swift */; };
 		C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E972AECAB1D002AF495 /* HomeViewModel.swift */; };
@@ -74,6 +78,10 @@
 		C5660C262AEE7845000E5CD0 /* HomeNotificationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeNotificationListView.swift; sourceTree = "<group>"; };
 		C5660C282AEE7894000E5CD0 /* HeatShockPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeatShockPopupView.swift; sourceTree = "<group>"; };
 		C5660C2A2AEE78CB000E5CD0 /* HomeAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAlertView.swift; sourceTree = "<group>"; };
+		C56B6C772AF3D4370013F504 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		C56B6C792AF3D4460013F504 /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
+		C56B6C7B2AF3D5140013F504 /* FirstView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstView.swift; sourceTree = "<group>"; };
+		C56B6C7D2AF3D5290013F504 /* SecondView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondView.swift; sourceTree = "<group>"; };
 		C5718E922AECA1BB002AF495 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		C5718E952AECA39D002AF495 /* Color+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ex.swift"; sourceTree = "<group>"; };
 		C5718E972AECAB1D002AF495 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -136,6 +144,7 @@
 		C517FFF62AEC9B9200FB2E73 /* BathCare */ = {
 			isa = PBXGroup;
 			children = (
+				C56B6C762AF3D4280013F504 /* OnboardingView */,
 				C5660C122AED06FD000E5CD0 /* BathCare.entitlements */,
 				C517FFF72AEC9B9200FB2E73 /* BathCareApp.swift */,
 				C517FFF92AEC9B9200FB2E73 /* ContentView.swift */,
@@ -201,6 +210,17 @@
 				C5660C242AEE777C000E5CD0 /* ActionNotification.swift */,
 			);
 			path = History;
+			sourceTree = "<group>";
+		};
+		C56B6C762AF3D4280013F504 /* OnboardingView */ = {
+			isa = PBXGroup;
+			children = (
+				C56B6C772AF3D4370013F504 /* OnboardingView.swift */,
+				C56B6C792AF3D4460013F504 /* PageViewController.swift */,
+				C56B6C7B2AF3D5140013F504 /* FirstView.swift */,
+				C56B6C7D2AF3D5290013F504 /* SecondView.swift */,
+			);
+			path = OnboardingView;
 			sourceTree = "<group>";
 		};
 		C5718E912AECA1AD002AF495 /* HomeView */ = {
@@ -333,7 +353,9 @@
 				C5718E932AECA1BB002AF495 /* HomeView.swift in Sources */,
 				C5660C172AEE7669000E5CD0 /* SensorDataJson.swift in Sources */,
 				C5660C272AEE7845000E5CD0 /* HomeNotificationListView.swift in Sources */,
+				C56B6C7E2AF3D5290013F504 /* SecondView.swift in Sources */,
 				C5660C1B2AEE769C000E5CD0 /* PhoneNumberJson.swift in Sources */,
+				C56B6C7C2AF3D5140013F504 /* FirstView.swift in Sources */,
 				C5660C232AEE7732000E5CD0 /* HistoryJson.swift in Sources */,
 				C5660C1D2AEE76BB000E5CD0 /* BathStatus.swift in Sources */,
 				C517FFFA2AEC9B9200FB2E73 /* ContentView.swift in Sources */,
@@ -342,6 +364,8 @@
 				C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */,
 				C5660C142AEE0A09000E5CD0 /* Date+ex.swift in Sources */,
 				C5660C252AEE777C000E5CD0 /* ActionNotification.swift in Sources */,
+				C56B6C7A2AF3D4460013F504 /* PageViewController.swift in Sources */,
+				C56B6C782AF3D4370013F504 /* OnboardingView.swift in Sources */,
 				C517FFF82AEC9B9200FB2E73 /* BathCareApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
