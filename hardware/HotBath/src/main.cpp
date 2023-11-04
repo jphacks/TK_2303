@@ -1,4 +1,5 @@
 #include "api.hpp"
+#include "ble.hpp"
 #include "config.hpp"
 #include "wifi.hpp"
 #include <Arduino.h>
@@ -14,6 +15,7 @@ void setup()
 void main_task(void* pvParameters)
 {
     config::init();
+    ble::begin();
     wifi::update();
     api::init();
     while (true) {
@@ -25,5 +27,15 @@ void main_task(void* pvParameters)
 
 void loop()
 {
-    vTaskDelay(1000);
+    if (Serial.available() > 0) {
+        char incoming = Serial.read();
+        if (incoming == 'r') {
+            ESP.restart();
+        } else if (incoming == 'b') {
+            ble::begin();
+        } else if (incoming == 'e') {
+            ble::stop();
+        }
+    }
+    vTaskDelay(100);
 }
