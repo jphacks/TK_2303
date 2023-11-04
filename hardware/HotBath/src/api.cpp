@@ -37,7 +37,7 @@ bool post_sensor_data(int temperature, int humidity, int co2)
 
 bool post(etl::string_view url, etl::string_view data)
 {
-    if (!wifi::getStatus()) {
+    if (!wifi::get_status()) {
         Serial.println("wifi is not connected");
         return false;
     }
@@ -58,8 +58,6 @@ bool post(etl::string_view url, etl::string_view data)
     stream << data.data() << "\r\n";
 
     client.print(data_buf.data());
-
-    Serial.println(data_buf.data());
 
     Serial.println("request sent");
     while (client.connected()) {

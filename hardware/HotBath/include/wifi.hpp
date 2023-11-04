@@ -3,5 +3,5 @@
 namespace wifi
 {
 void update();
-bool getStatus();
+bool get_status();
 }  // namespace wifi

@@ -34,7 +34,7 @@ void update()
     Serial.println(WiFi.localIP());
 }
 
-bool getStatus()
+bool get_status()
 {
     return status;
 };

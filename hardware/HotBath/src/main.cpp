@@ -7,7 +7,7 @@ static void mainTask(void* pvParameters);
 void setup()
 {
     Serial.begin(115200);
-    xTaskCreatePinnedToCore(mainTask, "mainTask", 0x1000, NULL, 1, NULL, 1);
+    xTaskCreatePinnedToCore(mainTask, "mainTask", 0x2000, NULL, 1, NULL, 1);
 }
 
 void mainTask(void* pvParameters)
@@ -17,7 +17,7 @@ void mainTask(void* pvParameters)
     while (true) {
         wifi::update();
         api::post_sensor_data(1, 2, 3);
-        vTaskDelay(10000);
+        vTaskDelay(60000);
     }
 }
 
