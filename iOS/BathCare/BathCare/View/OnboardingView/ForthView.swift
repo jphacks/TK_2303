@@ -9,8 +9,8 @@ import SwiftUI
 
 struct ForthView: View {
     @Binding var currentPage: Int
-    @State var connected = false
-    var bluetoothManager: BluetoothManager
+    @State var isConnected = false
+    @State var presentConnectingSheet = false
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack {
@@ -22,19 +22,19 @@ struct ForthView: View {
                     .font(.title2)
                     .bold()
                     
-                Text("デバイスと接続を始めます。\n上の画像のボタンを長押ししてください。")
+                Text(isConnected ? "デバイスと接続が完了しました。" :  "デバイスと接続を始めます。\n上の画像のボタンを長押ししてください。")
                     .padding(32)
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             Button {
-                if connected {
+                if isConnected {
                     currentPage += 1
                 } else {
-                    
+                    presentConnectingSheet = true
                 }
             } label: {
-                Text(connected ? "NEXT" : "Connect")
+                Text(isConnected ? "NEXT" : "Connect")
                     .bold()
                     .font(.title)
                     .foregroundStyle(.white)
@@ -45,15 +45,22 @@ struct ForthView: View {
                     .padding(.horizontal, 48)
             }
         }
-        .onAppear {
-            bluetoothManager.setup()
+        .sheet(isPresented: $presentConnectingSheet) {
+            ConnectingBluetoothView(
+                viewModel: .init(
+                    bluetoothManager: .shared,
+                    isConnected: $isConnected
+                )
+            )
+            .presentationDetents([.medium])
         }
     }
 }
 
+
+
 #Preview {
     ForthView(
-        currentPage: .constant(0),
-        bluetoothManager: BluetoothManager.shared
+        currentPage: .constant(0)
     )
 }

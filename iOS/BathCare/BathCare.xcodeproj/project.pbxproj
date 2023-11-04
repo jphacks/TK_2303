@@ -60,6 +60,8 @@
 		C5718E932AECA1BB002AF495 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E922AECA1BB002AF495 /* HomeView.swift */; };
 		C5718E962AECA39D002AF495 /* Color+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E952AECA39D002AF495 /* Color+ex.swift */; };
 		C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E972AECAB1D002AF495 /* HomeViewModel.swift */; };
+		C596471B2AF631D300A6578F /* ConnectingBluetoothViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596471A2AF631D300A6578F /* ConnectingBluetoothViewModel.swift */; };
+		C596471D2AF631EF00A6578F /* ConnectingBluetoothView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596471C2AF631EF00A6578F /* ConnectingBluetoothView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -91,6 +93,8 @@
 		C5718E922AECA1BB002AF495 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		C5718E952AECA39D002AF495 /* Color+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ex.swift"; sourceTree = "<group>"; };
 		C5718E972AECAB1D002AF495 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		C596471A2AF631D300A6578F /* ConnectingBluetoothViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingBluetoothViewModel.swift; sourceTree = "<group>"; };
+		C596471C2AF631EF00A6578F /* ConnectingBluetoothView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingBluetoothView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -226,6 +230,8 @@
 				C56B6C7D2AF3D5290013F504 /* SecondView.swift */,
 				C56B6C802AF5FE5D0013F504 /* ThirdView.swift */,
 				C56B6C822AF5FE670013F504 /* ForthView.swift */,
+				C596471A2AF631D300A6578F /* ConnectingBluetoothViewModel.swift */,
+				C596471C2AF631EF00A6578F /* ConnectingBluetoothView.swift */,
 			);
 			path = OnboardingView;
 			sourceTree = "<group>";
@@ -383,6 +389,8 @@
 				C56B6C862AF6020A0013F504 /* BluetoothManager.swift in Sources */,
 				C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */,
 				C5660C142AEE0A09000E5CD0 /* Date+ex.swift in Sources */,
+				C596471B2AF631D300A6578F /* ConnectingBluetoothViewModel.swift in Sources */,
+				C596471D2AF631EF00A6578F /* ConnectingBluetoothView.swift in Sources */,
 				C5660C252AEE777C000E5CD0 /* ActionNotification.swift in Sources */,
 				C56B6C7A2AF3D4460013F504 /* PageViewController.swift in Sources */,
 				C56B6C782AF3D4370013F504 /* OnboardingView.swift in Sources */,

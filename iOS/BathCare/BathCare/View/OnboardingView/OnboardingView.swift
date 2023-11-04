@@ -14,7 +14,7 @@ struct OnboardingView: View {
             AnyView(FirstView(currentPage: $currentPage)),
             AnyView(SecondView(currentPage: $currentPage)),
             AnyView(ThirdView(currentPage: $currentPage)),
-            AnyView(ForthView(currentPage: $currentPage, bluetoothManager: BluetoothManager.shared))
+            AnyView(ForthView(currentPage: $currentPage))
         ], currentPage: $currentPage)
     }
 }
