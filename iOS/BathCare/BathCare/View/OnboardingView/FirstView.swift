@@ -9,10 +9,19 @@ import SwiftUI
 
 struct FirstView: View {
     @Binding var currentPage: Int
+    var bounds = UIScreen.main.bounds
     var body: some View {
-        VStack {
-            Text("FirstView")
-            Spacer()
+        ZStack(alignment: .bottom) {
+            VStack {
+                Image("Onboarding1")
+                Text("Welcome to ホッとお風呂")
+                    .font(.title2)
+                    .bold()
+                Text("ホッとお風呂は家族に安心を届けるデバイスです")
+                    .multilineTextAlignment(.center)
+                    .padding(32)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             Button {
                 currentPage += 1
             } label: {
@@ -23,8 +32,8 @@ struct FirstView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
                     .background(Color.font)
-                    .cornerRadius(16)
-                    .padding(.horizontal, 32)
+                    .cornerRadius(32)
+                    .padding(.horizontal, 48)
             }
         }
     }

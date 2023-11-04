@@ -12,7 +12,9 @@ struct OnboardingView: View {
     var body: some View {
         PageViewController(pages: [
             AnyView(FirstView(currentPage: $currentPage)),
-            AnyView(SecondView(currentPage: $currentPage))
+            AnyView(SecondView(currentPage: $currentPage)),
+            AnyView(ThirdView(currentPage: $currentPage)),
+            AnyView(ForthView(currentPage: $currentPage, bluetoothManager: BluetoothManager.shared))
         ], currentPage: $currentPage)
     }
 }
