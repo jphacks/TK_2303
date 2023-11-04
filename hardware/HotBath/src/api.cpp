@@ -15,17 +15,35 @@ static WiFiClientSecure client;
 static char json_buf[512];
 static etl::string<512> data_buf;
 static StaticJsonDocument<100> doc;
+static SemaphoreHandle_t xMutex = NULL;
 
 static bool post(etl::string_view url, etl::string_view data);
+
+class APILock
+{
+public:
+    APILock()
+    {
+        xSemaphoreTakeRecursive(xMutex, portMAX_DELAY);
+    }
+    ~APILock()
+    {
+        xSemaphoreGiveRecursive(xMutex);
+    }
+};
 
 void init()
 {
     // サーバーの証明書を設定
     client.setCACert(rootCA);
+
+    xMutex = xSemaphoreCreateRecursiveMutex();
 }
 
 bool post_sensor_data(int temperature, int humidity, int co2)
 {
+    APILock lock;
+
     doc.clear();
     doc["temperature"] = temperature;
     doc["humidity"] = humidity;
@@ -37,6 +55,7 @@ bool post_sensor_data(int temperature, int humidity, int co2)
 
 bool post(etl::string_view url, etl::string_view data)
 {
+    Serial.printf("### API POST %s ###\n", url.data());
     if (!wifi::get_status()) {
         Serial.println("wifi is not connected");
         return false;
@@ -68,7 +87,6 @@ bool post(etl::string_view url, etl::string_view data)
         }
     }
     String line = client.readStringUntil('\n');
-    Serial.println("reply was:");
     Serial.println(line);
 
     client.stop();
