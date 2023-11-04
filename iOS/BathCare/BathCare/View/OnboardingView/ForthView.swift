@@ -13,7 +13,7 @@ struct ForthView: View {
     @State var presentConnectingSheet = false
     var body: some View {
         ZStack(alignment: .bottom) {
-            VStack {
+            VStack(spacing: 16) {
                 Color.green.frame(
                     width: 280,
                     height: 280
@@ -23,9 +23,11 @@ struct ForthView: View {
                     .bold()
                     
                 Text(isConnected ? "デバイスと接続が完了しました。" :  "デバイスと接続を始めます。\n上の画像のボタンを長押ししてください。")
-                    .padding(32)
                     .multilineTextAlignment(.center)
+                Spacer()
             }
+            .padding(.horizontal, 32)
+            .padding(.vertical, 64)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             Button {
                 if isConnected {

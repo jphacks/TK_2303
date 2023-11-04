@@ -11,15 +11,17 @@ struct ThirdView: View {
     @Binding var currentPage: Int
     var body: some View {
         ZStack(alignment: .bottom) {
-            VStack {
+            VStack(spacing: 16) {
                 Image("Onboarding3")
                 Text("Start Setup")
                     .font(.title2)
                     .bold()
                 Text("それではセットアップを始めましょう")
-                    .padding(32)
                     .multilineTextAlignment(.center)
+                Spacer()
             }
+            .padding(.vertical, 64)
+            .padding(.horizontal, 32)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             Button {
                 currentPage += 1

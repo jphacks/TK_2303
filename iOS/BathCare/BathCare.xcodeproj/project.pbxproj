@@ -62,6 +62,8 @@
 		C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E972AECAB1D002AF495 /* HomeViewModel.swift */; };
 		C596471B2AF631D300A6578F /* ConnectingBluetoothViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596471A2AF631D300A6578F /* ConnectingBluetoothViewModel.swift */; };
 		C596471D2AF631EF00A6578F /* ConnectingBluetoothView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596471C2AF631EF00A6578F /* ConnectingBluetoothView.swift */; };
+		C59647202AF63B0100A6578F /* FifthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596471F2AF63B0100A6578F /* FifthView.swift */; };
+		C59647242AF64F8900A6578F /* FifthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59647232AF64F8900A6578F /* FifthViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -95,6 +97,8 @@
 		C5718E972AECAB1D002AF495 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		C596471A2AF631D300A6578F /* ConnectingBluetoothViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingBluetoothViewModel.swift; sourceTree = "<group>"; };
 		C596471C2AF631EF00A6578F /* ConnectingBluetoothView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingBluetoothView.swift; sourceTree = "<group>"; };
+		C596471F2AF63B0100A6578F /* FifthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FifthView.swift; sourceTree = "<group>"; };
+		C59647232AF64F8900A6578F /* FifthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FifthViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -230,8 +234,9 @@
 				C56B6C7D2AF3D5290013F504 /* SecondView.swift */,
 				C56B6C802AF5FE5D0013F504 /* ThirdView.swift */,
 				C56B6C822AF5FE670013F504 /* ForthView.swift */,
-				C596471A2AF631D300A6578F /* ConnectingBluetoothViewModel.swift */,
-				C596471C2AF631EF00A6578F /* ConnectingBluetoothView.swift */,
+				C596471F2AF63B0100A6578F /* FifthView.swift */,
+				C59647232AF64F8900A6578F /* FifthViewModel.swift */,
+				C596471E2AF63AD700A6578F /* ConnectingBluetoothView */,
 			);
 			path = OnboardingView;
 			sourceTree = "<group>";
@@ -265,6 +270,15 @@
 				C5660C132AEE0A09000E5CD0 /* Date+ex.swift */,
 			);
 			path = Helper;
+			sourceTree = "<group>";
+		};
+		C596471E2AF63AD700A6578F /* ConnectingBluetoothView */ = {
+			isa = PBXGroup;
+			children = (
+				C596471A2AF631D300A6578F /* ConnectingBluetoothViewModel.swift */,
+				C596471C2AF631EF00A6578F /* ConnectingBluetoothView.swift */,
+			);
+			path = ConnectingBluetoothView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -391,9 +405,11 @@
 				C5660C142AEE0A09000E5CD0 /* Date+ex.swift in Sources */,
 				C596471B2AF631D300A6578F /* ConnectingBluetoothViewModel.swift in Sources */,
 				C596471D2AF631EF00A6578F /* ConnectingBluetoothView.swift in Sources */,
+				C59647242AF64F8900A6578F /* FifthViewModel.swift in Sources */,
 				C5660C252AEE777C000E5CD0 /* ActionNotification.swift in Sources */,
 				C56B6C7A2AF3D4460013F504 /* PageViewController.swift in Sources */,
 				C56B6C782AF3D4370013F504 /* OnboardingView.swift in Sources */,
+				C59647202AF63B0100A6578F /* FifthView.swift in Sources */,
 				C517FFF82AEC9B9200FB2E73 /* BathCareApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

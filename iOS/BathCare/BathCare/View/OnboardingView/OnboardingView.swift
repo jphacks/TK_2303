@@ -14,7 +14,11 @@ struct OnboardingView: View {
             AnyView(FirstView(currentPage: $currentPage)),
             AnyView(SecondView(currentPage: $currentPage)),
             AnyView(ThirdView(currentPage: $currentPage)),
-            AnyView(ForthView(currentPage: $currentPage))
+            AnyView(ForthView(currentPage: $currentPage)),
+            AnyView(FifthView(
+                currentPage: $currentPage,
+                viewModel: .init(bluetoothManager: .shared)
+            )),
         ], currentPage: $currentPage)
     }
 }

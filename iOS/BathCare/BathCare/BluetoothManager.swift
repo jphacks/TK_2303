@@ -39,31 +39,21 @@ class BluetoothManager: NSObject {
         charcteristicUUIDs = [CBUUID(string: kRXCharacteristicUUID)]
     }
     
-//    func sendData(str: String){
-//        guard let peripheral = self.peripheral else {
-//            return
-//        }
-//        guard let kRXCBCharacteristic = kRXCBCharacteristic else {
-//            return
-//        }
-//        let writeData = str.data(using: .utf8)!
-//        peripheral.writeValue(writeData, for: kRXCBCharacteristic, type: .withResponse)
-//    }
+    struct WifiData: Codable {
+        var ssid: String
+        var pass: String
+    }
     
-//    func sendWifi(ssid: String, password: String){
-//        guard let kRXCBCharacteristic = kRXCBCharacteristic else {
-//            return
-//        }
-//        let wifidata = WifiData(ssid: ssid, pass: password)
-//        let encoder = JSONEncoder()
-//        if let writeData = try? encoder.encode(wifidata) {
-//            peripheral.writeValue(writeData, for: kRXCBCharacteristic, type: .withResponse)
-//        }
-//    }
-    
-//    func calibrate(){
-//        sendData(str: "calibrate")
-//    }
+    func sendWifi(ssid: String, password: String){
+        guard let kRXCBCharacteristic = kRXCBCharacteristic else {
+            return
+        }
+        let wifidata = WifiData(ssid: ssid, pass: password)
+        let encoder = JSONEncoder()
+        if let writeData = try? encoder.encode(wifidata) {
+            peripheral.writeValue(writeData, for: kRXCBCharacteristic, type: .withResponse)
+        }
+    }
 }
 
 extension BluetoothManager: CBCentralManagerDelegate {
