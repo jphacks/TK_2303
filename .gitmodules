@@ -1,0 +1,3 @@
+[submodule "hardware/HotBath/lib/libpeer"]
+	path = hardware/HotBath/lib/libpeer
+	url = https://github.com/sepfy/libpeer.git
