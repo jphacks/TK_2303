@@ -1,4 +1,5 @@
 #pragma once
+#include "etl/string_view.h"
 
 namespace api
 {

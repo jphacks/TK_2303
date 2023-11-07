@@ -1,6 +1,7 @@
 #include "wifi.hpp"
 #include "secrets.hpp"
 #include <WiFi.h>
+#include "esp_log.h"
 
 namespace wifi
 {

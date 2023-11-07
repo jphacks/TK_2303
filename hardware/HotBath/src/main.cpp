@@ -1,7 +1,7 @@
-#include "HttpsOTAUpdate.h"
 #include "api.hpp"
 #include "ble.hpp"
 #include "config.hpp"
+#include "onlineUpdate.hpp"
 #include "wifi.hpp"
 #include <Arduino.h>
 
@@ -14,46 +14,15 @@ void setup()
 }
 
 
-static HttpsOTAStatus_t otastatus;
-
-void HttpEvent(HttpEvent_t* event)
-{
-    switch (event->event_id) {
-    case HTTP_EVENT_ERROR:
-        Serial.println("Http Event Error");
-        break;
-    case HTTP_EVENT_ON_CONNECTED:
-        Serial.println("Http Event On Connected");
-        break;
-    case HTTP_EVENT_HEADER_SENT:
-        Serial.println("Http Event Header Sent");
-        break;
-    case HTTP_EVENT_ON_HEADER:
-        Serial.printf("Http Event On Header, key=%s, value=%s\n", event->header_key, event->header_value);
-        break;
-    case HTTP_EVENT_ON_DATA:
-        break;
-    case HTTP_EVENT_ON_FINISH:
-        Serial.println("Http Event On Finish");
-        break;
-    case HTTP_EVENT_DISCONNECTED:
-        Serial.println("Http Event Disconnected");
-        break;
-    }
-}
-
-static const char* url = "https://example.com/firmware.bin";
-
 void main_task(void* pvParameters)
 {
+    update::rollback_check();
     config::init();
-    ble::begin();
     wifi::update();
     api::init();
+    update::begin();
 
-    HttpsOTA.onHttpEvent(HttpEvent);
-    Serial.println("Starting OTA");
-    HttpsOTA.begin(url, server_certificate);
+    // ble::begin();
 
     while (true) {
         wifi::update();
@@ -61,7 +30,6 @@ void main_task(void* pvParameters)
         vTaskDelay(60000);
     }
 }
-
 
 void loop()
 {

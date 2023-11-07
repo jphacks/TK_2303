@@ -1,7 +1,6 @@
 #include "api.hpp"
 #include "etl/string.h"
 #include "etl/string_stream.h"
-#include "etl/string_view.h"
 #include "rootCA.hpp"
 #include "secrets.hpp"
 #include "wifi.hpp"
@@ -16,6 +15,7 @@ static char json_buf[512];
 static etl::string<512> data_buf;
 static StaticJsonDocument<100> doc;
 static SemaphoreHandle_t xMutex = NULL;
+static const char* TAG = "API";
 
 static bool post(etl::string_view url, etl::string_view data);
 
@@ -55,14 +55,14 @@ bool post_sensor_data(int temperature, int humidity, int co2)
 
 bool post(etl::string_view url, etl::string_view data)
 {
-    Serial.printf("### API POST %s ###\n", url.data());
+    ESP_LOGI(TAG, "### API POST %s ###", url.data());
     if (!wifi::get_status()) {
-        Serial.println("wifi is not connected");
+        ESP_LOGE(TAG, "wifi is not connected");
         return false;
     }
 
     if (!client.connect(HOST_URL, 443)) {
-        Serial.println("connection failed");
+        ESP_LOGE(TAG, "connection failed");
         client.stop();
         return false;
     }
@@ -78,19 +78,19 @@ bool post(etl::string_view url, etl::string_view data)
 
     client.print(data_buf.data());
 
-    Serial.println("request sent");
+    ESP_LOGI(TAG, "request sent");
     while (client.connected()) {
         String line = client.readStringUntil('\n');
         if (line == "\r") {
-            Serial.println("headers received");
+            ESP_LOGE(TAG, "headers received");
             break;
         }
     }
     String line = client.readStringUntil('\n');
-    Serial.println(line);
+    ESP_LOGI(TAG, line);
 
     client.stop();
-    Serial.println("closed connection");
+    ESP_LOGI(TAG, "closed connection");
 
     return true;
 }
