@@ -13,6 +13,7 @@ class ConnectingBluetoothViewModel: ObservableObject {
     init(bluetoothManager: BluetoothManager, isConnected: Binding<Bool>) {
         self.bluetoothManager = bluetoothManager
         self._isConnected = isConnected
+        self.bluetoothManager.delegate = self
     }
     
     func setup() {

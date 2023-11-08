@@ -64,6 +64,7 @@
 		C596471D2AF631EF00A6578F /* ConnectingBluetoothView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596471C2AF631EF00A6578F /* ConnectingBluetoothView.swift */; };
 		C59647202AF63B0100A6578F /* FifthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596471F2AF63B0100A6578F /* FifthView.swift */; };
 		C59647242AF64F8900A6578F /* FifthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59647232AF64F8900A6578F /* FifthViewModel.swift */; };
+		C59647272AFB267400A6578F /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59647262AFB267400A6578F /* UserDefaultsManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -99,6 +100,7 @@
 		C596471C2AF631EF00A6578F /* ConnectingBluetoothView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingBluetoothView.swift; sourceTree = "<group>"; };
 		C596471F2AF63B0100A6578F /* FifthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FifthView.swift; sourceTree = "<group>"; };
 		C59647232AF64F8900A6578F /* FifthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FifthViewModel.swift; sourceTree = "<group>"; };
+		C59647262AFB267400A6578F /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -167,7 +169,7 @@
 				C517FFFD2AEC9B9300FB2E73 /* Preview Content */,
 				C5660C152AEE7654000E5CD0 /* HomeModel */,
 				C5660BD72AECFBD2000E5CD0 /* GoogleService-Info.plist */,
-				C56B6C852AF6020A0013F504 /* BluetoothManager.swift */,
+				C59647252AFB265300A6578F /* Manager */,
 			);
 			path = BathCare;
 			sourceTree = "<group>";
@@ -279,6 +281,15 @@
 				C596471C2AF631EF00A6578F /* ConnectingBluetoothView.swift */,
 			);
 			path = ConnectingBluetoothView;
+			sourceTree = "<group>";
+		};
+		C59647252AFB265300A6578F /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				C56B6C852AF6020A0013F504 /* BluetoothManager.swift */,
+				C59647262AFB267400A6578F /* UserDefaultsManager.swift */,
+			);
+			path = Manager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -401,6 +412,7 @@
 				C5660C2B2AEE78CB000E5CD0 /* HomeAlertView.swift in Sources */,
 				C5660C112AECFEE8000E5CD0 /* AppDelegate.swift in Sources */,
 				C56B6C862AF6020A0013F504 /* BluetoothManager.swift in Sources */,
+				C59647272AFB267400A6578F /* UserDefaultsManager.swift in Sources */,
 				C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */,
 				C5660C142AEE0A09000E5CD0 /* Date+ex.swift in Sources */,
 				C596471B2AF631D300A6578F /* ConnectingBluetoothViewModel.swift in Sources */,
@@ -548,6 +560,7 @@
 				DEVELOPMENT_TEAM = 377B7BZZ6Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Need to Connect to the device";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -578,6 +591,7 @@
 				DEVELOPMENT_TEAM = 377B7BZZ6Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Need to Connect to the device";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
