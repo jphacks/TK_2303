@@ -1,3 +1,6 @@
 [submodule "hardware/HotBath/lib/libpeer"]
 	path = hardware/HotBath/lib/libpeer
 	url = https://github.com/sepfy/libpeer.git
+[submodule "hardware/HotBath/lib/SparkFun_SHTC3_Arduino_Library"]
+	path = hardware/HotBath/lib/SparkFun_SHTC3_Arduino_Library
+	url = https://github.com/sparkfun/SparkFun_SHTC3_Arduino_Library.git

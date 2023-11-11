@@ -2,6 +2,7 @@
 #include "ble.hpp"
 #include "config.hpp"
 #include "onlineUpdate.hpp"
+#include "sensor.hpp"
 #include "wifi.hpp"
 #include <Arduino.h>
 
@@ -20,14 +21,18 @@ void main_task(void* pvParameters)
     config::init();
     wifi::update();
     api::init();
-    update::begin();
+    sensor::init();
+    // update::begin();
 
     // ble::begin();
 
     while (true) {
-        wifi::update();
-        api::post_sensor_data(1, 2, 3);
-        vTaskDelay(60000);
+        Serial.println(sensor::get_temperature());
+        Serial.println(sensor::get_pressure());
+        Serial.println(sensor::get_humidity());
+        // wifi::update();
+        // api::post_sensor_data(1, 2, 3);
+        vTaskDelay(1000);
     }
 }
 

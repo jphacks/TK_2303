@@ -9,7 +9,7 @@ FLASH_DATA data;
 void init()
 {
     Serial.println("### CONFIG LOAD ###");
-    EEPROM.begin(512);
+    EEPROM.begin(sizeof(FLASH_DATA));
     EEPROM.get<FLASH_DATA>(0, data);
     EEPROM.end();
     Serial.println("load successfully");

@@ -8,6 +8,8 @@ namespace config
 struct FLASH_DATA {
     char ssid[60];
     char pass[60];
+    bool is_first_run;
+    char token[256];
 };
 
 extern FLASH_DATA data;
