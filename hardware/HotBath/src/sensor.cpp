@@ -8,9 +8,15 @@
 namespace sensor
 {
 static constexpr uint8_t oversampling = 7;
+static constexpr float alpha = 0.99f;
 
 Dps3xx Dps3xxPressureSensor = Dps3xx();
 SHTC3 shtc3;
+
+static float temperature = 0;
+static float pressure = 0;
+static float humidity = 0;
+static float humidity_filtered = 0;
 
 void init()
 {
@@ -18,24 +24,31 @@ void init()
     Dps3xxPressureSensor.begin(Wire);
     shtc3.begin();
 }
-float get_temperature()
+
+void update()
 {
-    float temperature = 0;
+    Dps3xxPressureSensor.measurePressureOnce(pressure, oversampling);
     Dps3xxPressureSensor.measureTempOnce(temperature, oversampling);
-    return temperature;
-}
-float get_humidity()
-{
     shtc3.update();
     if (shtc3.lastStatus == SHTC3_Status_Nominal) {
-        return shtc3.toPercent();
+        humidity = shtc3.toPercent();
     }
-    return 0;
+
+    humidity_filtered = alpha * humidity_filtered + (1 - alpha) * humidity;
 }
+
+float get_temperature()
+{
+    return temperature;
+}
+
+float get_humidity()
+{
+    return humidity;
+}
+
 float get_pressure()
 {
-    float pressure = 0;
-    Dps3xxPressureSensor.measurePressureOnce(pressure, oversampling);
-    return pressure;
+    return pressure / 100.0f;  // hPa
 }
 }  // namespace sensor

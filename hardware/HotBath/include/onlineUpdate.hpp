@@ -2,6 +2,6 @@
 
 namespace update
 {
-void begin();
+void check();
 void rollback_check();
 }  // namespace update

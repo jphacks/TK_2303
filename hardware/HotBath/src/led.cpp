@@ -1,8 +1,11 @@
 #include "led.hpp"
+
+#include "ble.hpp"
 #include <Arduino.h>
 
 #define RED_LED_PIN 40
 #define BLUE_LED_PIN 36
+#define SW_PIN 37
 
 namespace led
 {
@@ -39,6 +42,7 @@ void led_task(void* pvParameters)
         default:
             break;
         }
+
         if (count_ < 0) {
             direction_ = false;
             count_ = 0;
@@ -46,6 +50,11 @@ void led_task(void* pvParameters)
             direction_ = true;
             count_ = 255;
         }
+
+        if (digitalRead(SW_PIN) == LOW) {
+            ble::open_request();
+        }
+
         vTaskDelay(50);
     }
 }
@@ -54,10 +63,12 @@ void init()
 {
     pinMode(RED_LED_PIN, OUTPUT);
     pinMode(BLUE_LED_PIN, OUTPUT);
+    pinMode(SW_PIN, INPUT_PULLUP);
+
     analogWrite(RED_LED_PIN, 255);
     analogWrite(BLUE_LED_PIN, 255);
 
-    xTaskCreatePinnedToCore(led_task, "led_task", 1024, NULL, 5, NULL, 0);
+    xTaskCreatePinnedToCore(led_task, "led_task", 4096, NULL, 5, NULL, 0);
 }
 
 void set_mode(LED_Mode mode)

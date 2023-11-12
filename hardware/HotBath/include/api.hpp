@@ -4,5 +4,5 @@
 namespace api
 {
 void init();
-bool post_sensor_data(int temperature, int humidity, int co2);
+bool post_sensor_data(float temperature, float pressure, float humidity);
 }  // namespace api

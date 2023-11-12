@@ -3,7 +3,7 @@
 
 namespace ble
 {
-void begin();
-void stop();
-void send(etl::string_view data);
+void init();
+void open_request();
+void close_request();
 }  // namespace ble

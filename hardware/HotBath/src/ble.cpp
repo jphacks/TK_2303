@@ -1,32 +1,52 @@
 #include "ble.hpp"
+#include "config.hpp"
 
 #include <Arduino.h>
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
 
+#include <ArduinoJson.h>
+#include "wifi.hpp"
+#include "utils.hpp"
+#include "esp_log.h"
+#include "led.hpp"
 
 #define SERVICE_UUID "2309e44f-cb8d-43fc-95b2-4c7134c23467"
 #define CHARACTERISTIC_UUID "37216a09-9f31-40f7-ab16-54ae5b32fd19"
 
 #define BT_NAME "HotBath"
 
+#define BLE_TIMEOUT 60 * 1000
 namespace ble
 {
-static bool ble_initialized = false;
+typedef enum {
+    Normal = 0,
+    OpenRequest,
+    CloseRequest,
+} BLE_Status;
+
+static bool ble_opened = false;
 static BLECharacteristic* pCharacteristic = NULL;
 static BLEServer* pServer = NULL;
+static char json_buf[256];
+static StaticJsonDocument<100> doc;
+static volatile BLE_Status status = Normal;
+static int64_t last_operation_tick = 0;
+static const char TAG[] = "BLE";
+
+static void ble_task(void* pvParameters);
+static void send(etl::string_view data);
 
 class BleServerCallbacks : public BLEServerCallbacks
 {
     void onConnect(BLEServer* pServer)
     {
-        Serial.println("[*] BLE connected");
-    };
-
+        ESP_LOGI(TAG, "connected");
+    }
     void onDisconnect(BLEServer* pServer)
     {
-        Serial.println("[*] BLE disconnected");
+        ESP_LOGI(TAG, "disconnected");
     }
 };
 
@@ -35,9 +55,43 @@ class BleCallbacks : public BLECharacteristicCallbacks
     void onWrite(BLECharacteristic* _pCharacteristic)
     {
         std::string received_data = _pCharacteristic->getValue();
-
         if (received_data.length() > 0) {
-            Serial.println(received_data.c_str());
+            last_operation_tick = get_tick();
+            ESP_LOGI(TAG, "receive: %s", received_data.c_str());
+            deserializeJson(doc, received_data);
+
+            if (doc["getToken"] != nullptr) {
+                doc.clear();
+                if (config::data.token_configured) {
+                    doc["token"] = config::data.token;
+                } else {
+                    doc["token"] = "";
+                }
+                serializeJson(doc, json_buf);
+                send(json_buf);
+            } else if (doc["ssid"] != nullptr && doc["pass"] != nullptr) {
+                strncpy(config::data.ssid, doc["ssid"], sizeof(config::data.ssid));
+                strncpy(config::data.pass, doc["pass"], sizeof(config::data.pass));
+                config::data.wifi_configured = true;
+                wifi::update();
+                doc.clear();
+                if (wifi::get_status()) {
+                    doc["isNetworkAvailable"] = true;
+                } else {
+                    config::data.wifi_configured = false;
+                    doc["isNetworkAvailable"] = false;
+                }
+                serializeJson(doc, json_buf);
+                send(json_buf);
+                config::save();
+            } else if (doc["token"] != nullptr) {
+                strncpy(config::data.token, doc["token"], sizeof(config::data.token));
+                config::data.token_configured = true;
+                config::save();
+                status = CloseRequest;
+            } else {
+                ESP_LOGE(TAG, "Unknown json format");
+            }
         }
     }
 };
@@ -45,11 +99,17 @@ class BleCallbacks : public BLECharacteristicCallbacks
 static BleServerCallbacks ble_server_callbacks;
 static BleCallbacks ble_callbacks;
 
-void begin()
+void init()
 {
-    Serial.println("### BLE BEGIN ###");
-    if (ble_initialized) {
-        Serial.println("already initialized");
+    xTaskCreatePinnedToCore(ble_task, "ble_task", 0x2000, NULL, 1, NULL, 1);
+}
+
+void open()
+{
+    ESP_LOGI(TAG, "open start");
+    led::set_mode(led::Pairing);
+    if (ble_opened) {
+        ESP_LOGE(TAG, "already opened");
         return;
     }
     BLEDevice::init(BT_NAME);
@@ -67,29 +127,59 @@ void begin()
     pAdvertising->setMinPreferred(0x06);
     pAdvertising->setMinPreferred(0x12);
     BLEDevice::startAdvertising();
-    Serial.println("init end.");
-    ble_initialized = true;
+    ESP_LOGI(TAG, "open completed");
+    ble_opened = true;
+    status = Normal;
 }
 
-void stop()
+void close()
 {
-    Serial.println("### BLE STOP ###");
-    if (!ble_initialized) {
-        Serial.println("not initialized");
+    led::set_mode(led::Normal);
+    ESP_LOGI(TAG, "close start");
+    if (!ble_opened) {
+        ESP_LOGE(TAG, "not opened");
         return;
     }
     BLEDevice::getAdvertising()->stop();
-    ble_initialized = false;
-    Serial.println("stopped.");
+    ble_opened = false;
+    status = Normal;
+    ESP_LOGI(TAG, "closed");
 }
 
 void send(etl::string_view data)
 {
-    if (!ble_initialized) {
-        Serial.println("not initialized");
+    if (!ble_opened) {
+        ESP_LOGE(TAG, "not opened");
         return;
     }
     pCharacteristic->setValue(data.data());
     pCharacteristic->notify();
+    ESP_LOGI(TAG, "send: %s", data.data());
+}
+
+void open_request()
+{
+    status = OpenRequest;
+}
+
+void close_request()
+{
+    status = CloseRequest;
+}
+
+void ble_task(void* pvParameters)
+{
+    while (true) {
+        if (status == OpenRequest) {
+            open();
+            last_operation_tick = get_tick();
+        } else if (status == CloseRequest) {
+            close();
+        }
+        if (ble_opened && get_tick() - last_operation_tick > BLE_TIMEOUT) {
+            close();
+        }
+        vTaskDelay(1000);
+    }
 }
 }  // namespace ble

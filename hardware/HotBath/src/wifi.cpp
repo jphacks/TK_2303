@@ -1,42 +1,40 @@
 #include "wifi.hpp"
-#include "secrets.hpp"
 #include <WiFi.h>
 #include "esp_log.h"
+#include "config.hpp"
 
 namespace wifi
 {
-static volatile bool status = false;
+static const char TAG[] = "WIFI";
 
 void update()
 {
-    if (WiFi.status() == WL_CONNECTED) {
+    if (get_status()) {
+        return;
+    }
+    if (config::data.wifi_configured == false) {
+        ESP_LOGI(TAG, "SSID/PASS not configured");
         return;
     }
     // WiFiのアクセスポイントに接続
-    Serial.println("### WIFI INIT ###");
-    Serial.printf("WiFi connecting to %s %s\n", MYSSID, MYPASS);
-    WiFi.begin(MYSSID, MYPASS);
+    ESP_LOGI(TAG, "connecting to %s %s", config::data.ssid, config::data.pass);
+    WiFi.begin(config::data.ssid, config::data.pass);
     int count = 0;
     while (WiFi.status() != WL_CONNECTED) {
-        if (count > 25) {
-            Serial.println("failed");
-            status = false;
+        if (count > 35) {
+            ESP_LOGE(TAG, "connect failed");
             return;
         }
         count++;
-        Serial.print(".");
-        delay(500);
+        vTaskDelay(500);
     }
 
     // ESP32のIPアドレスを出力
-    status = true;
-    Serial.println("WiFi Connected.");
-    Serial.print("IP = ");
-    Serial.println(WiFi.localIP());
+    ESP_LOGI(TAG, "connected IP = %s", WiFi.localIP().toString().c_str());
 }
 
 bool get_status()
 {
-    return status;
+    return (WiFi.status() == WL_CONNECTED);
 };
 }  // namespace wifi

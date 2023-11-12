@@ -8,12 +8,13 @@
 #include "esp_log.h"
 #include "esp_ota_ops.h"
 #include "rootCA.hpp"
+#include "esp_log.h"
 #include "secrets.hpp"
 #include <Arduino.h>
 
 namespace update
 {
-static const char* TAG = "OTA";
+static const char TAG[] = "OTA";
 static long contentLength = 0;
 static long receivedBytes = 0;
 static int progress = 0;
@@ -60,13 +61,16 @@ esp_err_t _http_event_handler(esp_http_client_event_t* evt)
     return ESP_OK;
 }
 
-void ota_task(void* pvParameters)
+void check()
 {
-    // TODO: 現在のFWが最新かどうかを確認する
+}
+
+void update(String url)
+{
     Serial.println("Start OTA update");
 
     esp_http_client_config_t config = {
-        .url = "https://" DOWNLOAD_HOST_URL "/firmware.bin",
+        .url = url.c_str(),
         .cert_pem = api::rootCA,
         .event_handler = _http_event_handler,
         .keep_alive_enable = true,
@@ -80,11 +84,6 @@ void ota_task(void* pvParameters)
     } else {
         Serial.println("Firmware upgrade failed");
     }
-}
-
-void begin()
-{
-    xTaskCreatePinnedToCore(&ota_task, "ota_task", 8196, NULL, 5, NULL, 0);
 }
 
 void rollback_check()

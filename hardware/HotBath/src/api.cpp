@@ -3,7 +3,9 @@
 #include "etl/string_stream.h"
 #include "rootCA.hpp"
 #include "secrets.hpp"
+#include "config.hpp"
 #include "wifi.hpp"
+#include "esp_log.h"
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
@@ -15,7 +17,7 @@ static char json_buf[512];
 static etl::string<512> data_buf;
 static StaticJsonDocument<100> doc;
 static SemaphoreHandle_t xMutex = NULL;
-static const char* TAG = "API";
+static const char TAG[] = "API";
 
 static bool post(etl::string_view url, etl::string_view data);
 
@@ -40,29 +42,29 @@ void init()
     xMutex = xSemaphoreCreateRecursiveMutex();
 }
 
-bool post_sensor_data(int temperature, int humidity, int co2)
+bool post_sensor_data(float temperature, float pressure, float humidity)
 {
     APILock lock;
 
     doc.clear();
     doc["temperature"] = temperature;
     doc["humidity"] = humidity;
-    doc["co2"] = co2;
+    doc["pressure"] = pressure;
     serializeJson(doc, json_buf);
 
-    return post("/sensors/9910", json_buf);
+    return post("/bath/sensors", json_buf);
 }
 
 bool post(etl::string_view url, etl::string_view data)
 {
-    ESP_LOGI(TAG, "### API POST %s ###", url.data());
+    ESP_LOGI(TAG, "POST %s %s", url.data(), data.data());
     if (!wifi::get_status()) {
-        ESP_LOGE(TAG, "wifi is not connected");
+        ESP_LOGE(TAG, "wifi not connected");
         return false;
     }
 
     if (!client.connect(HOST_URL, 443)) {
-        ESP_LOGE(TAG, "connection failed");
+        ESP_LOGE(TAG, "client connection failed");
         client.stop();
         return false;
     }
@@ -71,6 +73,7 @@ bool post(etl::string_view url, etl::string_view data)
     etl::string_stream stream(data_buf);
     stream << "POST https://" HOST_URL << url.data() << " HTTP/1.1\r\n";
     stream << "Host: " HOST_URL "\r\n";
+    stream << "Authorization: Bearer " << config::data.token << "\r\n";
     stream << "Content-Type: application/json\r\n";
     stream << "Content-Length: " << data.length();
     stream << "\r\n\r\n";
@@ -78,19 +81,16 @@ bool post(etl::string_view url, etl::string_view data)
 
     client.print(data_buf.data());
 
-    ESP_LOGI(TAG, "request sent");
     while (client.connected()) {
         String line = client.readStringUntil('\n');
         if (line == "\r") {
-            ESP_LOGE(TAG, "headers received");
             break;
         }
     }
     String line = client.readStringUntil('\n');
-    ESP_LOGI(TAG, line);
+    ESP_LOGI(TAG, "received data: %s", line.c_str());
 
     client.stop();
-    ESP_LOGI(TAG, "closed connection");
 
     return true;
 }

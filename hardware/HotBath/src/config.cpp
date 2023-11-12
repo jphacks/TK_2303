@@ -1,26 +1,40 @@
 #include "config.hpp"
 #include <Arduino.h>
 #include <EEPROM.h>
+#include "esp_log.h"
 
 namespace config
 {
-FLASH_DATA data;
+EEPROM_DATA data;
+static const char TAG[] = "CONFIG";
 
 void init()
 {
-    Serial.println("### CONFIG LOAD ###");
-    EEPROM.begin(sizeof(FLASH_DATA));
-    EEPROM.get<FLASH_DATA>(0, data);
-    EEPROM.end();
-    Serial.println("load successfully");
+    ESP_LOGI(TAG, "load config");
+    EEPROM.begin(1024);
+    EEPROM.get<EEPROM_DATA>(0, data);
+    if (data.verify != 0xdeadbeef) {
+        factory_reset();
+    }
+}
+
+void factory_reset()
+{
+    ESP_LOGI(TAG, "factory reset");
+    data.verify = 0xdeadbeef;
+    data.ssid[0] = '\0';
+    data.pass[0] = '\0';
+    data.token[0] = '\0';
+    data.wifi_configured = false;
+    data.token_configured = false;
+    save();
 }
 
 void save()
 {
-    Serial.println("### CONFIG SAVE ###");
-    EEPROM.put<FLASH_DATA>(0, data);
+    ESP_LOGI(TAG, "save config");
+    EEPROM.put<EEPROM_DATA>(0, data);
     EEPROM.commit();
-    Serial.println("saved");
 }
 
 }  // namespace config
