@@ -60,16 +60,10 @@ struct HomeView: View {
                     .foregroundStyle(Color.font)
                 Spacer()
                 NavigationLink {
-                    ScrollView {
-                        VStack {
-                            HomeNotificationListView(notifications: viewModel.notifications)
-                            Spacer()
-                        }
-                    }
+                    SettingView()
                 } label: {
-                    Image(systemName: "bell.fill")
+                    Image(systemName: "gearshape.fill")
                         .resizable()
-                        .matchedGeometryEffect(id: "bell", in: namespace)
                         .frame(width: 24, height: 24)
                         .foregroundStyle(.font)
                 }
@@ -87,7 +81,6 @@ struct HomeView: View {
     @ViewBuilder
     func bathStatusView() -> some View {
         ZStack(alignment: .topTrailing) {
-            
             VStack(spacing: 16) {
                 Text("2023年10月28日")
                     .font(.headline)
@@ -118,6 +111,21 @@ struct HomeView: View {
             .frame(maxWidth: .infinity)
             .padding(24)
             .background(Color.white)
+            NavigationLink {
+                ScrollView {
+                    VStack {
+                        HomeNotificationListView(notifications: viewModel.notifications)
+                        Spacer()
+                    }
+                }
+            } label: {
+                Image(systemName: "bell.fill")
+                    .resizable()
+                    .matchedGeometryEffect(id: "bell", in: namespace)
+                    .frame(width: 24, height: 24)
+                    .foregroundStyle(.font)
+                    .padding(24)
+            }
         }
     }
 }
