@@ -37,9 +37,11 @@ void main_task(void* pvParameters)
                 sensor::get_temperature(),
                 sensor::get_pressure(),
                 sensor::get_humidity());
+            last_sensor_post = get_tick();
         }
         if (get_tick() - last_firmware_check > 1000 * 60 * 24) {
             update::check();
+            last_firmware_check = get_tick();
         }
         vTaskDelay(1000);
     }

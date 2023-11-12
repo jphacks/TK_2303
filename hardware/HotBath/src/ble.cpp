@@ -17,7 +17,7 @@
 
 #define BT_NAME "HotBath"
 
-#define BLE_TIMEOUT 60 * 1000
+#define BLE_TIMEOUT 1000 * 60 * 2
 namespace ble
 {
 typedef enum {
@@ -34,6 +34,7 @@ static StaticJsonDocument<100> doc;
 static volatile BLE_Status status = Normal;
 static int64_t last_operation_tick = 0;
 static const char TAG[] = "BLE";
+static volatile bool wifi_connect_request = false;
 
 static void ble_task(void* pvParameters);
 static void send(etl::string_view data);
@@ -70,22 +71,11 @@ class BleCallbacks : public BLECharacteristicCallbacks
                 serializeJson(doc, json_buf);
                 send(json_buf);
             } else if (doc["ssid"] != nullptr && doc["pass"] != nullptr) {
-                strncpy(config::data.ssid, doc["ssid"], sizeof(config::data.ssid));
-                strncpy(config::data.pass, doc["pass"], sizeof(config::data.pass));
-                config::data.wifi_configured = true;
-                wifi::update();
-                doc.clear();
-                if (wifi::get_status()) {
-                    doc["isNetworkAvailable"] = true;
-                } else {
-                    config::data.wifi_configured = false;
-                    doc["isNetworkAvailable"] = false;
-                }
-                serializeJson(doc, json_buf);
-                send(json_buf);
-                config::save();
+                snprintf(config::data.ssid, sizeof(config::data.ssid), "%s", doc["ssid"].as<const char*>());
+                snprintf(config::data.pass, sizeof(config::data.pass), "%s", doc["pass"].as<const char*>());
+                wifi_connect_request = true;
             } else if (doc["token"] != nullptr) {
-                strncpy(config::data.token, doc["token"], sizeof(config::data.token));
+                snprintf(config::data.token, sizeof(config::data.token), "%s", doc["token"].as<const char*>());
                 config::data.token_configured = true;
                 config::save();
                 status = CloseRequest;
@@ -101,6 +91,9 @@ static BleCallbacks ble_callbacks;
 
 void init()
 {
+    if (config::data.token_configured == false) {
+        status = OpenRequest;
+    }
     xTaskCreatePinnedToCore(ble_task, "ble_task", 0x2000, NULL, 1, NULL, 1);
 }
 
@@ -178,6 +171,21 @@ void ble_task(void* pvParameters)
         }
         if (ble_opened && get_tick() - last_operation_tick > BLE_TIMEOUT) {
             close();
+        }
+        if (wifi_connect_request) {
+            config::data.wifi_configured = true;
+            wifi::update();
+            doc.clear();
+            if (wifi::get_status()) {
+                doc["isNetworkAvailable"] = true;
+            } else {
+                config::data.wifi_configured = false;
+                doc["isNetworkAvailable"] = false;
+            }
+            serializeJson(doc, json_buf);
+            send(json_buf);
+            config::save();
+            wifi_connect_request = false;
         }
         vTaskDelay(1000);
     }
