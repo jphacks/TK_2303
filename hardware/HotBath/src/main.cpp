@@ -1,6 +1,7 @@
 #include "api.hpp"
 #include "ble.hpp"
 #include "config.hpp"
+#include "led.hpp"
 #include "onlineUpdate.hpp"
 #include "sensor.hpp"
 #include "wifi.hpp"
@@ -19,9 +20,12 @@ void main_task(void* pvParameters)
 {
     update::rollback_check();
     config::init();
+    sensor::init();
+    led::init();
+
     wifi::update();
     api::init();
-    sensor::init();
+
     // update::begin();
 
     // ble::begin();
