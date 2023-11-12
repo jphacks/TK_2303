@@ -10,6 +10,7 @@ import UIKit
 struct PageViewController: UIViewControllerRepresentable {
     var pages: [AnyView]
     @Binding var currentPage: Int
+    @Binding var state: OnboardingView.OnboardingState
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -46,13 +47,14 @@ struct PageViewController: UIViewControllerRepresentable {
         func pageViewController(
             _ pageViewController: UIPageViewController,
             viewControllerBefore viewController: UIViewController) -> UIViewController? {
-            guard let index = controllers.firstIndex(of: viewController) else {
-                return nil
-            }
-            if index == 0 {
-                return nil
-            }
-            return controllers[index - 1]
+//            guard let index = controllers.firstIndex(of: viewController) else {
+//                return nil
+//            }
+//            if index == 0 {
+//                return nil
+//            }
+//            return controllers[index - 1]
+            return nil
         }
 
         func pageViewController(
@@ -77,6 +79,7 @@ struct PageViewController: UIViewControllerRepresentable {
                let visibleViewController = pageViewController.viewControllers?.first,
                let index = controllers.firstIndex(of: visibleViewController) {
                 parent.currentPage = index
+                parent.state = .stable
             }
         }
     }

@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ForthView: View {
     @Binding var currentPage: Int
+    @Binding var isOnboardingFinished: Bool
+    @Binding var state: OnboardingView.OnboardingState
     @State var isConnected = false
     @State var presentConnectingSheet = false
     var body: some View {
@@ -31,7 +33,10 @@ struct ForthView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             Button {
                 if isConnected {
-                    currentPage += 1
+                    if state == .stable {
+                        state = .animating
+                        currentPage += 1
+                    }
                 } else {
                     presentConnectingSheet = true
                 }
@@ -46,6 +51,9 @@ struct ForthView: View {
                     .cornerRadius(32)
                     .padding(.horizontal, 48)
             }
+        }
+        .onDisappear{
+            state = .stable
         }
         .sheet(isPresented: $presentConnectingSheet) {
             ConnectingBluetoothView(
@@ -63,6 +71,8 @@ struct ForthView: View {
 
 #Preview {
     ForthView(
-        currentPage: .constant(0)
+        currentPage: .constant(0),
+        isOnboardingFinished: .constant(true),
+        state: .constant(.stable)
     )
 }

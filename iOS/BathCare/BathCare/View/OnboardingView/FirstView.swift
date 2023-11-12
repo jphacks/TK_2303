@@ -9,6 +9,7 @@ import SwiftUI
 
 struct FirstView: View {
     @Binding var currentPage: Int
+    @Binding var state: OnboardingView.OnboardingState
     var bounds = UIScreen.main.bounds
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -25,7 +26,10 @@ struct FirstView: View {
             .padding(.vertical, 64)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             Button {
-                currentPage += 1
+                if state == .stable {
+                    state = .animating
+                    currentPage += 1
+                }
             } label: {
                 Text("NEXT")
                     .bold()
@@ -38,9 +42,15 @@ struct FirstView: View {
                     .padding(.horizontal, 48)
             }
         }
+        .onDisappear{
+            state = .stable
+        }
     }
 }
 
 #Preview {
-    FirstView(currentPage: .constant(0))
+    FirstView(
+        currentPage: .constant(0),
+        state: .constant(.stable)
+    )
 }

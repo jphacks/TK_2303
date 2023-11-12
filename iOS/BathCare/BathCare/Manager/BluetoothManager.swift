@@ -9,7 +9,7 @@ import Foundation
 import CoreBluetooth
 
 protocol BluetoothManagerDelegate: AnyObject {
-    func connected()
+    func connected(token: String?)
     func endConnecting()
 //    func dataUpdated(rawData: RawData)
 }
@@ -51,6 +51,20 @@ class BluetoothManager: NSObject {
         let wifidata = WifiData(ssid: ssid, pass: password)
         let encoder = JSONEncoder()
         if let writeData = try? encoder.encode(wifidata) {
+            peripheral.writeValue(writeData, for: kRXCBCharacteristic, type: .withResponse)
+        }
+    }
+    
+    func sendEmptyData() {
+        guard let kRXCBCharacteristic = kRXCBCharacteristic else {
+            return
+        }
+        struct EmptyData: Codable {
+            let getToken: Bool = true
+        }
+        let data = EmptyData()
+        let encoder = JSONEncoder()
+        if let writeData = try? encoder.encode(data) {
             peripheral.writeValue(writeData, for: kRXCBCharacteristic, type: .withResponse)
         }
     }
@@ -146,7 +160,6 @@ extension BluetoothManager: CBPeripheralDelegate {
         }
         print("  - Characteristic didDiscovered")
         
-        delegate?.connected()
     }
     
     private func startReciving() {
@@ -155,6 +168,7 @@ extension BluetoothManager: CBPeripheralDelegate {
         }
         peripheral.setNotifyValue(true, for: kRXCBCharacteristic)
         print("Start monitoring the message from Arduino.\n\n")
+        sendEmptyData()
     }
 
     /// データ送信時に呼ばれる
@@ -178,20 +192,20 @@ extension BluetoothManager: CBPeripheralDelegate {
             print(error.debugDescription)
             return
         }
-        // updateWithData(data: characteristic.value!)
+        decodeTokenData(data: characteristic.value!)
     }
     
-//    private func updateWithData(data : Data) {
-//        let decoder = JSONDecoder()
-//        do {
-//            let data = try decoder.decode(RawData.self,from: data)
-//            isWifi = data.wifi
-//            delegate?.dataUpdated(rawData: data)
-//            print("data", data)
-//        } catch let parseError {
-//            print("JSON",parseError)
-//        }
-//    }
-    
+    func decodeTokenData(data: Data) {
+        struct TokenJson: Codable {
+            let token: String?
+        }
+        let decoder = JSONDecoder()
+        do {
+            let data = try decoder.decode(TokenJson.self,from: data)
+            delegate?.connected(token: data.token)
+        } catch let parseError {
+            print(parseError)
+        }
+    }
     
 }

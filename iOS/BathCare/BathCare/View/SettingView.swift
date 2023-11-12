@@ -9,7 +9,14 @@ import SwiftUI
 
 struct SettingView: View {
     var body: some View {
-        Text("he")
+        List {
+            #if DEBUG
+            Button("ログアウト") {
+                TokenManager.shared.deleteToken()
+                exit(0)
+            }
+            #endif
+        }
     }
 }
 

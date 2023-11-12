@@ -31,6 +31,6 @@ class FifthViewModel: ObservableObject {
 }
 
 extension FifthViewModel: BluetoothManagerDelegate {
-    func connected() {}
+    func connected(token: String?) {}
     func endConnecting() {}
 }

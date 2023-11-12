@@ -35,7 +35,10 @@ class TokenManager {
     }
     
     func setToken() {
-        print("igaryo", token)
         UserDefaults.standard.set(self.token, forKey: "userToken")
+    }
+    
+    func deleteToken() {
+        UserDefaults.standard.removeObject(forKey: "userToken")
     }
 }

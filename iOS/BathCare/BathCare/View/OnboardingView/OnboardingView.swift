@@ -10,17 +10,50 @@ import SwiftUI
 struct OnboardingView: View {
     @State var currentPage: Int = 0
     @Binding var isOnboardingFinished: Bool
+    @State var state: OnboardingState = .stable
+    enum OnboardingState {
+        case animating
+        case stable
+    }
     var body: some View {
-        PageViewController(pages: [
-            AnyView(FirstView(currentPage: $currentPage)),
-            AnyView(SecondView(currentPage: $currentPage)),
-            AnyView(ThirdView(currentPage: $currentPage)),
-            AnyView(ForthView(currentPage: $currentPage)),
-            AnyView(FifthView(
-                isOnboardingFinished: $isOnboardingFinished,
-                viewModel: .init(bluetoothManager: .shared)
-            )),
-        ], currentPage: $currentPage)
+        PageViewController(
+            pages: [
+                AnyView(
+                    FirstView(
+                        currentPage: $currentPage,
+                        state: $state
+                    )
+                ),
+                AnyView(
+                    SecondView(
+                        currentPage: $currentPage,
+                        state: $state
+                    )
+                ),
+                AnyView(
+                    ThirdView(
+                        currentPage: $currentPage,
+                        state: $state
+                    )
+                ),
+                AnyView(
+                    ForthView(
+                        currentPage: $currentPage,
+                        isOnboardingFinished: $isOnboardingFinished,
+                        state: $state
+                    )
+                ),
+                AnyView(
+                    FifthView(
+                        isOnboardingFinished: $isOnboardingFinished,
+                        state: $state,
+                        viewModel: .init(bluetoothManager: .shared)
+                    )
+                ),
+            ],
+            currentPage: $currentPage,
+            state: $state
+        )
     }
 }
 

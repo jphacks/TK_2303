@@ -11,6 +11,7 @@ struct FifthView: View {
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     @State var value = 0.0
     @Binding var isOnboardingFinished: Bool
+    @Binding var state: OnboardingView.OnboardingState
     @ObservedObject var viewModel: FifthViewModel
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -104,10 +105,12 @@ struct FifthView: View {
             .padding(.vertical, 64)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             Button {
-                if viewModel.status == .confirmed {
-                    isOnboardingFinished = true
-                } else {
-                    viewModel.sendData()
+                if state == .stable {
+                    if viewModel.status == .confirmed {
+                        isOnboardingFinished = true
+                    } else {
+                        viewModel.sendData()
+                    }
                 }
             } label: {
                 Text(viewModel.status == .confirmed ? "FINISH" : "CONNECT")
@@ -134,6 +137,7 @@ struct FifthView: View {
 #Preview {
     FifthView(
         isOnboardingFinished: .constant(false),
+        state: .constant(.stable),
         viewModel: .init(bluetoothManager: .shared)
     )
 }
