@@ -8,10 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var isOnboardingFinished = false
     var body: some View {
         NavigationStack {
-            // HomeView(viewModel: .init())
-            OnboardingView()
+            if isOnboardingFinished {
+                HomeView(viewModel: .init())
+            } else {
+                OnboardingView(isOnboardingFinished: $isOnboardingFinished)
+            }
         }
     }
 }

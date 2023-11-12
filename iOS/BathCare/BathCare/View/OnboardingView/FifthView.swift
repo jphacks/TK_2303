@@ -10,7 +10,7 @@ import SwiftUI
 struct FifthView: View {
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     @State var value = 0.0
-    @Binding var currentPage: Int
+    @Binding var isOnboardingFinished: Bool
     @ObservedObject var viewModel: FifthViewModel
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -87,7 +87,7 @@ struct FifthView: View {
                         Text("Password")
                             .frame(width: 80)
                         Text(":")
-                        TextField("Passwordを入力", text: $viewModel.ssidInput)
+                        TextField("Passwordを入力", text: $viewModel.passwordInput)
                     }
                     .bold()
                     .padding(.horizontal, 8)
@@ -105,7 +105,7 @@ struct FifthView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             Button {
                 if viewModel.status == .confirmed {
-                    currentPage += 1
+                    isOnboardingFinished = true
                 } else {
                     viewModel.sendData()
                 }
@@ -133,7 +133,7 @@ struct FifthView: View {
 
 #Preview {
     FifthView(
-        currentPage: .constant(0),
+        isOnboardingFinished: .constant(false),
         viewModel: .init(bluetoothManager: .shared)
     )
 }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     @State var currentPage: Int = 0
+    @Binding var isOnboardingFinished: Bool
     var body: some View {
         PageViewController(pages: [
             AnyView(FirstView(currentPage: $currentPage)),
@@ -16,7 +17,7 @@ struct OnboardingView: View {
             AnyView(ThirdView(currentPage: $currentPage)),
             AnyView(ForthView(currentPage: $currentPage)),
             AnyView(FifthView(
-                currentPage: $currentPage,
+                isOnboardingFinished: $isOnboardingFinished,
                 viewModel: .init(bluetoothManager: .shared)
             )),
         ], currentPage: $currentPage)
@@ -24,5 +25,5 @@ struct OnboardingView: View {
 }
 
 #Preview {
-    OnboardingView()
+    OnboardingView(isOnboardingFinished: .constant(false))
 }

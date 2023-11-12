@@ -70,7 +70,6 @@
 		C59647332AFD167400A6578F /* SensorDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59647322AFD167400A6578F /* SensorDataService.swift */; };
 		C59647352AFD1B6700A6578F /* HistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59647342AFD1B6700A6578F /* HistoryService.swift */; };
 		C59647372AFD1BD500A6578F /* PhoneNumberService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59647362AFD1BD500A6578F /* PhoneNumberService.swift */; };
-		C59647272AFB267400A6578F /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59647262AFB267400A6578F /* UserDefaultsManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -106,13 +105,13 @@
 		C596471C2AF631EF00A6578F /* ConnectingBluetoothView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingBluetoothView.swift; sourceTree = "<group>"; };
 		C596471F2AF63B0100A6578F /* FifthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FifthView.swift; sourceTree = "<group>"; };
 		C59647232AF64F8900A6578F /* FifthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FifthViewModel.swift; sourceTree = "<group>"; };
+		C59647262AFB267400A6578F /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		C596472B2AFD0F1500A6578F /* BathStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BathStatusService.swift; sourceTree = "<group>"; };
 		C596472D2AFD0FA200A6578F /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		C596472F2AFD120100A6578F /* AppDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataStore.swift; sourceTree = "<group>"; };
 		C59647322AFD167400A6578F /* SensorDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDataService.swift; sourceTree = "<group>"; };
 		C59647342AFD1B6700A6578F /* HistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryService.swift; sourceTree = "<group>"; };
 		C59647362AFD1BD500A6578F /* PhoneNumberService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumberService.swift; sourceTree = "<group>"; };
-		C59647262AFB267400A6578F /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +157,7 @@
 			children = (
 				C517FFF62AEC9B9200FB2E73 /* BathCare */,
 				C517FFF52AEC9B9200FB2E73 /* Products */,
+				C59346432B00B6DD0005957D /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -173,10 +173,6 @@
 			isa = PBXGroup;
 			children = (
 				C59647312AFD164300A6578F /* Network */,
-				C517FFF72AEC9B9200FB2E73 /* BathCareApp.swift */,
-				C5660C102AECFEE8000E5CD0 /* AppDelegate.swift */,
-				C56B6C842AF601220013F504 /* View */,
-				C5660C122AED06FD000E5CD0 /* BathCare.entitlements */,
 				C517FFF72AEC9B9200FB2E73 /* BathCareApp.swift */,
 				C5660C102AECFEE8000E5CD0 /* AppDelegate.swift */,
 				C56B6C842AF601220013F504 /* View */,
@@ -289,6 +285,14 @@
 				C5660C132AEE0A09000E5CD0 /* Date+ex.swift */,
 			);
 			path = Helper;
+			sourceTree = "<group>";
+		};
+		C59346432B00B6DD0005957D /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				C59647262AFB267400A6578F /* UserDefaultsManager.swift */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		C596471E2AF63AD700A6578F /* ConnectingBluetoothView */ = {
@@ -464,7 +468,6 @@
 				C59647372AFD1BD500A6578F /* PhoneNumberService.swift in Sources */,
 				C59647242AF64F8900A6578F /* FifthViewModel.swift in Sources */,
 				C56B6C862AF6020A0013F504 /* BluetoothManager.swift in Sources */,
-				C59647272AFB267400A6578F /* UserDefaultsManager.swift in Sources */,
 				C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */,
 				C5660C142AEE0A09000E5CD0 /* Date+ex.swift in Sources */,
 				C596471B2AF631D300A6578F /* ConnectingBluetoothViewModel.swift in Sources */,
