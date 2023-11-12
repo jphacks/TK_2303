@@ -7,22 +7,25 @@
 
 import SwiftUI
 import AudioToolbox
+import Combine
+
 class HomeViewModel: ObservableObject {
-    let baseUrl = "https://bathcare.tsubame.workers.dev"
-    @Published var humidity: Double = 62.0
-    @Published var temperature: Double = 25.0
-    @Published var co2: Int = 0
-    @Published var lastUpdate: String = ""
-    @Published var bathStatus: BathStatus = .outBath
     @Published var isHighHeatShockPossiblity = false
     @Published var isAlertViewPresented = false
     @Published var notifications: [ActionNotification] = []
-    private var phoneNumber: String?
     private var heatShockPopupShowed = false
+    
+    private var appDataStore = AppDataStore.shared
+    private var cancellables = Set<AnyCancellable>()
     
     let id = 9910
     
     var timer: Timer?
+    @Published var bathStatus: BathStatus?
+    @Published var temperature: Double?
+    @Published var humidity: Double?
+    private var phoneNumber: String?
+    
     var bathStatusColor: Color {
         switch bathStatus {
         case .inBath:
@@ -42,21 +45,27 @@ class HomeViewModel: ObservableObject {
             return "入浴していません"
         case .danger:
             return "危険"
-        case .unknown:
+        default:
             return "接続されていません"
         }
     }
     
     init() {
-        Task { @MainActor in
-            await makeRequest()
-        }
+        appDataStore.$storedData
+            .sink { [weak self] newData in
+                self?.bathStatus = newData.bathStatusJson?.status
+                self?.humidity = newData.sensorDatasJson?.humidity
+                self?.temperature = newData.sensorDatasJson?.temperature
+                self?.phoneNumber = newData.phoneNumberJson?.number
+                self?.notifications = newData.historyJson?.history ?? []
+            }
+            .store(in: &cancellables)
     }
-    
+
     func onAppear() {
-        timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
             Task { @MainActor in
-                await self.makeRequest()
+                await self.refresh()
             }
         }
         print("appeared: ", heatShockPopupShowed, isHighHeatShockPossiblity)
@@ -74,6 +83,10 @@ class HomeViewModel: ObservableObject {
         timer?.invalidate()
     }
     
+    func refresh() async {
+        await appDataStore.refresh()
+    }
+    
     func makeCall() {
         guard let phoneNumber else { return }
         guard let url = URL(string: "tel://" + phoneNumber) else { return }
@@ -82,80 +95,5 @@ class HomeViewModel: ObservableObject {
     
     func makeImpact() {
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
-    }
-    
-    func makeRequest() async {
-        await getStatus()
-        await getSensorDatas()
-        await getPhoneNumber()
-        await getHistory()
-    }
-    
-    func getStatus() async {
-        do {
-            let urlString = baseUrl + "/status/" + String(id)
-            print("post url: ", urlString)
-            let url = URL(string: urlString)!
-            let (data, _) = try await URLSession.shared.data(from: url, delegate: nil)
-            let decoder = JSONDecoder()
-            let response = try decoder.decode(BathStatusJson.self, from: data)
-            print(response)
-            self.bathStatus = response.status
-            if self.bathStatus == .danger {
-                withAnimation(.default.delay(2.0)){
-                    self.isAlertViewPresented = true
-                }
-            }
-        } catch(let error) {
-            print("error: \(error)")
-        }
-    }
-    
-    func getSensorDatas() async {
-        do {
-            let urlString = baseUrl + "/sensors/" + String(id)
-            print("post url: ", urlString)
-            let url = URL(string: urlString)!
-            let (data, _) = try await URLSession.shared.data(from: url, delegate: nil)
-            let decoder = JSONDecoder()
-            let response = try decoder.decode(SensorDataJson.self, from: data)
-            self.humidity = response.humidity
-            self.temperature = response.temperature
-            self.co2 = response.co2
-            self.lastUpdate = response.lastUpdate
-            print(response)
-        } catch(let error) {
-            print("error: \(error)")
-        }
-    }
-    
-    func getPhoneNumber() async {
-        do {
-            let urlString = baseUrl + "/phonenumber/" + String(id)
-            print("post url: ", urlString)
-            let url = URL(string: urlString)!
-            let (data, _) = try await URLSession.shared.data(from: url, delegate: nil)
-            let decoder = JSONDecoder()
-            let response = try decoder.decode(PhoneNumberJson.self, from: data)
-            self.phoneNumber = response.number
-            print(response)
-        } catch(let error) {
-            print("error: \(error)")
-        }
-    }
-    
-    func getHistory() async {
-        do {
-            let urlString = baseUrl + "/history/" + String(id)
-            print("post url: ", urlString)
-            let url = URL(string: urlString)!
-            let (data, _) = try await URLSession.shared.data(from: url, delegate: nil)
-            let decoder = JSONDecoder()
-            let response = try decoder.decode(HistoryJson.self, from: data)
-            print(response)
-            notifications = response.history
-        } catch(let error) {
-            print("error: \(error)")
-        }
     }
 }

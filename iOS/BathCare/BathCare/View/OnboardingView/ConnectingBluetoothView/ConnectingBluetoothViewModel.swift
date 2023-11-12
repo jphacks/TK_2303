@@ -23,7 +23,10 @@ class ConnectingBluetoothViewModel: ObservableObject {
 
 extension ConnectingBluetoothViewModel: BluetoothManagerDelegate {
     func connected() {
-        isConnected = true
+        Task {
+            await TokenManager.shared.registerToken()
+            isConnected = true
+        }
     }
     
     func endConnecting() {

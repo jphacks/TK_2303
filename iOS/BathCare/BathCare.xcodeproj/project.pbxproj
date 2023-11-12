@@ -60,11 +60,19 @@
 		C5718E932AECA1BB002AF495 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E922AECA1BB002AF495 /* HomeView.swift */; };
 		C5718E962AECA39D002AF495 /* Color+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E952AECA39D002AF495 /* Color+ex.swift */; };
 		C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E972AECAB1D002AF495 /* HomeViewModel.swift */; };
+		C59346452B00BA0B0005957D /* RegisterDeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59346442B00BA0B0005957D /* RegisterDeviceService.swift */; };
+		C59346472B00BA4D0005957D /* RegisterDeviceJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59346462B00BA4D0005957D /* RegisterDeviceJson.swift */; };
+		C59346492B00BBE50005957D /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59346482B00BBE50005957D /* TokenManager.swift */; };
 		C596471B2AF631D300A6578F /* ConnectingBluetoothViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596471A2AF631D300A6578F /* ConnectingBluetoothViewModel.swift */; };
 		C596471D2AF631EF00A6578F /* ConnectingBluetoothView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596471C2AF631EF00A6578F /* ConnectingBluetoothView.swift */; };
 		C59647202AF63B0100A6578F /* FifthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596471F2AF63B0100A6578F /* FifthView.swift */; };
 		C59647242AF64F8900A6578F /* FifthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59647232AF64F8900A6578F /* FifthViewModel.swift */; };
-		C59647272AFB267400A6578F /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59647262AFB267400A6578F /* UserDefaultsManager.swift */; };
+		C596472C2AFD0F1500A6578F /* BathStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596472B2AFD0F1500A6578F /* BathStatusService.swift */; };
+		C596472E2AFD0FA200A6578F /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596472D2AFD0FA200A6578F /* Service.swift */; };
+		C59647302AFD120100A6578F /* AppDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596472F2AFD120100A6578F /* AppDataStore.swift */; };
+		C59647332AFD167400A6578F /* SensorDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59647322AFD167400A6578F /* SensorDataService.swift */; };
+		C59647352AFD1B6700A6578F /* HistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59647342AFD1B6700A6578F /* HistoryService.swift */; };
+		C59647372AFD1BD500A6578F /* PhoneNumberService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59647362AFD1BD500A6578F /* PhoneNumberService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -96,11 +104,20 @@
 		C5718E922AECA1BB002AF495 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		C5718E952AECA39D002AF495 /* Color+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ex.swift"; sourceTree = "<group>"; };
 		C5718E972AECAB1D002AF495 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		C59346442B00BA0B0005957D /* RegisterDeviceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDeviceService.swift; sourceTree = "<group>"; };
+		C59346462B00BA4D0005957D /* RegisterDeviceJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDeviceJson.swift; sourceTree = "<group>"; };
+		C59346482B00BBE50005957D /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		C596471A2AF631D300A6578F /* ConnectingBluetoothViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingBluetoothViewModel.swift; sourceTree = "<group>"; };
 		C596471C2AF631EF00A6578F /* ConnectingBluetoothView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingBluetoothView.swift; sourceTree = "<group>"; };
 		C596471F2AF63B0100A6578F /* FifthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FifthView.swift; sourceTree = "<group>"; };
 		C59647232AF64F8900A6578F /* FifthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FifthViewModel.swift; sourceTree = "<group>"; };
 		C59647262AFB267400A6578F /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
+		C596472B2AFD0F1500A6578F /* BathStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BathStatusService.swift; sourceTree = "<group>"; };
+		C596472D2AFD0FA200A6578F /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
+		C596472F2AFD120100A6578F /* AppDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataStore.swift; sourceTree = "<group>"; };
+		C59647322AFD167400A6578F /* SensorDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDataService.swift; sourceTree = "<group>"; };
+		C59647342AFD1B6700A6578F /* HistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryService.swift; sourceTree = "<group>"; };
+		C59647362AFD1BD500A6578F /* PhoneNumberService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumberService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +163,7 @@
 			children = (
 				C517FFF62AEC9B9200FB2E73 /* BathCare */,
 				C517FFF52AEC9B9200FB2E73 /* Products */,
+				C59346432B00B6DD0005957D /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -160,6 +178,7 @@
 		C517FFF62AEC9B9200FB2E73 /* BathCare */ = {
 			isa = PBXGroup;
 			children = (
+				C59647312AFD164300A6578F /* Network */,
 				C517FFF72AEC9B9200FB2E73 /* BathCareApp.swift */,
 				C5660C102AECFEE8000E5CD0 /* AppDelegate.swift */,
 				C56B6C842AF601220013F504 /* View */,
@@ -167,7 +186,7 @@
 				C5718E942AECA38B002AF495 /* Helper */,
 				C517FFFB2AEC9B9300FB2E73 /* Assets.xcassets */,
 				C517FFFD2AEC9B9300FB2E73 /* Preview Content */,
-				C5660C152AEE7654000E5CD0 /* HomeModel */,
+				C5660C152AEE7654000E5CD0 /* Model */,
 				C5660BD72AECFBD2000E5CD0 /* GoogleService-Info.plist */,
 				C59647252AFB265300A6578F /* Manager */,
 			);
@@ -182,15 +201,16 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		C5660C152AEE7654000E5CD0 /* HomeModel */ = {
+		C5660C152AEE7654000E5CD0 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				C5660C212AEE7728000E5CD0 /* History */,
 				C5660C1F2AEE770F000E5CD0 /* SensorData */,
 				C5660C1E2AEE76DB000E5CD0 /* BathStatus */,
 				C5660C202AEE771C000E5CD0 /* PhoneNumber */,
+				C59346462B00BA4D0005957D /* RegisterDeviceJson.swift */,
 			);
-			path = HomeModel;
+			path = Model;
 			sourceTree = "<group>";
 		};
 		C5660C1E2AEE76DB000E5CD0 /* BathStatus */ = {
@@ -274,6 +294,14 @@
 			path = Helper;
 			sourceTree = "<group>";
 		};
+		C59346432B00B6DD0005957D /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				C59647262AFB267400A6578F /* UserDefaultsManager.swift */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		C596471E2AF63AD700A6578F /* ConnectingBluetoothView */ = {
 			isa = PBXGroup;
 			children = (
@@ -287,9 +315,31 @@
 			isa = PBXGroup;
 			children = (
 				C56B6C852AF6020A0013F504 /* BluetoothManager.swift */,
-				C59647262AFB267400A6578F /* UserDefaultsManager.swift */,
+				C59346482B00BBE50005957D /* TokenManager.swift */,
 			);
 			path = Manager;
+			sourceTree = "<group>";
+		};
+		C596472A2AFD0DEF00A6578F /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				C596472B2AFD0F1500A6578F /* BathStatusService.swift */,
+				C596472D2AFD0FA200A6578F /* Service.swift */,
+				C59647322AFD167400A6578F /* SensorDataService.swift */,
+				C59647342AFD1B6700A6578F /* HistoryService.swift */,
+				C59647362AFD1BD500A6578F /* PhoneNumberService.swift */,
+				C59346442B00BA0B0005957D /* RegisterDeviceService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		C59647312AFD164300A6578F /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				C596472F2AFD120100A6578F /* AppDataStore.swift */,
+				C596472A2AFD0DEF00A6578F /* Service */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -400,26 +450,43 @@
 				C5718E962AECA39D002AF495 /* Color+ex.swift in Sources */,
 				C5660C292AEE7894000E5CD0 /* HeatShockPopupView.swift in Sources */,
 				C5718E932AECA1BB002AF495 /* HomeView.swift in Sources */,
+				C59647302AFD120100A6578F /* AppDataStore.swift in Sources */,
 				C5660C172AEE7669000E5CD0 /* SensorDataJson.swift in Sources */,
 				C5660C272AEE7845000E5CD0 /* HomeNotificationListView.swift in Sources */,
 				C56B6C7E2AF3D5290013F504 /* SecondView.swift in Sources */,
 				C56B6C812AF5FE5D0013F504 /* ThirdView.swift in Sources */,
 				C5660C1B2AEE769C000E5CD0 /* PhoneNumberJson.swift in Sources */,
+				C596472C2AFD0F1500A6578F /* BathStatusService.swift in Sources */,
+				C56B6C7C2AF3D5140013F504 /* FirstView.swift in Sources */,
+				C596472E2AFD0FA200A6578F /* Service.swift in Sources */,
 				C56B6C7C2AF3D5140013F504 /* FirstView.swift in Sources */,
 				C5660C232AEE7732000E5CD0 /* HistoryJson.swift in Sources */,
 				C5660C1D2AEE76BB000E5CD0 /* BathStatus.swift in Sources */,
 				C517FFFA2AEC9B9200FB2E73 /* ContentView.swift in Sources */,
 				C5660C2B2AEE78CB000E5CD0 /* HomeAlertView.swift in Sources */,
+				C59647352AFD1B6700A6578F /* HistoryService.swift in Sources */,
 				C5660C112AECFEE8000E5CD0 /* AppDelegate.swift in Sources */,
+				C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */,
+				C5660C142AEE0A09000E5CD0 /* Date+ex.swift in Sources */,
 				C56B6C862AF6020A0013F504 /* BluetoothManager.swift in Sources */,
-				C59647272AFB267400A6578F /* UserDefaultsManager.swift in Sources */,
+				C59647332AFD167400A6578F /* SensorDataService.swift in Sources */,
+				C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */,
+				C59346472B00BA4D0005957D /* RegisterDeviceJson.swift in Sources */,
+				C5660C142AEE0A09000E5CD0 /* Date+ex.swift in Sources */,
+				C596471B2AF631D300A6578F /* ConnectingBluetoothViewModel.swift in Sources */,
+				C596471D2AF631EF00A6578F /* ConnectingBluetoothView.swift in Sources */,
+				C59647372AFD1BD500A6578F /* PhoneNumberService.swift in Sources */,
+				C59647242AF64F8900A6578F /* FifthViewModel.swift in Sources */,
+				C56B6C862AF6020A0013F504 /* BluetoothManager.swift in Sources */,
 				C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */,
 				C5660C142AEE0A09000E5CD0 /* Date+ex.swift in Sources */,
 				C596471B2AF631D300A6578F /* ConnectingBluetoothViewModel.swift in Sources */,
 				C596471D2AF631EF00A6578F /* ConnectingBluetoothView.swift in Sources */,
+				C59346492B00BBE50005957D /* TokenManager.swift in Sources */,
 				C59647242AF64F8900A6578F /* FifthViewModel.swift in Sources */,
 				C5660C252AEE777C000E5CD0 /* ActionNotification.swift in Sources */,
 				C56B6C7A2AF3D4460013F504 /* PageViewController.swift in Sources */,
+				C59346452B00BA0B0005957D /* RegisterDeviceService.swift in Sources */,
 				C56B6C782AF3D4370013F504 /* OnboardingView.swift in Sources */,
 				C59647202AF63B0100A6578F /* FifthView.swift in Sources */,
 				C517FFF82AEC9B9200FB2E73 /* BathCareApp.swift in Sources */,

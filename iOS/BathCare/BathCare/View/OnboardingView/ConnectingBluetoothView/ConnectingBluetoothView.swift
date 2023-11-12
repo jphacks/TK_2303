@@ -17,7 +17,7 @@ struct ConnectingBluetoothView: View {
     var body: some View {
         VStack(spacing: 24) {
             Button("debug"){
-                viewModel.isConnected = true
+                viewModel.connected()
             }
             Text("デバイスを探しています")
                 .font(.title2)
