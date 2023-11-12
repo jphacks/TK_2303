@@ -25,13 +25,13 @@ struct HomeView: View {
                 ZStack(alignment: .bottom) {
                     VStack(spacing: 0) {
                         headerView()
-                        bathStatusView()
                         ScrollView {
+                            bathStatusView()
                             HomeNotificationListView(notifications: viewModel.notifications)
                         }
                         .refreshable {
                             Task { @MainActor in
-                                await viewModel.makeRequest()
+                                await viewModel.refresh()
                             }
                         }
                     }
@@ -43,6 +43,9 @@ struct HomeView: View {
             }
             .onDisappear {
                 viewModel.onDisapear()
+            }
+            .task {
+                await viewModel.refresh()
             }
         }
     }
@@ -83,6 +86,8 @@ struct HomeView: View {
     
     @ViewBuilder
     func bathStatusView() -> some View {
+        ZStack(alignment: .topTrailing) {
+            
             VStack(spacing: 16) {
                 Text("2023年10月28日")
                     .font(.headline)
@@ -96,7 +101,7 @@ struct HomeView: View {
                         Text("温度")
                             .font(.body)
                             .foregroundStyle(Color.black.opacity(0.6))
-                        Text(String(format: "%.1f", viewModel.temperature) + "°")
+                        Text(String(format: "%.1f", viewModel.temperature ?? 0.0) + "°")
                             .font(.title2)
                             .foregroundStyle(Color.black.opacity(0.7))
                     }
@@ -104,7 +109,7 @@ struct HomeView: View {
                         Text("湿度")
                             .font(.body)
                             .foregroundStyle(Color.black.opacity(0.6))
-                        Text(String(format: "%.1f", viewModel.humidity) + "°")
+                        Text(String(format: "%.1f", viewModel.humidity ?? 0.0) + "°")
                             .font(.title2)
                             .foregroundStyle(Color.black.opacity(0.7))
                     }
@@ -113,6 +118,7 @@ struct HomeView: View {
             .frame(maxWidth: .infinity)
             .padding(24)
             .background(Color.white)
+        }
     }
 }
 

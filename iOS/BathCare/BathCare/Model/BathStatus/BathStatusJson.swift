@@ -7,5 +7,5 @@
 
 import Foundation
 struct BathStatusJson: Decodable {
-    var status: BathStatus
+    var status: BathStatus?
 }
