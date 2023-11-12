@@ -60,6 +60,9 @@
 		C5718E932AECA1BB002AF495 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E922AECA1BB002AF495 /* HomeView.swift */; };
 		C5718E962AECA39D002AF495 /* Color+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E952AECA39D002AF495 /* Color+ex.swift */; };
 		C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5718E972AECAB1D002AF495 /* HomeViewModel.swift */; };
+		C59346452B00BA0B0005957D /* RegisterDeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59346442B00BA0B0005957D /* RegisterDeviceService.swift */; };
+		C59346472B00BA4D0005957D /* RegisterDeviceJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59346462B00BA4D0005957D /* RegisterDeviceJson.swift */; };
+		C59346492B00BBE50005957D /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59346482B00BBE50005957D /* TokenManager.swift */; };
 		C596471B2AF631D300A6578F /* ConnectingBluetoothViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596471A2AF631D300A6578F /* ConnectingBluetoothViewModel.swift */; };
 		C596471D2AF631EF00A6578F /* ConnectingBluetoothView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596471C2AF631EF00A6578F /* ConnectingBluetoothView.swift */; };
 		C59647202AF63B0100A6578F /* FifthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596471F2AF63B0100A6578F /* FifthView.swift */; };
@@ -101,6 +104,9 @@
 		C5718E922AECA1BB002AF495 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		C5718E952AECA39D002AF495 /* Color+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ex.swift"; sourceTree = "<group>"; };
 		C5718E972AECAB1D002AF495 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		C59346442B00BA0B0005957D /* RegisterDeviceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDeviceService.swift; sourceTree = "<group>"; };
+		C59346462B00BA4D0005957D /* RegisterDeviceJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDeviceJson.swift; sourceTree = "<group>"; };
+		C59346482B00BBE50005957D /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		C596471A2AF631D300A6578F /* ConnectingBluetoothViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingBluetoothViewModel.swift; sourceTree = "<group>"; };
 		C596471C2AF631EF00A6578F /* ConnectingBluetoothView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingBluetoothView.swift; sourceTree = "<group>"; };
 		C596471F2AF63B0100A6578F /* FifthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FifthView.swift; sourceTree = "<group>"; };
@@ -202,6 +208,7 @@
 				C5660C1F2AEE770F000E5CD0 /* SensorData */,
 				C5660C1E2AEE76DB000E5CD0 /* BathStatus */,
 				C5660C202AEE771C000E5CD0 /* PhoneNumber */,
+				C59346462B00BA4D0005957D /* RegisterDeviceJson.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -308,6 +315,7 @@
 			isa = PBXGroup;
 			children = (
 				C56B6C852AF6020A0013F504 /* BluetoothManager.swift */,
+				C59346482B00BBE50005957D /* TokenManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -320,6 +328,7 @@
 				C59647322AFD167400A6578F /* SensorDataService.swift */,
 				C59647342AFD1B6700A6578F /* HistoryService.swift */,
 				C59647362AFD1BD500A6578F /* PhoneNumberService.swift */,
+				C59346442B00BA0B0005957D /* RegisterDeviceService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -462,6 +471,7 @@
 				C56B6C862AF6020A0013F504 /* BluetoothManager.swift in Sources */,
 				C59647332AFD167400A6578F /* SensorDataService.swift in Sources */,
 				C5718E982AECAB1D002AF495 /* HomeViewModel.swift in Sources */,
+				C59346472B00BA4D0005957D /* RegisterDeviceJson.swift in Sources */,
 				C5660C142AEE0A09000E5CD0 /* Date+ex.swift in Sources */,
 				C596471B2AF631D300A6578F /* ConnectingBluetoothViewModel.swift in Sources */,
 				C596471D2AF631EF00A6578F /* ConnectingBluetoothView.swift in Sources */,
@@ -472,9 +482,11 @@
 				C5660C142AEE0A09000E5CD0 /* Date+ex.swift in Sources */,
 				C596471B2AF631D300A6578F /* ConnectingBluetoothViewModel.swift in Sources */,
 				C596471D2AF631EF00A6578F /* ConnectingBluetoothView.swift in Sources */,
+				C59346492B00BBE50005957D /* TokenManager.swift in Sources */,
 				C59647242AF64F8900A6578F /* FifthViewModel.swift in Sources */,
 				C5660C252AEE777C000E5CD0 /* ActionNotification.swift in Sources */,
 				C56B6C7A2AF3D4460013F504 /* PageViewController.swift in Sources */,
+				C59346452B00BA0B0005957D /* RegisterDeviceService.swift in Sources */,
 				C56B6C782AF3D4370013F504 /* OnboardingView.swift in Sources */,
 				C59647202AF63B0100A6578F /* FifthView.swift in Sources */,
 				C517FFF82AEC9B9200FB2E73 /* BathCareApp.swift in Sources */,

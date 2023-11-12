@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var isOnboardingFinished = false
+    @State var isOnboardingFinished: Bool
     var body: some View {
         NavigationStack {
             if isOnboardingFinished {
@@ -21,5 +21,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ContentView(isOnboardingFinished: true)
 }
