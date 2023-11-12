@@ -9,10 +9,12 @@ import SwiftUI
 class ConnectingBluetoothViewModel: ObservableObject {
     var bluetoothManager: BluetoothManager
     @Binding var isConnected: Bool
+    @Binding var isTokenExist: Bool?
     
-    init(bluetoothManager: BluetoothManager, isConnected: Binding<Bool>) {
+    init(bluetoothManager: BluetoothManager, isConnected: Binding<Bool>, isTokenExist: Binding<Bool?>) {
         self.bluetoothManager = bluetoothManager
         self._isConnected = isConnected
+        self._isTokenExist = isTokenExist
         self.bluetoothManager.delegate = self
     }
     
@@ -22,17 +24,15 @@ class ConnectingBluetoothViewModel: ObservableObject {
 }
 
 extension ConnectingBluetoothViewModel: BluetoothManagerDelegate {
-    func connected(token: String?) {
-        if let token {
-            
+    func connected(token: String) {
+        if token != "" {
+            isTokenExist = true
+            TokenManager.shared.setToken(token: token)
+        } else {
+            isTokenExist = false
         }
-        Task {
-            await TokenManager.shared.registerToken()
-            isConnected = true
-        }
+        isConnected = true
     }
-    
-    func endConnecting() {
-        print("endConnecting")
-    }
+    func endConnecting() {}
+    func gotNetworkAvailability(isNetworkAvailable: Bool) {}
 }

@@ -17,7 +17,7 @@ struct ConnectingBluetoothView: View {
     var body: some View {
         VStack(spacing: 24) {
             Button("debug"){
-                viewModel.connected(token: "hello")
+                viewModel.connected(token: "")
             }
             Text("デバイスを探しています")
                 .font(.title2)
@@ -98,7 +98,8 @@ struct ConnectingBluetoothView: View {
     ConnectingBluetoothView(
         viewModel: .init(
             bluetoothManager: .shared,
-            isConnected: .constant(false)
+            isConnected: .constant(false),
+            isTokenExist: .constant(false)
         )
     )
 }

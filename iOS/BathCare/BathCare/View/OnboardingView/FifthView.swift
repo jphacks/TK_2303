@@ -88,16 +88,17 @@ struct FifthView: View {
                         Text("Password")
                             .frame(width: 80)
                         Text(":")
-                        TextField("Passwordを入力", text: $viewModel.passwordInput)
+                        SecureField("Passwordを入力", text: $viewModel.passwordInput)
+                            .textFieldStyle(.plain)
                     }
                     .bold()
-                    .padding(.horizontal, 8)
+                    .padding(.horizontal, 12)
                     .padding(.vertical, 16)
                 }
                 .background(Color.backGround)
                 .cornerRadius(12)
                 Button("debug") {
-                    viewModel.status = .confirmed
+                    viewModel.gotNetworkAvailability(isNetworkAvailable: true)
                 }
                 Spacer()
             }
@@ -131,6 +132,14 @@ struct FifthView: View {
                 value = 0.0
             }
         }
+        .onAppear {
+            viewModel.onAppear()
+        }
+        .alert(
+            "接続に失敗しました。",
+            isPresented: $viewModel.isAlertPresented,
+            actions: {}
+        )
     }
 }
 

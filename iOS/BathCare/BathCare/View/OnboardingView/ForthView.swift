@@ -12,6 +12,7 @@ struct ForthView: View {
     @Binding var isOnboardingFinished: Bool
     @Binding var state: OnboardingView.OnboardingState
     @State var isConnected = false
+    @State var isTokenExist: Bool? = nil
     @State var presentConnectingSheet = false
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -32,7 +33,9 @@ struct ForthView: View {
             .padding(.vertical, 64)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             Button {
-                if isConnected {
+                if isTokenExist == true {
+                    isOnboardingFinished = true
+                } else if isConnected {
                     if state == .stable {
                         state = .animating
                         currentPage += 1
@@ -41,7 +44,7 @@ struct ForthView: View {
                     presentConnectingSheet = true
                 }
             } label: {
-                Text(isConnected ? "NEXT" : "Connect")
+                Text(isConnected ? (isTokenExist ?? false ? "FINISH" : "NEXT") : "Connect")
                     .bold()
                     .font(.title)
                     .foregroundStyle(.white)
@@ -59,7 +62,8 @@ struct ForthView: View {
             ConnectingBluetoothView(
                 viewModel: .init(
                     bluetoothManager: .shared,
-                    isConnected: $isConnected
+                    isConnected: $isConnected,
+                    isTokenExist: $isTokenExist
                 )
             )
             .presentationDetents([.medium])

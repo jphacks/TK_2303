@@ -9,8 +9,9 @@ import Foundation
 import CoreBluetooth
 
 protocol BluetoothManagerDelegate: AnyObject {
-    func connected(token: String?)
+    func connected(token: String)
     func endConnecting()
+    func gotNetworkAvailability(isNetworkAvailable: Bool)
 //    func dataUpdated(rawData: RawData)
 }
 
@@ -60,9 +61,23 @@ class BluetoothManager: NSObject {
             return
         }
         struct EmptyData: Codable {
-            let getToken: Bool = true
+            var getToken: Bool = true
         }
         let data = EmptyData()
+        let encoder = JSONEncoder()
+        if let writeData = try? encoder.encode(data) {
+            peripheral.writeValue(writeData, for: kRXCBCharacteristic, type: .withResponse)
+        }
+    }
+    
+    func sendToken(token: String) {
+        guard let kRXCBCharacteristic = kRXCBCharacteristic else {
+            return
+        }
+        struct TokenData: Codable {
+            var token: String
+        }
+        let data = TokenData(token: token)
         let encoder = JSONEncoder()
         if let writeData = try? encoder.encode(data) {
             peripheral.writeValue(writeData, for: kRXCBCharacteristic, type: .withResponse)
@@ -197,14 +212,19 @@ extension BluetoothManager: CBPeripheralDelegate {
     
     func decodeTokenData(data: Data) {
         struct TokenJson: Codable {
-            let token: String?
+            let token: String
+        }
+        struct NetworkAvailableJson: Codable {
+            let isNetworkAvailable: Bool
         }
         let decoder = JSONDecoder()
-        do {
-            let data = try decoder.decode(TokenJson.self,from: data)
+        if let data = try? decoder.decode(TokenJson.self,from: data) {
             delegate?.connected(token: data.token)
-        } catch let parseError {
-            print(parseError)
+        } else if let data = try? decoder.decode(NetworkAvailableJson.self, from: data) {
+            print("hoge")
+            delegate?.gotNetworkAvailability(isNetworkAvailable: data.isNetworkAvailable)
+        } else {
+            print("error", String(data: data, encoding: .utf8)!)
         }
     }
     

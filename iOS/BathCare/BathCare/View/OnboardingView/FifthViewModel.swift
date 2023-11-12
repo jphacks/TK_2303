@@ -19,9 +19,14 @@ class FifthViewModel: ObservableObject {
     @Published var status: Status = .inputting
     @Published var ssidInput = ""
     @Published var passwordInput = ""
+    @Published var isAlertPresented = false
     
     init(bluetoothManager: BluetoothManager) {
         self.bluetoothManager = bluetoothManager
+    }
+    
+    func onAppear() {
+        bluetoothManager.delegate = self
     }
     
     func sendData() {
@@ -31,6 +36,20 @@ class FifthViewModel: ObservableObject {
 }
 
 extension FifthViewModel: BluetoothManagerDelegate {
-    func connected(token: String?) {}
+    func gotNetworkAvailability(isNetworkAvailable: Bool) {
+        if isNetworkAvailable {
+            Task {
+                await TokenManager.shared.registerToken()
+                let token = TokenManager.shared.getToken()
+                bluetoothManager.sendToken(token: token)
+                status = .confirmed
+            }
+        } else {
+            isAlertPresented = true
+            print("hello")
+        }
+    }
+    
+    func connected(token: String) {}
     func endConnecting() {}
 }

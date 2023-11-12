@@ -22,8 +22,7 @@ class TokenManager {
     func registerToken() async {
         do {
             let registerDeviceJson = try await RegisterDeviceService().fetch()
-            self.token = registerDeviceJson.token
-            self.setToken()
+            self.setToken(token: registerDeviceJson.token)
         } catch(let error) {
             print(error)
         }
@@ -34,8 +33,9 @@ class TokenManager {
         return token
     }
     
-    func setToken() {
-        UserDefaults.standard.set(self.token, forKey: "userToken")
+    func setToken(token: String) {
+        self.token = token
+        UserDefaults.standard.set(token, forKey: "userToken")
     }
     
     func deleteToken() {
