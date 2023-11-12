@@ -2,10 +2,10 @@ openapi: 3.0.4
 
 info: 
   title: Server
-  version: 0.0.1
+  version: 0.0.3
 
 servers:
-  - url: http://localhost:8787/api/v0
+  - url: http://localhost:8787/
 
 paths:
   "/status/{id}":
@@ -189,3 +189,76 @@ paths:
                     type: string
                     enum:
                       - "Alart system is down."
+  "/phonenumber/{id}":
+    get:
+      summary: get phone number
+      description: |
+        緊急連絡を行うための電話番号を取得する
+      operationId: getPhoneNumber
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  number:
+                    type: string
+        '400':
+          description: Not found number
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    post:
+      summary: Set phone number
+      description: |
+        緊急連絡を行うための電話番号を設定する
+      operationId: setPhoneNumber
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                number:
+                  type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  number:
+                    type: string
+  "/history/{id}":
+    get:
+      summary: get status history
+      description: |
+        ステータスの履歴を取得する
+      operationId: getStatusHistory
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  history:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        action:
+                          type: string
+                          enum: ["goIntoBath", "goOutOfBath", "becomeDanger"]
+                        date:
+                          type: string
+                          format: date-time

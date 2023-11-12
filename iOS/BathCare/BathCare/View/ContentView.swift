@@ -10,11 +10,8 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         NavigationStack {
-            HomeView(viewModel: .init())
-<<<<<<< Updated upstream:iOS/BathCare/BathCare/ContentView.swift
-=======
-            // OnboardingView()
->>>>>>> Stashed changes:iOS/BathCare/BathCare/View/ContentView.swift
+            // HomeView(viewModel: .init())
+            OnboardingView()
         }
     }
 }
