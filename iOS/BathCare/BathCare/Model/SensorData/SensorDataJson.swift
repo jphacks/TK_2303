@@ -9,6 +9,6 @@ import Foundation
 struct SensorDataJson: Decodable {
     var temperature: Double
     var humidity: Double
-    var co2: Int
+    var pressure: Double
     var lastUpdate: String
 }
