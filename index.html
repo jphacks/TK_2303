@@ -1,0 +1,508 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://unpkg.com/mqtt@4.1.0/dist/mqtt.min.js"></script>
+  <script src="https://kit.fontawesome.com/8c8bbe3334.js" crossorigin="anonymous"></script>
+  <title>WebRTC</title>
+<style>
+
+html {
+  font-family:"Calibri", sans-serif;
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.column {
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  margin-bottom: 16px;
+  margin-top: 8px;
+  padding: 0 8px;
+}
+
+@media screen and (max-width: 650px) {
+  .column {
+    width: 100%;
+    display: block;
+  }
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.container {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+.title {
+  color: grey;
+}
+
+.bottom-left {
+  position: absolute;
+  bottom: 8px;
+  left: 16px;
+}
+
+.top-left {
+  position: absolute;
+  top: 8px;
+  left: 16px;
+}
+
+.top-right {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+}
+
+.bottom-right {
+  position: absolute;
+  bottom: 8px;
+  right: 16px;
+}
+
+.button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #555;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active {
+  background-color: #04AA6D;
+  color: white;
+}
+
+.topnav .icon {
+  display: none;
+}
+
+.btn-group button {
+  margin-top: -4px;
+  background-color: white; /* Green background */
+  border: 1px solid white; /* Green border */
+  color: black; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+
+/* Clear floats (clearfix hack) */
+.btn-group:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.btn {
+  background-color: DodgerBlue;
+  border: none;
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+  background-color: RoyalBlue;
+}
+
+.btn-group button:not(:last-child) {
+  border-right: none; /* Prevent double borders */
+}
+
+/* Add a background color on hover */
+.btn-group button:hover {
+  background-color: #f2f2f2;
+}
+
+</style>
+</head>
+<body>
+
+<div class="topnav" id="myTopnav">
+  <a href="#">Peer Project</a>
+  <a href="https://ko-fi.com/sepfy95" style="float: right">Sponsor</a>
+  <a href="https://github.com/sepfy/pear" style="float: right">Github</a>
+</div>
+<div class="column" id="video">
+  <div class="card">
+    <div class="container">
+      <img id="imgStream" style="width: 100%">
+      <video id="videoStream" playsinline style="width:100%; display: none"></video>
+      <audio id="audioStream" style="display: none"></audio>
+        <p class="top-left" id="device-id"></p>
+        <p class="top-right" id="status">waiting</p>
+      </div>
+    <div class="btn-group" style="width:100%">
+      <button style="width:25%" class="btn" onclick="onVolume()"><i id="volume-icon" class="fa-solid fa-volume-xmark"></i></button>
+      <button style="width:25%" class="btn" onclick="onMuted()"><i id="mute-icon" class="fa-solid fa-microphone-slash"></i></button>
+      <button style="width:25%" class="btn" onclick="onRotate()"><i class="fa-solid fa-arrows-rotate"></i></button>
+      <button style="width:25%" class="btn" onclick="onStop()"><i id="stop-icon" class="fa-solid fa-circle-stop"></i></button>
+
+    </div>
+  </div>
+</div>
+ 
+
+<div style="display: block;" id="getting-started">
+</div>
+
+<div id="stats-box"></div>
+
+<script>
+
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const deviceId = urlParams.get('deviceId');
+console.log(deviceId);
+
+document.getElementById('device-id').innerHTML = deviceId;
+
+var options = {
+  keepalive: 600,
+}
+
+const client  = mqtt.connect('wss://test.mosquitto.org:8081/mqtt')
+
+
+
+window.onload = function() {
+
+  if (deviceId == undefined) {
+
+    document.getElementById('video').style.display = 'none';
+    document.getElementById('getting-started').style.display = 'block';
+  } 
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 640
+  canvas.height = 480
+  
+  const ctx = canvas.getContext('2d')
+  ctx.fillStyle = 'rgba(200, 200, 200, 100)'
+  ctx.fillRect(0, 0, 640, 480)
+
+  const img = new Image(640, 480)
+  img.src = canvas.toDataURL()
+
+  document.getElementById('imgStream').src = img.src;
+}
+
+function connect() {
+
+  window.location.href = window.location.href + "?deviceId=" + document.getElementById('device-id-input').value;
+}
+
+var hasVolume = false;
+var isMuted = false;
+var offerId = Math.floor((Math.random() * 1000) + 1);
+var answerId = Math.floor((Math.random() * 1000) + 1);
+var closeId = Math.floor((Math.random() * 1000) + 1);
+
+var pc = new RTCPeerConnection({
+  iceServers: [
+    {
+      urls: "stun:stun.l.google.com:19302",
+    },
+  ],
+});
+
+const datachannel = pc.createDataChannel('pear')
+
+const log = msg => {
+  console.log(msg)
+}
+
+// Request mic access
+navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+  .then(stream => {
+    stream.getTracks().forEach(track => pc.addTrack(track, stream));
+}).catch(log);
+
+function onVolume() {
+
+  var audioStream = document.getElementById('audioStream');
+  hasVolume = !hasVolume;
+
+  if (hasVolume) {
+
+     audioStream.play();
+     document.getElementById('volume-icon').className = 'fa-solid fa-volume-high';
+
+  } else {
+
+     audioStream.pause();
+     document.getElementById('volume-icon').className = 'fa-solid fa-volume-xmark';
+  }
+
+}
+
+var isPlaying = true;
+
+function onStop() {
+
+  isPlaying = !isPlaying;
+
+  if (isPlaying) {
+
+     document.getElementById('stop-icon').className = 'fa-solid fa-circle-stop';
+  } else {
+
+     client.publish('webrtc/' + deviceId + '/jsonrpc', JSON.stringify({
+       jsonrpc: '2.0',
+       method: 'close',
+       id: closeId,
+      }))
+
+     document.getElementById('stop-icon').className = 'fa-solid fa-circle-play';
+  }
+}
+
+var rotate = 0;
+
+function onRotate() {
+
+  rotate = rotate + 180;
+
+  if (rotate == 360) {
+    rotate = 0;
+  }
+
+  document.getElementById('imgStream').style.transform = 'rotate(' + rotate + 'deg)';
+  document.getElementById('videoStream').style.transform = 'rotate(' + rotate + 'deg)';
+
+}
+
+function onMuted() {
+
+  isMuted = !isMuted;
+
+  if (isMuted) {
+
+     document.getElementById('mute-icon').className = 'fa-solid fa-microphone-slash';
+
+     pc.getSenders().forEach(function (sender) {
+
+       // stop audio track
+       if (sender.track != null && sender.track.kind == 'audio') {
+         sender.track.stop();
+       }
+
+     })
+
+  } else {
+
+     document.getElementById('mute-icon').className = 'fa-solid fa-microphone';
+
+     // access mic again
+     navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+       .then(stream => {
+         stream.getTracks().forEach(track => {
+           pc.getSenders().forEach(function (sender) {
+             if (sender.track != null && sender.track.kind == 'audio') {
+               sender.replaceTrack(track);
+             }
+           })
+         });
+       }).catch(log);
+  }
+
+}
+
+pc.ontrack = function (event) {
+
+  if (event.track.kind == 'video') {
+
+    var el = document.getElementById('videoStream');
+    var newStream = new MediaStream();
+    newStream.addTrack(event.track);
+    el.srcObject = newStream;
+    el.autoplay = true
+    el.controls = false
+    el.muted = true
+    document.getElementById('imgStream').style.display = 'none';  
+    document.getElementById('videoStream').style.display = 'block';
+
+  } else if (event.track.kind == 'audio') {
+
+    var el = document.getElementById('audioStream');
+    var newStream = new MediaStream();
+    newStream.addTrack(event.track);
+    el.srcObject = newStream;
+    el.controls = false 
+    el.muted = false
+
+  }
+}
+
+pc.oniceconnectionstatechange = e => {
+
+  log(pc.iceConnectionState)
+  document.getElementById('status').innerHTML = pc.iceConnectionState;
+  if (pc.iceConnectionState == 'connected') {
+    // default to muted
+    if (!isMuted)
+      onMuted();
+  }
+}
+
+pc.ondatachannel = () => {
+  console.log('ondatachannel');
+}
+
+datachannel.onclose = () => console.log('datachannel has closed');
+datachannel.onopen = () => {
+  console.log('datachannel has opened');
+  console.log('sending ping');
+  setInterval(() => {
+    console.log('sending ping');
+    datachannel.send('ping');
+  }, 1000);
+}
+
+datachannel.onmessage = e => {
+
+  if (e.data.byteLength === undefined) {
+
+    console.log(e.data);
+
+  } else {
+
+    // is binary data. mjpeg stream
+    //console.log(e.data.byteLength);
+    var arrayBufferView = new Uint8Array(e.data);
+    var blob = new Blob( [ arrayBufferView ], { type: "image/jpeg" } );
+    var urlCreator = window.URL || window.webkitURL;
+    var imageUrl = urlCreator.createObjectURL( blob );
+  
+    var imageElement = document.getElementById('imgStream');
+    imageElement.src = imageUrl;
+  }  
+}
+
+//log(e.data);
+
+
+pc.onicecandidate = event => {
+  if (event.candidate === null) {
+    console.log(pc.localDescription.sdp)
+    let json = {
+     jsonrpc: '2.0',
+     method: 'answer',
+     params: pc.localDescription.sdp,
+     id: answerId,
+    }
+    console.log(json)
+    client.publish('webrtc/' + deviceId + '/jsonrpc', JSON.stringify(json))
+
+    setInterval(() => {
+
+      pc.getStats(null).then((stats) => {
+        let statsOutput = "";
+
+        stats.forEach((report) => {
+          statsOutput +=
+            `<h2>Report: ${report.type}</h2>\n<strong>ID:</strong> ${report.id}<br>\n` +
+            `<strong>Timestamp:</strong> ${report.timestamp}<br>\n`;
+          // Now the statistics for this report; we intentionally drop the ones we
+          // sorted to the top above
+
+          Object.keys(report).forEach((statName) => {
+            if (
+              statName !== "id" &&
+              statName !== "timestamp" &&
+              statName !== "type"
+            ) {
+              statsOutput += `<strong>${statName}:</strong> ${report[statName]}<br>\n`;
+            }
+          });
+        });
+
+        document.getElementById("stats-box").innerHTML = statsOutput;
+      });
+    }, 1000);
+
+  }
+}
+
+client.on('connect', function () {
+  console.log("connected")
+  client.subscribe('webrtc/' + deviceId + '/jsonrpc-reply', function (err) {
+    if (!err) {
+    }
+  })
+
+  console.log('publish to webrtc/' + deviceId + '/jsonrpc')
+  client.publish('webrtc/' + deviceId + '/jsonrpc', JSON.stringify({
+   jsonrpc: '2.0',
+   method: 'offer',
+   id: offerId,
+  }), {qos: 2})
+
+})
+
+client.on('message', function (topic, message) {
+
+  let msg = JSON.parse(message.toString())
+  if (msg.id == offerId) {
+
+    let sdp = msg.result;
+    let offer = {type: 'offer', sdp: sdp};
+
+    log(offer)
+    pc.setRemoteDescription(offer);
+    pc.createAnswer().then(d => pc.setLocalDescription(d)).catch(log)
+
+  } else if (msg.id == answerId) {
+
+    log('receive answer ok')
+  } 
+
+})
+
+</script>
+
+
+  </body>
+</html>
