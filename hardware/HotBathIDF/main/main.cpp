@@ -15,6 +15,7 @@
 #include "esp_tls.h"
 #include "esp_ota_ops.h"
 #include "freertos/FreeRTOS.h"
+#include "Arduino.h"
 
 #include "peer.h"
 
@@ -69,14 +70,29 @@ void peer_connection_task(void* arg)
     }
 }
 
-void app_main(void)
+void setup(void)
 {
+    Serial.begin(115200);
+
     static char deviceid[32] = {0};
     uint8_t mac[8] = {0};
 
     PeerConfiguration config = {
         .ice_servers = {
-            {.urls = "stun:stun.l.google.com:19302"}},
+            {
+                .urls = "stun:stun.relay.metered.ca:80",
+            },
+            {
+                .urls = "turn:a.relay.metered.ca:80",
+                .username = "7be87ce78dc52c30fa912aa7",
+                .credential = "VWBrrpflT5/qT/Sp",
+            },
+            {
+                .urls = "turn:a.relay.metered.ca:443",
+                .username = "7be87ce78dc52c30fa912aa7",
+                .credential = "VWBrrpflT5/qT/Sp",
+            },
+        },
         .audio_codec = CODEC_OPUS,
         .video_codec = CODEC_NONE,
     };
@@ -116,4 +132,9 @@ void app_main(void)
 
     ESP_LOGI(TAG, "[APP] Free memory: %d bytes", esp_get_free_heap_size());
     ESP_LOGI(TAG, "open https://sepfy.github.io/webrtc?deviceId=%s", deviceid);
+}
+
+void loop()
+{
+    delay(1000);
 }

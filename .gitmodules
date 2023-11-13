@@ -10,3 +10,6 @@
 [submodule "hardware/HotBathIDF/components/srtp"]
 	path = hardware/HotBathIDF/components/srtp
 	url = https://github.com/sepfy/esp_ports.git
+[submodule "hardware/HotBathIDF/components/arduino"]
+	path = hardware/HotBathIDF/components/arduino
+	url = https://github.com/espressif/arduino-esp32.git
