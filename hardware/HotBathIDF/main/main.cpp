@@ -1,21 +1,21 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <stddef.h>
-#include <string.h>
-#include <sys/time.h>
-#include <sys/param.h>
-#include "esp_system.h"
-#include "esp_partition.h"
-#include "nvs_flash.h"
-#include "esp_event.h"
-#include "esp_netif.h"
-#include "esp_mac.h"
-#include "mdns.h"
-#include "esp_log.h"
-#include "esp_tls.h"
-#include "esp_ota_ops.h"
-#include "freertos/FreeRTOS.h"
 #include "Arduino.h"
+#include "esp_event.h"
+#include "esp_log.h"
+#include "esp_mac.h"
+#include "esp_netif.h"
+#include "esp_ota_ops.h"
+#include "esp_partition.h"
+#include "esp_system.h"
+#include "esp_tls.h"
+#include "freertos/FreeRTOS.h"
+#include "mdns.h"
+#include "nvs_flash.h"
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/param.h>
+#include <sys/time.h>
 
 #include "peer.h"
 
@@ -70,7 +70,7 @@ void peer_connection_task(void* arg)
     }
 }
 
-void setup(void)
+void setup()
 {
     Serial.begin(115200);
 
@@ -79,22 +79,10 @@ void setup(void)
 
     PeerConfiguration config = {
         .ice_servers = {
-            {
-                .urls = "stun:stun.relay.metered.ca:80",
-            },
-            {
-                .urls = "turn:a.relay.metered.ca:80",
-                .username = "7be87ce78dc52c30fa912aa7",
-                .credential = "VWBrrpflT5/qT/Sp",
-            },
-            {
-                .urls = "turn:a.relay.metered.ca:443",
-                .username = "7be87ce78dc52c30fa912aa7",
-                .credential = "VWBrrpflT5/qT/Sp",
-            },
-        },
+            {.urls = "stun:stun.l.google.com:19302", .username = "", .credential = ""}},
         .audio_codec = CODEC_OPUS,
         .video_codec = CODEC_NONE,
+        .datachannel = DATA_CHANNEL_NONE,
     };
 
     ESP_LOGI(TAG, "[APP] Startup..");
@@ -116,9 +104,9 @@ void setup(void)
 
     wifi_init_sta();
 
-    audio_init();
-
     peer_init();
+
+    audio_init();
 
     g_pc = peer_connection_create(&config);
     peer_connection_oniceconnectionstatechange(g_pc, oniceconnectionstatechange);
@@ -126,9 +114,9 @@ void setup(void)
 
     xTaskCreatePinnedToCore(audio_task, "audio", 20480, NULL, 5, &xAudioTaskHandle, 0);
 
-    xTaskCreatePinnedToCore(peer_connection_task, "peer_connection", 8192, NULL, 10, &xPcTaskHandle, 1);
+    xTaskCreatePinnedToCore(peer_connection_task, "peer_connection", 10240, NULL, 10, &xPcTaskHandle, 1);
 
-    xTaskCreatePinnedToCore(peer_signaling_task, "peer_signaling", 8192, NULL, 10, &xPsTaskHandle, 0);
+    xTaskCreatePinnedToCore(peer_signaling_task, "peer_signaling", 10240, NULL, 10, &xPsTaskHandle, 0);
 
     ESP_LOGI(TAG, "[APP] Free memory: %d bytes", esp_get_free_heap_size());
     ESP_LOGI(TAG, "open https://sepfy.github.io/webrtc?deviceId=%s", deviceid);

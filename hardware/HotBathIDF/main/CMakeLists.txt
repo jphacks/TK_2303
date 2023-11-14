@@ -1,6 +1,6 @@
-FILE(GLOB CSources *.c)
+FILE(GLOB Sources "*.c" "*.cpp")
 
-idf_component_register(SRCS ${CSources}
+idf_component_register(SRCS ${Sources}
   INCLUDE_DIRS "."
 )
 

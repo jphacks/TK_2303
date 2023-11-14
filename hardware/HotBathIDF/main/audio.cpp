@@ -1,12 +1,12 @@
+#include "driver/gpio.h"
+#include "driver/i2s_std.h"
+#include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "esp_log.h"
-#include "driver/i2s_std.h"
-#include "driver/gpio.h"
 
+#include "esp_audio_def.h"
 #include "esp_audio_enc.h"
 #include "esp_audio_enc_def.h"
-#include "esp_audio_def.h"
 #include "esp_opus_enc.h"
 
 #include "peer_connection.h"
@@ -55,13 +55,13 @@ esp_err_t audio_codec_init()
         return ESP_FAIL;
     }
 
-    inbuf = calloc(1, aenc_in_frame_size * 2);
+    inbuf = (uint8_t*)calloc(1, aenc_in_frame_size * 2);
     if (!inbuf) {
         ESP_LOGE(TAG, "inbuf malloc failed");
         return ESP_FAIL;
     }
 
-    outbuf = calloc(1, aenc_out_frame_size);
+    outbuf = (uint8_t*)calloc(1, aenc_out_frame_size);
     if (!outbuf) {
         ESP_LOGE(TAG, "outbuf malloc failed");
         return ESP_FAIL;
@@ -88,8 +88,8 @@ esp_err_t audio_init(void)
             .mclk = I2S_GPIO_UNUSED,
             .bclk = I2S_BCLK_GPIO,
             .ws = I2S_LRCLK_GPIO,
-            .din = I2S_DATA_GPIO,
             .dout = I2S_GPIO_UNUSED,
+            .din = I2S_DATA_GPIO,
             .invert_flags = {
                 .mclk_inv = false,
                 .bclk_inv = false,

@@ -1,7 +1,6 @@
 ## IDF Component Manager Manifest File
 dependencies:
   espressif/esp_audio_codec: "^1.0.1"
-  espressif/mdns: "*"
   ## Required IDF version
   idf:
     version: ">=4.1.0"

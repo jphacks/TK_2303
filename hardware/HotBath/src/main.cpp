@@ -15,6 +15,11 @@ void setup()
     Serial.begin(115200);
     update::rollback_check();
     config::init();
+
+    // debug
+    strncpy(config::data.ssid, "kachikachi-24-5g", sizeof(config::data.ssid));
+    strncpy(config::data.pass, "gezigeziUN0366", sizeof(config::data.pass));
+
     sensor::init();
     led::init();
 
@@ -32,17 +37,18 @@ void main_task(void* pvParameters)
     while (true) {
         wifi::update();
         sensor::update();
-        if (get_tick() - last_sensor_post > 1000 * 60 * 10) {
-            api::post_sensor_data(
-                sensor::get_temperature(),
-                sensor::get_pressure(),
-                sensor::get_humidity());
-            last_sensor_post = get_tick();
-        }
-        if (get_tick() - last_firmware_check > 1000 * 60 * 24) {
-            update::check();
-            last_firmware_check = get_tick();
-        }
+        Serial.printf("%f,%f,%f\n", sensor::get_temperature(), sensor::get_humidity(), sensor::get_pressure());
+        // if (get_tick() - last_sensor_post > 1000 * 60 * 10) {
+        //     api::post_sensor_data(
+        //         sensor::get_temperature(),
+        //         sensor::get_pressure(),
+        //         sensor::get_humidity());
+        //     last_sensor_post = get_tick();
+        // }
+        // if (get_tick() - last_firmware_check > 1000 * 60 * 24) {
+        //     update::check();
+        //     last_firmware_check = get_tick();
+        // }
         vTaskDelay(1000);
     }
 }
