@@ -3,6 +3,13 @@
 
 namespace sensor
 {
+class I2CLock
+{
+public:
+    I2CLock();
+    ~I2CLock();
+};
+
 void init();
 void update();
 float get_temperature();

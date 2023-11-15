@@ -1,11 +1,11 @@
 #include "api.hpp"
+#include "config.hpp"
+#include "esp_log.h"
 #include "etl/string.h"
 #include "etl/string_stream.h"
 #include "rootCA.hpp"
 #include "secrets.hpp"
-#include "config.hpp"
 #include "wifi.hpp"
-#include "esp_log.h"
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
@@ -53,6 +53,25 @@ bool post_sensor_data(float temperature, float pressure, float humidity)
     serializeJson(doc, json_buf);
 
     return post("/bath/sensors", json_buf);
+}
+
+bool post_bath_status(Bath_Status status)
+{
+    APILock lock;
+
+    doc.clear();
+    if (status == BathIn) {
+        doc["status"] = "in";
+    } else if (status == BathOut) {
+        doc["status"] = "out";
+    } else if (status == BathDanger) {
+        doc["status"] = "danger";
+    } else {
+        doc["status"] = "unknown";
+    }
+    serializeJson(doc, json_buf);
+
+    return post("/bath/status", json_buf);
 }
 
 bool post(etl::string_view url, etl::string_view data)

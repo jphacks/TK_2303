@@ -3,7 +3,9 @@
 #include "config.hpp"
 #include "led.hpp"
 #include "onlineUpdate.hpp"
+#include "secrets.hpp"
 #include "sensor.hpp"
+#include "speaker.hpp"
 #include "utils.hpp"
 #include "wifi.hpp"
 #include <Arduino.h>
@@ -17,14 +19,18 @@ void setup()
     config::init();
 
     // debug
-    strncpy(config::data.ssid, "kachikachi-24-5g", sizeof(config::data.ssid));
-    strncpy(config::data.pass, "gezigeziUN0366", sizeof(config::data.pass));
+    strncpy(config::data.ssid, MYSSID, sizeof(config::data.ssid));
+    strncpy(config::data.pass, MYPASS, sizeof(config::data.pass));
+    config::data.wifi_configured = true;
+    strncpy(config::data.token, API_KEY, sizeof(config::data.token));
+    config::data.token_configured = true;
 
     sensor::init();
+
     led::init();
 
     api::init();
-    xTaskCreatePinnedToCore(main_task, "main_task", 8196, NULL, 1, NULL, 1);
+    xTaskCreatePinnedToCore(main_task, "main_task", 8192, NULL, 1, NULL, 1);
 }
 
 void main_task(void* pvParameters)
@@ -34,21 +40,21 @@ void main_task(void* pvParameters)
     int64_t last_sensor_post = 0;
     int64_t last_firmware_check = 0;
 
+    // speaker::play();
+
     while (true) {
         wifi::update();
-        sensor::update();
-        Serial.printf("%f,%f,%f\n", sensor::get_temperature(), sensor::get_humidity(), sensor::get_pressure());
-        // if (get_tick() - last_sensor_post > 1000 * 60 * 10) {
-        //     api::post_sensor_data(
-        //         sensor::get_temperature(),
-        //         sensor::get_pressure(),
-        //         sensor::get_humidity());
-        //     last_sensor_post = get_tick();
-        // }
-        // if (get_tick() - last_firmware_check > 1000 * 60 * 24) {
-        //     update::check();
-        //     last_firmware_check = get_tick();
-        // }
+        if (get_tick() - last_sensor_post > 1000 * 60 * 10) {
+            api::post_sensor_data(
+                sensor::get_temperature(),
+                sensor::get_pressure(),
+                sensor::get_humidity());
+            last_sensor_post = get_tick();
+        }
+        if (get_tick() - last_firmware_check > 1000 * 60 * 24) {
+            update::check();
+            last_firmware_check = get_tick();
+        }
         vTaskDelay(1000);
     }
 }

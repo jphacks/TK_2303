@@ -68,7 +68,7 @@ void init()
     analogWrite(RED_LED_PIN, 255);
     analogWrite(BLUE_LED_PIN, 255);
 
-    xTaskCreatePinnedToCore(led_task, "led_task", 4096, NULL, 5, NULL, 0);
+    xTaskCreatePinnedToCore(led_task, "led_task", 2048, NULL, 5, NULL, 0);
 }
 
 void set_mode(LED_Mode mode)
