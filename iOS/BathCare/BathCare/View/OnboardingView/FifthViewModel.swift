@@ -38,7 +38,7 @@ class FifthViewModel: ObservableObject {
 extension FifthViewModel: BluetoothManagerDelegate {
     func gotNetworkAvailability(isNetworkAvailable: Bool) {
         if isNetworkAvailable {
-            Task {
+            Task { @MainActor in
                 await TokenManager.shared.registerToken()
                 let token = TokenManager.shared.getToken()
                 bluetoothManager.sendToken(token: token)
