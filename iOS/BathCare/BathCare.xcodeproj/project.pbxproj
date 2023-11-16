@@ -120,6 +120,7 @@
 		C59647322AFD167400A6578F /* SensorDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDataService.swift; sourceTree = "<group>"; };
 		C59647342AFD1B6700A6578F /* HistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryService.swift; sourceTree = "<group>"; };
 		C59647362AFD1BD500A6578F /* PhoneNumberService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumberService.swift; sourceTree = "<group>"; };
+		C59D0E4B2B068E730089D363 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +181,7 @@
 		C517FFF62AEC9B9200FB2E73 /* BathCare */ = {
 			isa = PBXGroup;
 			children = (
+				C59D0E4B2B068E730089D363 /* Info.plist */,
 				C59647312AFD164300A6578F /* Network */,
 				C517FFF72AEC9B9200FB2E73 /* BathCareApp.swift */,
 				C5660C102AECFEE8000E5CD0 /* AppDelegate.swift */,
@@ -631,6 +633,7 @@
 				DEVELOPMENT_TEAM = 377B7BZZ6Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BathCare/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Need to Connect to the device";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -662,6 +665,7 @@
 				DEVELOPMENT_TEAM = 377B7BZZ6Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BathCare/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Need to Connect to the device";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
