@@ -135,8 +135,56 @@ struct HomeView: View {
         class AppDataStoreMock: AppDataStore {
             override func refresh() async {}
         }
+        var appDataStore = AppDataStoreMock()
+        init(appDataStore: AppDataStoreMock = AppDataStoreMock()) {
+            self.appDataStore = appDataStore
+            appDataStore.storedData = .init(
+                bathStatusJson: .init(status: .danger),
+                sensorDatasJson: .init(
+                    temperature: 24.0,
+                    humidity: 70.8,
+                    pressure: 10,
+                    lastUpdate: "hello"
+                ),
+                historyJson: .init(
+                    history: [
+                        .init(
+                            action: .goIntoBath,
+                            date: "2023-11-15T02:30:40+09:00"
+                        ),
+                        .init(
+                            action: .goOutOfBath,
+                            date: "2023-11-15T02:50:40+09:00"
+                        ),
+                        .init(
+                            action: .goIntoBath,
+                            date: "2023-11-16T02:30:40+09:00"
+                        ),
+                        .init(
+                            action: .goOutOfBath,
+                            date: "2023-11-16T02:50:40+09:00"
+                        ),
+                        .init(
+                            action: .goIntoBath,
+                            date: "2023-11-17T02:50:40+09:00"
+                        ),
+                        .init(
+                            action: .becomeDanger,
+                            date: "2023-11-17T03:13:40+09:00"
+                        )
+                    ]
+                )
+            )
+            
+        }
+//        struct StoredData {
+//            var bathStatusJson: BathStatusJson?
+//            var sensorDatasJson: SensorDataJson?
+//            var historyJson: HistoryJson?
+//            var phoneNumberJson: PhoneNumberJson?
+//        }
         var body: some View {
-            HomeView(viewModel: .init(appDataStore: AppDataStoreMock()))
+            HomeView(viewModel: .init(appDataStore: appDataStore))
         }
     }
     return PreviewWrapper()
