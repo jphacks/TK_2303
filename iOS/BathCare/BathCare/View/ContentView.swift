@@ -12,7 +12,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             if isOnboardingFinished {
-                HomeView(viewModel: .init())
+                HomeView(viewModel: .init(appDataStore: .shared))
             } else {
                 OnboardingView(isOnboardingFinished: $isOnboardingFinished)
             }

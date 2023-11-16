@@ -131,5 +131,13 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(viewModel: .init())
+    struct PreviewWrapper: View {
+        class AppDataStoreMock: AppDataStore {
+            override func refresh() async {}
+        }
+        var body: some View {
+            HomeView(viewModel: .init(appDataStore: AppDataStoreMock()))
+        }
+    }
+    return PreviewWrapper()
 }

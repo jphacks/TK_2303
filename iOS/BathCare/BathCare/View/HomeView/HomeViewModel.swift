@@ -15,7 +15,7 @@ class HomeViewModel: ObservableObject {
     @Published var notifications: [ActionNotification] = []
     private var heatShockPopupShowed = false
     
-    private var appDataStore = AppDataStore.shared
+    private var appDataStore: AppDataStore
     private var cancellables = Set<AnyCancellable>()
     
     let id = 9910
@@ -50,7 +50,8 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    init() {
+    init(appDataStore: AppDataStore) {
+        self.appDataStore = appDataStore
         appDataStore.$storedData
             .sink { [weak self] newData in
                 self?.bathStatus = newData.bathStatusJson?.status
