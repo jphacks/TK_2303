@@ -17,10 +17,10 @@ static SHTC3 shtc3;
 static const char TAG[] = "SENSOR";
 
 // temp
-static constexpr float TEMP_ENTER_THRESHOLD = 2.0f;
-static constexpr float TEMP_EXIT_THRESHOLD = 5.0f;
+static constexpr float TEMP_ENTER_THRESHOLD = 1.0f;
+static constexpr float TEMP_EXIT_THRESHOLD = 1.0f;
 static constexpr float TEMP_EXIT_THRESHOLD_BEFORE_ENTER = TEMP_ENTER_THRESHOLD / 2.0f;
-static constexpr float ALPHA_TEMP = 0.01f;
+static constexpr float ALPHA_TEMP = 0.005f;
 static constexpr float ALPHA_TEMP_LONG_TERM = 0.0001f;
 
 static float temperature = 0;
@@ -42,7 +42,6 @@ static int16_t humidity_enter_possibility = 0;
 static float pressure = 0;
 
 // flags
-static bool is_entered = false;
 static bool initialized = false;
 
 static SemaphoreHandle_t xMutex = NULL;
@@ -56,6 +55,31 @@ I2CLock::~I2CLock()
     xSemaphoreGiveRecursive(xMutex);
 }
 
+static void update()
+{
+    {
+        I2CLock lock;
+        shtc3.update();
+        if (shtc3.lastStatus == SHTC3_Status_Nominal) {
+            humidity = shtc3.toPercent();
+        }
+        Dps3xxPressureSensor.measureTempOnce(temperature, oversampling);
+        Dps3xxPressureSensor.measurePressureOnce(pressure, oversampling);
+    }
+
+    // digital low pass filter
+    if (initialized) {
+        humidity_filtered = humidity * ALPHA_HUMID + (1 - ALPHA_HUMID) * humidity_filtered;
+        temperature_filtered = temperature * ALPHA_TEMP + (1 - ALPHA_TEMP) * temperature_filtered;
+        temperature_filtered_long_term = temperature * ALPHA_TEMP_LONG_TERM + (1 - ALPHA_TEMP_LONG_TERM) * temperature_filtered_long_term;
+    } else {
+        humidity_filtered = humidity;
+        temperature_filtered = temperature;
+        temperature_filtered_long_term = temperature;
+        initialized = true;
+    }
+}
+
 static void sensor_task(void* pvParameters)
 {
     {
@@ -66,39 +90,10 @@ static void sensor_task(void* pvParameters)
     }
 
     while (true) {
-        // update sensor data
-        {
-            I2CLock lock;
-            shtc3.update();
-            if (shtc3.lastStatus == SHTC3_Status_Nominal) {
-                humidity = shtc3.toPercent();
-            }
-            Dps3xxPressureSensor.measureTempOnce(temperature, oversampling);
-            Dps3xxPressureSensor.measurePressureOnce(pressure, oversampling);
-        }
+        update();
 
-        // digital low pass filter
-        if (initialized) {
-            humidity_filtered = humidity * ALPHA_HUMID + (1 - ALPHA_HUMID) * humidity_filtered;
-            temperature_filtered = temperature * ALPHA_TEMP + (1 - ALPHA_TEMP) * temperature_filtered;
-            temperature_filtered_long_term = temperature * ALPHA_TEMP_LONG_TERM + (1 - ALPHA_TEMP_LONG_TERM) * temperature_filtered_long_term;
-        } else {
-            humidity_filtered = humidity;
-            temperature_filtered = temperature;
-            temperature_filtered_long_term = temperature;
-            initialized = true;
-        }
-
-        if (is_entered) {  // bath entered
-            max_bath_temperature = max(max_bath_temperature, temperature);
-            // Evaluate from the difference from the maximum temperature and the temperature before bathing
-            if ((max_bath_temperature - temperature > TEMP_EXIT_THRESHOLD) || (temperature - temperature_before_enter < TEMP_EXIT_THRESHOLD_BEFORE_ENTER)) {
-                is_entered = false;
-                api::post_bath_status(api::BathOut);
-                ESP_LOGI(TAG, "bath exited");
-            }
-            Serial.printf("E,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n", temperature, temperature_filtered, max_bath_temperature, humidity, humidity_filtered, temperature_before_enter);
-        } else {  // bath not entered
+        switch (api::get_bath_status()) {
+        case api::BathNormal: {
             // judge humidity
             if (humidity > 90) {
                 humidity_enter_possibility = 100;  // True if humidity is above 90%.
@@ -121,16 +116,34 @@ static void sensor_task(void* pvParameters)
 
             // judge integrated
             if (humidity_enter_possibility > 0 && temperature_enter_possibility > 0) {
-                is_entered = true;
                 humidity_enter_possibility = 0;
                 temperature_enter_possibility = 0;
                 max_bath_temperature = -100;
                 temperature_before_enter = temperature_filtered_long_term;
-                api::post_bath_status(api::BathIn);
+                api::set_bath_status(api::BathIn);
                 speaker::play(heat_sound, sizeof(heat_sound));
-                ESP_LOGI(TAG, "bath entered");
+                ESP_LOGI(TAG, "BathIn");
             }
             Serial.printf("N,%.2f,%.2f,%d,%.2f,%.2f,%d\n", temperature, temperature_filtered, temperature_enter_possibility, humidity, humidity_filtered, humidity_enter_possibility);
+            break;
+        }
+        case api::BathIn: {
+            max_bath_temperature = max(max_bath_temperature, temperature);
+            // Evaluate from the difference from the maximum temperature and the temperature before bathing
+            if ((max_bath_temperature - temperature > TEMP_EXIT_THRESHOLD) || (temperature - temperature_before_enter < TEMP_EXIT_THRESHOLD_BEFORE_ENTER)) {
+                api::set_bath_status(api::BathOut);
+                ESP_LOGI(TAG, "BathOut");
+            }
+            Serial.printf("I,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n", temperature, temperature_filtered, max_bath_temperature, humidity, humidity_filtered, temperature_before_enter);
+        }
+        case api::BathOut:
+            if (temperature - temperature_before_enter < TEMP_EXIT_THRESHOLD_BEFORE_ENTER) {
+                api::set_bath_status(api::BathNormal);
+                ESP_LOGI(TAG, "BathNormal");
+            }
+            Serial.printf("O,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n", temperature, temperature_filtered, temperature_filtered_long_term, humidity, humidity_filtered, temperature_before_enter);
+        default:
+            break;
         }
         vTaskDelay(1000);
     }

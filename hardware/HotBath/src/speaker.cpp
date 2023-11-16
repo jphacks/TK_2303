@@ -11,15 +11,16 @@
 
 namespace speaker
 {
-static uint16_t soundBuf[8192];
+static uint16_t soundBuf[128];
 
 void play(const uint16_t* audio_data, size_t remain)
 {
+    return;
     sensor::I2CLock lock;
     i2s_config_t i2s_config = {
         .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX),  // Only TX
         .sample_rate = 16000,
-        .bits_per_sample = (i2s_bits_per_sample_t)16,
+        .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
         .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,
         .communication_format = I2S_COMM_FORMAT_STAND_I2S,
         .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,  // Interrupt level 1
@@ -47,11 +48,11 @@ void play(const uint16_t* audio_data, size_t remain)
         int size = (remain < bufSize) ? remain : bufSize;
         memcpy(soundBuf, p, size);
 
-        // // ボリューム調整.
-        // for (int i = 0; i < sizeof(soundBuf) / sizeof(soundBuf[0]); ++i) {
-        //     int16_t v = (int16_t)soundBuf[i];
-        //     soundBuf[i] = v * 0.05f;
-        // }
+        // ボリューム調整.
+        for (int i = 0; i < sizeof(soundBuf) / sizeof(soundBuf[0]); ++i) {
+            int16_t v = (int16_t)soundBuf[i];
+            soundBuf[i] = v * 0.05f;
+        }
 
         i2s_write(I2S_NUM, soundBuf, size, &written, portMAX_DELAY);
 

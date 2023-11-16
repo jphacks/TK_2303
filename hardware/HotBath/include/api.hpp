@@ -4,12 +4,15 @@
 namespace api
 {
 typedef enum {
-    BathIn = 0,
-    BathOut,
-    BathDanger
+    BathNormal = 0,  // 通常
+    BathIn,          // 入浴中
+    BathOut,         // 退浴後から通常までの間
+    BathDanger       // 危険
 } Bath_Status;
 
 void init();
 bool post_sensor_data(float temperature, float pressure, float humidity);
-bool post_bath_status(Bath_Status status);
+bool set_bath_status(Bath_Status status);
+Bath_Status get_bath_status();
+bool post_wav_data(const uint8_t* data, size_t size);
 }  // namespace api
