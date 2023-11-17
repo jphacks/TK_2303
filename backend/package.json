@@ -1,15 +1,23 @@
 {
   "scripts": {
     "dev": "wrangler dev src/index.ts",
-    "deploy": "wrangler deploy --minify src/index.ts"
+    "deploy": "wrangler deploy --minify src/index.ts",
+    "doc": "npx @redocly/cli build-docs openapi.yml -o docs-build/index.html",
+    "generate": "drizzle-kit generate:sqlite --out migrations --schema src/db/schema.ts"
   },
   "dependencies": {
+    "@cloudflare/ai": "^1.0.28",
+    "drizzle-orm": "^0.29.0",
     "hono": "^3.8.2",
     "jose": "^5.0.1",
+    "openai": "^4.17.5",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230914.0",
+    "@redocly/cli": "^1.4.0",
+    "@types/node": "^20.9.0",
+    "drizzle-kit": "^0.20.2",
     "prettier": "^3.0.3",
     "wrangler": "^3.14.0"
   }

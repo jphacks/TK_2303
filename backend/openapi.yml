@@ -2,14 +2,135 @@ openapi: 3.0.4
 
 info: 
   title: Server
-  version: 0.0.3
+  version: 0.1.0
 
 servers:
   - url: http://localhost:8787/
 
+components:
+  schemas:
+    BathDeviceStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [in, out, danger, unknown]
+    BathDeviceStatusPost:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [in, out, danger]
+    BathSensorData:
+      type: object
+      properties:
+        temperature:
+          type: number
+          example: 28.5
+          description: 温度 (℃)
+        humidity:
+          type: number
+          example: 84.2
+          description: 湿度 (%)
+        pressure:
+          type: number
+          example: 1000
+          description: 気圧 (hPa)
+        lastUpdate:
+          type: string
+          format: date-time
+          description: 最後にアップデートした時刻
+    BathSensorDataPost:
+      type: object
+      properties:
+        temperature:
+          type: number
+          example: 28.5
+          description: 温度 (℃)
+        humidity:
+          type: number
+          example: 84.2
+          description: 湿度 (%)
+        pressure:
+          type: number
+          example: 1000
+          description: 気圧 (hPa)
+    BathDeviceHistory:
+      type: object
+      properties:
+        history:
+          type: array
+          items:
+            type: object
+            properties:
+              action:
+                type: string
+                enum: ["goIntoBath", "goOutOfBath", "becomeDanger"]
+              date:
+                type: string
+                format: date-time
+    CheckSafeResponse:
+      type: object
+      properties:
+        safe:
+          type: boolean
+          description: 安全かどうか
+        transcription:
+          type: string
+          description: 音声認識結果
+        chatBotResponse:
+          type: object
+          description: ChatGPTのレスポンス
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+    FirmwareVersion:
+      type: object
+      properties:
+        name:
+          type: string
+          description: ファームウェアの名前
+        version:
+          type: integer
+          description: ファームウェアのバージョン
+        release_date:
+          type: string
+          format: date
+          description: リリース日
+        download_url:
+          type: string
+          description: ダウンロードURL
+    FirmwareVirsions:
+      type: object
+      properties:
+        versions:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/FirmwareVersion'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Base64String
+
+tags:
+  - name: Bath
+    description: お風呂デバイス用エンドポイント
+  - name: Misc
+    description: 雑多なエンドポイント
+  - name: Device
+    description: デバイス管理用エンドポイント
+  - name: Firmware
+    description: ファームウェア管理用エンドポイント
+
 paths:
-  "/status/{id}":
+  "/bath/status":
     get:
+      tags:
+        - Bath
       summary: Status check
       description: |
         ステータスの取得を行う
@@ -19,9 +140,9 @@ paths:
         - out: 入浴していない
         - danger: 危険
         - unknown: 不明
-
-        デバイスはidによって識別される
-      operationId: getStatusById
+      operationId: getStatus
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: OK
@@ -29,11 +150,10 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  status:
-                    type: string
-                    enum: [in, out, danger, unknown]
+                $ref: '#/components/schemas/BathDeviceStatus'
     post:
+      tags:
+        - Bath
       summary: Update status
       description: |
         ステータスの更新を行う
@@ -42,18 +162,15 @@ paths:
         - in: 入浴中
         - out: 入浴していない
         - danger: 危険
-
-        デバイスはidによって識別される
-      operationId: updateStatusById
+      operationId: updateStatus
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
             schema:
               type: object
-              properties:
-                status:
-                  type: string
-                  enum: [in, out, danger]
+              $ref: '#/components/schemas/BathDeviceStatusPost'
       responses:
         '200':
           description: OK
@@ -61,16 +178,24 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  status:
-                    type: string
-                    enum: [in, out, danger]
-  "/sensors/{id}":
+                $ref: '#/components/schemas/BathDeviceStatus'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Message'
+  "/bath/sensors":
     get:
+      tags:
+        - Bath
       summary: get sensor data
       description: |
         センサーデータの取得を行う
       operationId: getSensorData
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: OK
@@ -78,46 +203,29 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  temperature:
-                    type: number
-                    example: 28.5
-                    description: 温度 (℃)
-                  humidity:
-                    type: number
-                    example: 84.2
-                    description: 湿度 (%)
-                  co2:
-                    type: number
-                    example: 1000
-                    description: CO2濃度 (ppm)
-                  lastUpdate:
-                    type: string
-                    format: date-time
-                    description: 最後にアップデートした時刻
+                $ref: '#/components/schemas/BathSensorData'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Message'
     post:
+      tags:
+        - Bath
       summary: update sensor data
       description: |
         センサーデータをアップデートする
       operationId: updateSensorData
+      security:
+        - bearerAuth: []      
       requestBody:
           content:
             application/json:
               schema:
                 type: object
-                properties:
-                  temperature:
-                    type: number
-                    example: 28.5
-                    description: 温度 (℃)
-                  humidity:
-                    type: number
-                    example: 84.2
-                    description: 湿度 (%)
-                  co2:
-                    type: number
-                    example: 1000
-                    description: CO2濃度 (ppm)
+                $ref: '#/components/schemas/BathSensorDataPost'
       responses:
         '200':
           description: OK
@@ -125,25 +233,36 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  temperature:
-                    type: number
-                    example: 28.5
-                    description: 温度 (℃)
-                  humidity:
-                    type: number
-                    example: 84.2
-                    description: 湿度 (%)
-                  co2:
-                    type: number
-                    example: 1000
-                    description: CO2濃度 (ppm)
-                  lastUpdate:
-                    type: string
-                    format: date-time
-                    description: 最後にアップデートした時刻
-  "/alart/{id}":
+                $ref: '#/components/schemas/BathSensorData'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Message'
+  "/bath/history":
+    get:
+      tags:
+        - Bath
+      summary: get status history
+      description: |
+        ステータスの履歴を取得する
+      operationId: getStatusHistory
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/BathDeviceHistory'
+  "/misc/alart":
     post:
+      tags:
+        - Misc
       summary: Send alart
       description: |
         デバイスからスマホに対してアラートを送信する
@@ -157,7 +276,9 @@ paths:
           "message": "浴室で大きな音が検知されました"
         }
         ```
-      operationId: sendAlartById
+      operationId: sendAlart
+      security:
+        - bearerAuth: [] 
       requestBody:
         content:
           application/json:
@@ -173,28 +294,57 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  message:
-                    type: string
-                    enum:
-                      - "Alart sent."
+                $ref: '#/components/schemas/Message'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Message"
         '500':
           description: Internal Server Error
           content:
             application/json:
               schema:
                 type: object
-                properties:
-                  message:
-                    type: string
-                    enum:
-                      - "Alart system is down."
-  "/phonenumber/{id}":
+                $ref: '#/components/schemas/Message'
+  "/misc/alart/token":
+    post:
+      tags:
+        - Misc
+      summary: Set alart token
+      description: |
+        アラートを送信するためのトークンを設定する
+      operationId: setAlartToken
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Message'
+  "/misc/phonenumber":
     get:
+      tags:
+        - Misc
       summary: get phone number
       description: |
         緊急連絡を行うための電話番号を取得する
       operationId: getPhoneNumber
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: OK
@@ -211,14 +361,23 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  message:
-                    type: string
+                $ref: '#/components/schemas/Message'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Message'
     post:
+      tags:
+        - Misc
       summary: Set phone number
       description: |
         緊急連絡を行うための電話番号を設定する
       operationId: setPhoneNumber
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
@@ -237,12 +396,43 @@ paths:
                 properties:
                   number:
                     type: string
-  "/history/{id}":
-    get:
-      summary: get status history
+  "/misc/check_safe":
+    post:
+      tags:
+        - Misc
+      summary: Check safe
       description: |
-        ステータスの履歴を取得する
-      operationId: getStatusHistory
+        音声から安否確認を行う
+      operationId: checkSafe
+      requestBody:
+        content:
+          audio/wav:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CheckSafeResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Message'
+  "/device/register":
+    post:
+      tags:
+        - Device
+      summary: Register device
+      description: |
+        デバイスを登録する
+      operationId: registerDevice
       responses:
         '200':
           description: OK
@@ -251,14 +441,140 @@ paths:
               schema:
                 type: object
                 properties:
-                  history:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        action:
-                          type: string
-                          enum: ["goIntoBath", "goOutOfBath", "becomeDanger"]
-                        date:
-                          type: string
-                          format: date-time
+                  token:
+                    type: string
+                    description: デバイスのトークン
+  "/device/verify":
+    get:
+      tags:
+        - Device
+      summary: Verify device
+      description: |
+        デバイスを認証する
+        `Authorization`ヘッダーにはデバイスのトークンをセットする
+      operationId: verifyDevice
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Message'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Message'
+  "/firmware/versions":
+    get:
+      tags:
+        - Firmware
+      summary: Get firmware versions
+      description: |
+        ファームウェアのバージョンを取得する
+      operationId: getFirmwareVersions
+      parameters:
+        - name: board_revision
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 基板のリビジョン
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FirmwareVirsions'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Message'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Message"
+  "/firmware/versions/latest":
+    get:
+      tags:
+        - Firmware
+      summary: Get firmware versions
+      description: |
+         最新版ファームウェアのバージョンを取得する
+      operationId: getFirmwareVersions
+      parameters:
+        - name: board_revision
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 基板のリビジョン
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/FirmwareVersion'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Message'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Message"
+  "/firmware/download/{file}":
+    get:
+      tags:
+        - Firmware
+      summary: Download firmware
+      description: |
+        ファームウェアをダウンロードする
+      operationId: downloadFirmware
+      parameters:
+        - name: file
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ファイル名
+      responses:
+        '200':
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Message"
