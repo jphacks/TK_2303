@@ -6,11 +6,11 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 
-#include <ArduinoJson.h>
-#include "wifi.hpp"
-#include "utils.hpp"
 #include "esp_log.h"
 #include "led.hpp"
+#include "utils.hpp"
+#include "wifi.hpp"
+#include <ArduinoJson.h>
 
 #define SERVICE_UUID "2309e44f-cb8d-43fc-95b2-4c7134c23467"
 #define CHARACTERISTIC_UUID "37216a09-9f31-40f7-ab16-54ae5b32fd19"
@@ -94,15 +94,15 @@ void init()
     if (config::data.token_configured == false) {
         status = OpenRequest;
     }
-    xTaskCreatePinnedToCore(ble_task, "ble_task", 0x2000, NULL, 1, NULL, 1);
+    xTaskCreatePinnedToCore(ble_task, "ble_task", 0x1000, NULL, 1, NULL, 1);
 }
 
 void open()
 {
     ESP_LOGI(TAG, "open start");
-    led::set_mode(led::Pairing);
     if (ble_opened) {
         ESP_LOGE(TAG, "already opened");
+        status = Normal;
         return;
     }
     BLEDevice::init(BT_NAME);
@@ -121,6 +121,7 @@ void open()
     pAdvertising->setMinPreferred(0x12);
     BLEDevice::startAdvertising();
     ESP_LOGI(TAG, "open completed");
+    led::set_mode(led::Pairing);
     ble_opened = true;
     status = Normal;
 }
@@ -131,6 +132,7 @@ void close()
     ESP_LOGI(TAG, "close start");
     if (!ble_opened) {
         ESP_LOGE(TAG, "not opened");
+        status = Normal;
         return;
     }
     BLEDevice::getAdvertising()->stop();

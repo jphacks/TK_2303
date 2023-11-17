@@ -5,6 +5,7 @@ namespace led
 typedef enum {
     Normal = 0,
     Pairing,
+    Update,
 } LED_Mode;
 
 void init();

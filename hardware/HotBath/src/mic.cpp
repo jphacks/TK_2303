@@ -1,6 +1,6 @@
 #include "mic.hpp"
-#include <driver/i2s.h>
 #include "sensor.hpp"
+#include <driver/i2s.h>
 
 #define I2S_PIN_CLK 8  // BCLK
 #define I2S_PIN_WS 15  // LRCLK
@@ -8,13 +8,50 @@
 
 #define I2S_SAMPLE_RATE 8000
 #define I2S_BUFFER_COUNT 4
-#define I2S_BUFFER_SIZE 512
+#define I2S_BUFFER_SIZE 1024
 
 namespace mic
 {
 static uint8_t samples[I2S_BUFFER_SIZE];
 static constexpr i2s_port_t i2s_port = I2S_NUM_0;
 static const char TAG[] = "MIC";
+
+static float alpha_mic = 0.01f;
+static float mic_filtered = 0;
+
+xSemaphoreHandle mux;
+
+MicLock::MicLock()
+{
+    xSemaphoreTake(mux, portMAX_DELAY);
+}
+MicLock::~MicLock()
+{
+    xSemaphoreGive(mux);
+}
+
+void mic_task(void* pvParameters)
+{
+    while (1) {
+        {
+            MicLock lock;
+            size_t num_bytes_read;  // data length
+            esp_err_t err = i2s_read(i2s_port,
+                (uint8_t*)samples,
+                I2S_BUFFER_SIZE,
+                &num_bytes_read,
+                portMAX_DELAY);  // no timeout
+            if (err == ESP_OK) {
+                int64_t val_sum = 0;
+                for (int i = 0; i < num_bytes_read; i += 4) {
+                    int32_t* val = (int32_t*)&samples[i];
+                    val_sum += abs(*val);
+                }
+            }
+        }
+        vTaskDelay(50);
+    }
+}
 
 void init()
 {
@@ -42,11 +79,14 @@ void init()
 
     i2s_driver_install(i2s_port, &i2s_config, 0, NULL);
     i2s_set_pin(i2s_port, &pin_config);
+
+    mux = xSemaphoreCreateMutex();
+    // xTaskCreatePinnedToCore(mic_task, "mic_task", 4096, NULL, 1, NULL, 0);
 }
 
 void record_to_wav(WAVWriter* wav_writer)
 {
-    sensor::I2CLock lock;
+    MicLock lock;
     ESP_LOGI(TAG, "Record started");
 
     bool flag = true;
@@ -61,7 +101,7 @@ void record_to_wav(WAVWriter* wav_writer)
         if (err == ESP_OK) {
             for (int i = 0; i < num_bytes_read; i += 4) {
                 int32_t* val = (int32_t*)&samples[i];
-                int32_t val2 = constrain((*val) * 4, -2147483648, 2147483647);
+                int32_t val2 = constrain((*val) * 16, -2147483648, 2147483647);
                 int16_t tmp = (int16_t)(val2 >> 16);
                 // Serial.println((int)tmp);
                 if (!wav_writer->write((uint8_t*)&tmp, 2)) {

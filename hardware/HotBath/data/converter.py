@@ -32,8 +32,8 @@ def write_to_hpp(uint16_array, output_file_path):
         hpp_file.write("};\n")
 
 # 使用例
-file_path = 'heat.wav'
-output_file_path = 'heat.hpp'
+file_path = 'chime.wav'
+output_file_path = 'chime.hpp'
 
 uint16_array = wav_to_uint16_array(file_path)
 write_to_hpp(uint16_array, output_file_path)

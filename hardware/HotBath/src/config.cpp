@@ -11,7 +11,7 @@ static const char TAG[] = "CONFIG";
 void init()
 {
     ESP_LOGI(TAG, "load config size:%ld", sizeof(EEPROM_DATA));
-    if (EEPROM.begin(512)) {
+    if (EEPROM.begin(1024)) {
         ESP_LOGI(TAG, "EEPROM.begin success");
     } else {
         ESP_LOGE(TAG, "EEPROM.begin failed");

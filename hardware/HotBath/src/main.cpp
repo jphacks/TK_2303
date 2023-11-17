@@ -2,14 +2,14 @@
 #include "ble.hpp"
 #include "config.hpp"
 #include "led.hpp"
+#include "mic.hpp"
 #include "online_update.hpp"
 #include "secrets.hpp"
 #include "sensor.hpp"
 #include "speaker.hpp"
 #include "utils.hpp"
-#include "wifi.hpp"
 #include "wav.hpp"
-#include "mic.hpp"
+#include "wifi.hpp"
 #include <Arduino.h>
 
 static void main_task(void* pvParameters);
@@ -32,13 +32,13 @@ void setup()
     led::init();
     mic::init();
     api::init();
-    xTaskCreatePinnedToCore(main_task, "main_task", 8192, NULL, 1, NULL, 1);
+    xTaskCreatePinnedToCore(main_task, "main_task", 10240, NULL, 1, NULL, 1);
 }
 
 void main_task(void* pvParameters)
 {
     wifi::update();
-    // update::check();
+    update::check();
     // speaker::play(heat_sound, sizeof(heat_sound));
 
     ble::init();
@@ -48,17 +48,17 @@ void main_task(void* pvParameters)
     while (true) {
         wifi::update();
 
-        static bool flag = false;
-        if (!flag) {
-            api::post_sensor_data(
-                sensor::get_temperature(),
-                sensor::get_pressure(),
-                sensor::get_humidity());
-            WAVWriter wav_writer((uint8_t*)wav_buffer, sizeof(wav_buffer), 8000, 16);
-            mic::record_to_wav(&wav_writer);
-            api::post_wav_data((uint8_t*)wav_buffer, sizeof(wav_buffer));
-            flag = true;
-        }
+        // static bool flag = false;
+        // if (!flag) {
+        //     api::post_sensor_data(
+        //         sensor::get_temperature(),
+        //         sensor::get_pressure(),
+        //         sensor::get_humidity());
+        //     WAVWriter wav_writer((uint8_t*)wav_buffer, sizeof(wav_buffer), 8000, 16);
+        //     mic::record_to_wav(&wav_writer);
+        //     api::post_wav_data((uint8_t*)wav_buffer, sizeof(wav_buffer));
+        //     flag = true;
+        // }
 
         if (get_tick() - last_sensor_post > 1000 * 60 * 10) {  // every 10 minutes
             api::post_sensor_data(

@@ -2,7 +2,7 @@
 #include <Arduino.h>
 namespace config
 {
-constexpr int PROGRAM_VERSION = 0;
+constexpr int PROGRAM_VERSION = 2;
 constexpr int BOARD_REVISION = 0;
 
 constexpr int MAX_TOKEN_LENGTH = 256;

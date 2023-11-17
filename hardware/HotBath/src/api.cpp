@@ -5,8 +5,8 @@
 #include "etl/string_stream.h"
 #include "rootCA.hpp"
 #include "secrets.hpp"
-#include "wifi.hpp"
 #include "utils.hpp"
+#include "wifi.hpp"
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
@@ -24,18 +24,15 @@ static Bath_Status bath_status = BathNormal;
 
 static bool post(etl::string_view url, etl::string_view data);
 
-class APILock
+APILock::APILock()
 {
-public:
-    APILock()
-    {
-        xSemaphoreTakeRecursive(xMutex, portMAX_DELAY);
-    }
-    ~APILock()
-    {
-        xSemaphoreGiveRecursive(xMutex);
-    }
-};
+    xSemaphoreTakeRecursive(xMutex, portMAX_DELAY);
+}
+
+APILock::~APILock()
+{
+    xSemaphoreGiveRecursive(xMutex);
+}
 
 void init()
 {
@@ -43,6 +40,21 @@ void init()
     client.setCACert(rootCA);
 
     xMutex = xSemaphoreCreateRecursiveMutex();
+}
+
+bool connect_client()
+{
+    if (!wifi::get_status()) {
+        ESP_LOGE(TAG, "wifi not connected");
+        return false;
+    }
+
+    if (!client.connect(HOST_URL, 443)) {
+        ESP_LOGE(TAG, "client connection failed");
+        client.stop();
+        return false;
+    }
+    return true;
 }
 
 bool post_sensor_data(float temperature, float pressure, float humidity)
@@ -88,14 +100,8 @@ bool post(etl::string_view url, etl::string_view data)
     APILock lock;
 
     ESP_LOGI(TAG, "POST %s %s", url.data(), data.data());
-    if (!wifi::get_status()) {
-        ESP_LOGE(TAG, "wifi not connected");
-        return false;
-    }
 
-    if (!client.connect(HOST_URL, 443)) {
-        ESP_LOGE(TAG, "client connection failed");
-        client.stop();
+    if (!connect_client()) {
         return false;
     }
 
@@ -124,19 +130,13 @@ bool post(etl::string_view url, etl::string_view data)
     return true;
 }
 
-bool post_wav_data(const uint8_t* data, size_t data_size)
+bool post_wav_data(const uint8_t* data, size_t data_size, bool& safe)
 {
     APILock lock;
 
     ESP_LOGI(TAG, "POST WAV");
-    if (!wifi::get_status()) {
-        ESP_LOGE(TAG, "wifi not connected");
-        return false;
-    }
 
-    if (!client.connect(HOST_URL, 443)) {
-        ESP_LOGE(TAG, "client connection failed");
-        client.stop();
+    if (!connect_client()) {
         return false;
     }
 
@@ -177,10 +177,12 @@ bool post_wav_data(const uint8_t* data, size_t data_size)
         }
     }
     ESP_LOGI(TAG, "received header");
-    while (client.available() > 0) {
-        String line = client.readStringUntil('\n');
-        ESP_LOGI(TAG, "received data: %s", line.c_str());
-    }
+    String line = client.readStringUntil('\n');
+    ESP_LOGI(TAG, "received data: %s", line.c_str());
+
+    deserializeJson(doc, line.c_str());
+
+    safe = doc["safe"];
 
     client.stop();
 
@@ -192,14 +194,8 @@ bool get_latest_firmware_information(int& version, String& url)
     APILock lock;
 
     ESP_LOGI(TAG, "GET LATEST VERSION");
-    if (!wifi::get_status()) {
-        ESP_LOGE(TAG, "wifi not connected");
-        return false;
-    }
 
-    if (!client.connect(HOST_URL, 443)) {
-        ESP_LOGE(TAG, "client connection failed");
-        client.stop();
+    if (!connect_client()) {
         return false;
     }
 

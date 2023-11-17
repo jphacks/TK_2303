@@ -1,5 +1,6 @@
 #include "speaker.hpp"
 #include "driver/i2s.h"
+#include "mic.hpp"
 #include "sensor.hpp"
 #include <Arduino.h>
 #include <string.h>
@@ -11,27 +12,34 @@
 
 namespace speaker
 {
-static uint16_t soundBuf[128];
+static uint16_t soundBuf[512];
+
+static volatile bool playing = false;
+bool initialized = false;
+
+static constexpr i2s_config_t i2s_config = {
+    .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX),  // Only TX
+    .sample_rate = 16000,
+    .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
+    .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,
+    .communication_format = I2S_COMM_FORMAT_STAND_I2S,
+    .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,  // Interrupt level 1
+    .dma_buf_count = 16,
+    .dma_buf_len = 128,
+};
+static constexpr i2s_pin_config_t pin_config = {
+    .bck_io_num = SPEAKER_BCK,
+    .ws_io_num = SPEAKER_WS,
+    .data_out_num = SPEAKER_DOUT,
+    .data_in_num = -1  // Not used
+};
 
 void play(const uint16_t* audio_data, size_t remain)
 {
+    mic::MicLock mic_lock;
     sensor::I2CLock lock;
-    i2s_config_t i2s_config = {
-        .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX),  // Only TX
-        .sample_rate = 16000,
-        .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
-        .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,
-        .communication_format = I2S_COMM_FORMAT_STAND_I2S,
-        .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,  // Interrupt level 1
-        .dma_buf_count = 16,
-        .dma_buf_len = 128,
-    };
-    i2s_pin_config_t pin_config = {
-        .bck_io_num = SPEAKER_BCK,
-        .ws_io_num = SPEAKER_WS,
-        .data_out_num = SPEAKER_DOUT,
-        .data_in_num = -1  // Not used
-    };
+
+    playing = true;
 
     i2s_driver_install(I2S_NUM, &i2s_config, 0, NULL);
     i2s_set_pin(I2S_NUM, &pin_config);
@@ -50,7 +58,7 @@ void play(const uint16_t* audio_data, size_t remain)
         // ボリューム調整.
         for (int i = 0; i < sizeof(soundBuf) / sizeof(soundBuf[0]); ++i) {
             int16_t v = (int16_t)soundBuf[i];
-            soundBuf[i] = v * 0.05f;
+            soundBuf[i] = v * 0.5f;
         }
 
         i2s_write(I2S_NUM, soundBuf, size, &written, portMAX_DELAY);
@@ -60,5 +68,13 @@ void play(const uint16_t* audio_data, size_t remain)
     }
     i2s_zero_dma_buffer(I2S_NUM);
     i2s_driver_uninstall(I2S_NUM);
+
+    // delay(1000);
+    playing = false;
+}
+
+bool is_playing()
+{
+    return playing;
 }
 }  // namespace speaker

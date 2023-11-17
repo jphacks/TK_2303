@@ -1,6 +1,7 @@
 #include "led.hpp"
 
 #include "ble.hpp"
+#include "speaker.hpp"
 #include <Arduino.h>
 
 #define RED_LED_PIN 40
@@ -40,6 +41,15 @@ void led_task(void* pvParameters)
                 count_ = 0;
             }
             break;
+        case Update:
+            analogWrite(RED_LED_PIN, 255 - count_);
+            analogWrite(BLUE_LED_PIN, 0);
+            if (direction_) {
+                count_ -= 10;
+            } else {
+                count_ += 10;
+            }
+            break;
         default:
             break;
         }
@@ -53,7 +63,9 @@ void led_task(void* pvParameters)
         }
 
         if (digitalRead(SW_PIN) == LOW) {
-            ble::open_request();
+            if (!speaker::is_playing()) {
+                // ble::open_request();
+            }
         }
 
         vTaskDelay(50);
