@@ -7,7 +7,7 @@
 
 import Foundation
 class Service {
-    public let baseUrl = "https://bathcare.tsubame.workers.dev"
+    public let baseUrl = "https://bathcare-test.tsubame.workers.dev"
     public var bearerToken: String {
         "Bearer " + TokenManager.shared.getToken()
     }

@@ -139,7 +139,7 @@ struct HomeView: View {
         init(appDataStore: AppDataStoreMock = AppDataStoreMock()) {
             self.appDataStore = appDataStore
             appDataStore.storedData = .init(
-                bathStatusJson: .init(status: .danger),
+                bathStatusJson: .init(status: .outBath),
                 sensorDatasJson: .init(
                     temperature: 24.0,
                     humidity: 70.8,
@@ -164,14 +164,6 @@ struct HomeView: View {
                             action: .goOutOfBath,
                             date: "2023-11-16T02:50:40+09:00"
                         ),
-                        .init(
-                            action: .goIntoBath,
-                            date: "2023-11-17T02:50:40+09:00"
-                        ),
-                        .init(
-                            action: .becomeDanger,
-                            date: "2023-11-17T03:13:40+09:00"
-                        )
                     ]
                 )
             )

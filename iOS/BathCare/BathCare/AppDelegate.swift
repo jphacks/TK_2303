@@ -26,14 +26,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 
         application.registerForRemoteNotifications()
 
-        Messaging.messaging().token { token, error in
-            if let error {
-                print("Error fetching FCM registration token: \(error)")
-            } else if let token {
-                print("FCM registration token: \(token)")
-            }
-        }
-
         return true
     }
 
@@ -42,11 +34,22 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     }
 
     func application(_: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        var readableToken = ""
-        for index in 0 ..< deviceToken.count {
-            readableToken += String(format: "%02.2hhx", deviceToken[index] as CVarArg)
+        Messaging.messaging().setAPNSToken(deviceToken, type: .prod)
+        Messaging.messaging().token { token, error in
+            if let error {
+                print("Error fetching FCM registration token: \(error)")
+            } else if let token {
+                Task {
+                    do {
+                        try await SendFCMTokenService().post(token: token)
+                    } catch(let error) {
+                        print(error)
+                    }
+                }
+                print("FCM registration token: \(token)")
+            }
         }
-        print("Received an APNs device token: \(readableToken)")
+        print("didRegisterForRemoteNotificationsWithDeviceToken: \(deviceToken)")
     }
 }
 

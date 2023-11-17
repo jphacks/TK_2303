@@ -74,6 +74,7 @@
 		C59647332AFD167400A6578F /* SensorDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59647322AFD167400A6578F /* SensorDataService.swift */; };
 		C59647352AFD1B6700A6578F /* HistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59647342AFD1B6700A6578F /* HistoryService.swift */; };
 		C59647372AFD1BD500A6578F /* PhoneNumberService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59647362AFD1BD500A6578F /* PhoneNumberService.swift */; };
+		C59D0E4D2B0797120089D363 /* SendFCMTokenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59D0E4C2B0797120089D363 /* SendFCMTokenService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -121,6 +122,7 @@
 		C59647342AFD1B6700A6578F /* HistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryService.swift; sourceTree = "<group>"; };
 		C59647362AFD1BD500A6578F /* PhoneNumberService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumberService.swift; sourceTree = "<group>"; };
 		C59D0E4B2B068E730089D363 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		C59D0E4C2B0797120089D363 /* SendFCMTokenService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendFCMTokenService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -334,6 +336,7 @@
 				C59647342AFD1B6700A6578F /* HistoryService.swift */,
 				C59647362AFD1BD500A6578F /* PhoneNumberService.swift */,
 				C59346442B00BA0B0005957D /* RegisterDeviceService.swift */,
+				C59D0E4C2B0797120089D363 /* SendFCMTokenService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -465,6 +468,7 @@
 				C56B6C7C2AF3D5140013F504 /* FirstView.swift in Sources */,
 				C596472E2AFD0FA200A6578F /* Service.swift in Sources */,
 				C56B6C7C2AF3D5140013F504 /* FirstView.swift in Sources */,
+				C59D0E4D2B0797120089D363 /* SendFCMTokenService.swift in Sources */,
 				C5660C232AEE7732000E5CD0 /* HistoryJson.swift in Sources */,
 				C5660C1D2AEE76BB000E5CD0 /* BathStatus.swift in Sources */,
 				C517FFFA2AEC9B9200FB2E73 /* ContentView.swift in Sources */,
