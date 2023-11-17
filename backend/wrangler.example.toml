@@ -1,12 +1,37 @@
 name = "bathcare"
 compatibility_date = "2023-01-01"
+compatibility_flags = [
+    "nodejs_compat"
+]
 
-# [vars]
-# MY_VARIABLE = "production_value"
+[vars]
+FIREBASE_KEY_FILE = '''
+Firebase key file contents
+'''
+IOS_TOKEN = "ios-token"
+FIRMWARE_DOWNLOAD_SITE = "download-site"
+CONSOLE_URL = "http://localhost:5173"
+REGISTER_API_TOKEN = "register-api-token"
+OPENAI_API_KEY = "sk-foo"
+OPENAI_ORG_ID = "org-bar"
 
+# KV namespaces
 [[kv_namespaces]]
 binding = "DEVICE_STATUSES"
-id = "xxx"
+id = ""
+
+[[kv_namespaces]]
+binding = "ADMIN_KV"
+id = ""
+
+# Durable Objects
+# [[durable_objects.bindings]]
+# name = "BATH_DEVICE_CLASS"
+# class_name = "BathDurableObject"
+
+# [[migrations]]
+# tag = "v1" # Should be unique for each entry
+# new_classes = ["BathDurableObject"] # Array of new classes
 
 # [[r2_buckets]]
 # binding = "MY_BUCKET"

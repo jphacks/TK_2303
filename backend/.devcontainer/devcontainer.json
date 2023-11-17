@@ -5,7 +5,8 @@
       "extensions": [
         "GitHub.copilot",
         "42Crunch.vscode-openapi",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "tamasfe.even-better-toml"
       ]
     }
   }

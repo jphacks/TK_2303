@@ -1,5 +1,18 @@
 import { z } from 'zod';
 
+export type Device = {
+  id: string;
+  status: 'in' | 'out' | 'danger' | 'unknown';
+  name?: string;
+  registerDate: Date;
+  temperature?: number;
+  humidity?: number;
+  pressure?: number;
+  lastUpdate?: Date;
+  phoneNumber?: string;
+  alartToken?: string;
+};
+
 export type DeviceStatus = {
   status: 'in' | 'out' | 'danger' | 'unknown';
 };
@@ -19,13 +32,13 @@ export const AlartSchema = z.object({
 export type SensorData = {
   temperature: number;
   humidity: number;
-  co2: number;
+  pressure: number;
 };
 
 export const SensorDataSchema = z.object({
   temperature: z.number().min(-100).max(100),
   humidity: z.number().min(0).max(100),
-  co2: z.number().min(0).max(10000),
+  pressure: z.number().min(0).max(10000),
 });
 
 export type SensorDataWithTime = SensorData & {
@@ -36,6 +49,10 @@ export const SensorDataWithTimeSchema = SensorDataSchema.extend({
   lastUpdate: z.string(),
 });
 
+export const AlartTokenSchema = z.object({
+  token: z.string(),
+});
+
 export type PhoneNumberData = {
   number: string;
 };
@@ -43,6 +60,14 @@ export type PhoneNumberData = {
 export const PhoneNumberDataSchema = z.object({
   number: z.string(),
 });
+
+export type CheckSafeResponse = {
+  safe: boolean;
+  transcription: string;
+  chatBotResponse: string;
+  transcriptionDuration: number;
+  chatDuration: number;
+};
 
 export type HistoryEntry = {
   date: string;
@@ -55,3 +80,10 @@ export const HistoryEntrySchema = z.object({
 });
 
 export type History = { history: HistoryEntry[] };
+
+export type Firmware = {
+  name: string;
+  version: number;
+  release_date: string;
+  download_url: string;
+};
