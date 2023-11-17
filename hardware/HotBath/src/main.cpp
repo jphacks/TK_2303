@@ -26,6 +26,7 @@ void setup()
     config::data.wifi_configured = true;
     strncpy(config::data.token, API_KEY, sizeof(config::data.token));
     config::data.token_configured = true;
+    config::save();
 
     sensor::init();
     led::init();
@@ -37,7 +38,8 @@ void setup()
 void main_task(void* pvParameters)
 {
     wifi::update();
-    update::check();
+    // update::check();
+    // speaker::play(heat_sound, sizeof(heat_sound));
 
     ble::init();
     int64_t last_sensor_post = 0;
@@ -46,26 +48,26 @@ void main_task(void* pvParameters)
     while (true) {
         wifi::update();
 
-        // static bool flag = false;
-        // if (!flag) {
-        //     api::post_sensor_data(
-        //         sensor::get_temperature(),
-        //         sensor::get_pressure(),
-        //         sensor::get_humidity());
-        //     WAVWriter wav_writer((uint8_t*)wav_buffer, sizeof(wav_buffer), 8000, 16);
-        //     mic::record_to_wav(&wav_writer);
-        //     api::post_wav_data((uint8_t*)wav_buffer, sizeof(wav_buffer));
-        //     flag = true;
-        // }
+        static bool flag = false;
+        if (!flag) {
+            api::post_sensor_data(
+                sensor::get_temperature(),
+                sensor::get_pressure(),
+                sensor::get_humidity());
+            WAVWriter wav_writer((uint8_t*)wav_buffer, sizeof(wav_buffer), 8000, 16);
+            mic::record_to_wav(&wav_writer);
+            api::post_wav_data((uint8_t*)wav_buffer, sizeof(wav_buffer));
+            flag = true;
+        }
 
-        if (get_tick() - last_sensor_post > 1000 * 60 * 10) {
+        if (get_tick() - last_sensor_post > 1000 * 60 * 10) {  // every 10 minutes
             api::post_sensor_data(
                 sensor::get_temperature(),
                 sensor::get_pressure(),
                 sensor::get_humidity());
             last_sensor_post = get_tick();
         }
-        if (get_tick() - last_firmware_check > 1000 * 60 * 24) {
+        if (get_tick() - last_firmware_check > 1000 * 60 * 60 * 24) {  // every 24 hours
             update::check();
             last_firmware_check = get_tick();
         }

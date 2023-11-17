@@ -10,9 +10,14 @@ static const char TAG[] = "CONFIG";
 
 void init()
 {
-    ESP_LOGI(TAG, "load config");
-    EEPROM.begin(1024);
+    ESP_LOGI(TAG, "load config size:%ld", sizeof(EEPROM_DATA));
+    if (EEPROM.begin(512)) {
+        ESP_LOGI(TAG, "EEPROM.begin success");
+    } else {
+        ESP_LOGE(TAG, "EEPROM.begin failed");
+    }
     EEPROM.get<EEPROM_DATA>(0, data);
+    ESP_LOGI(TAG, "verify:0x%x", data.verify);
     if (data.verify != 0xdeadbeef) {
         factory_reset();
     }
@@ -34,7 +39,11 @@ void save()
 {
     ESP_LOGI(TAG, "save config");
     EEPROM.put<EEPROM_DATA>(0, data);
-    EEPROM.commit();
+    if (EEPROM.commit()) {
+        ESP_LOGI(TAG, "EEPROM.commit success");
+    } else {
+        ESP_LOGE(TAG, "EEPROM.commit failed");
+    }
 }
 
 }  // namespace config

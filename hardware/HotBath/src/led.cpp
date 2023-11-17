@@ -6,6 +6,7 @@
 #define RED_LED_PIN 40
 #define BLUE_LED_PIN 36
 #define SW_PIN 37
+#define SW_PULLUP_PIN 39
 
 namespace led
 {
@@ -63,10 +64,12 @@ void init()
 {
     pinMode(RED_LED_PIN, OUTPUT);
     pinMode(BLUE_LED_PIN, OUTPUT);
-    pinMode(SW_PIN, INPUT_PULLUP);
+    pinMode(SW_PIN, INPUT);
+    pinMode(SW_PULLUP_PIN, OUTPUT);
 
     analogWrite(RED_LED_PIN, 255);
     analogWrite(BLUE_LED_PIN, 255);
+    digitalWrite(SW_PULLUP_PIN, HIGH);
 
     xTaskCreatePinnedToCore(led_task, "led_task", 2048, NULL, 5, NULL, 0);
 }

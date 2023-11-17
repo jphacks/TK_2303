@@ -15,7 +15,6 @@ static uint16_t soundBuf[128];
 
 void play(const uint16_t* audio_data, size_t remain)
 {
-    return;
     sensor::I2CLock lock;
     i2s_config_t i2s_config = {
         .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX),  // Only TX

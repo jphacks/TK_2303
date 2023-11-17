@@ -11,6 +11,7 @@
 #include "esp_log.h"
 #include "api.hpp"
 #include "secrets.hpp"
+#include "config.hpp"
 #include <Arduino.h>
 
 namespace update
@@ -19,6 +20,8 @@ static const char TAG[] = "OTA";
 static long contentLength = 0;
 static long receivedBytes = 0;
 static int progress = 0;
+
+static void update(String url);
 
 // Utility to extract header value from headers
 String getHeaderValue(String header, String headerName)
@@ -64,9 +67,17 @@ esp_err_t _http_event_handler(esp_http_client_event_t* evt)
 
 void check()
 {
+    Serial.println("Check OTA update");
+
     int version;
     String url;
     api::get_latest_firmware_information(version, url);
+
+    if (version > config::PROGRAM_VERSION) {
+        update(url);
+    } else {
+        Serial.println("No update available");
+    }
 }
 
 void update(String url)
