@@ -9,6 +9,7 @@
 #include "esp_ota_ops.h"
 #include "rootCA.hpp"
 #include "esp_log.h"
+#include "api.hpp"
 #include "secrets.hpp"
 #include <Arduino.h>
 
@@ -63,6 +64,9 @@ esp_err_t _http_event_handler(esp_http_client_event_t* evt)
 
 void check()
 {
+    int version;
+    String url;
+    api::get_latest_firmware_information(version, url);
 }
 
 void update(String url)

@@ -36,28 +36,27 @@ void setup()
 
 void main_task(void* pvParameters)
 {
+    wifi::update();
     update::check();
+
     ble::init();
     int64_t last_sensor_post = 0;
     int64_t last_firmware_check = 0;
 
-    // speaker::play(heat_sound, sizeof(heat_sound));
-
     while (true) {
         wifi::update();
 
-        static bool flag = false;
-        if (!flag) {
-            api::post_sensor_data(
-                sensor::get_temperature(),
-                sensor::get_pressure(),
-                sensor::get_humidity());
-
-            WAVWriter wav_writer((uint8_t*)wav_buffer, sizeof(wav_buffer), 8000, 16);
-            mic::record_to_wav(&wav_writer);
-            api::post_wav_data((uint8_t*)wav_buffer, sizeof(wav_buffer));
-            flag = true;
-        }
+        // static bool flag = false;
+        // if (!flag) {
+        //     api::post_sensor_data(
+        //         sensor::get_temperature(),
+        //         sensor::get_pressure(),
+        //         sensor::get_humidity());
+        //     WAVWriter wav_writer((uint8_t*)wav_buffer, sizeof(wav_buffer), 8000, 16);
+        //     mic::record_to_wav(&wav_writer);
+        //     api::post_wav_data((uint8_t*)wav_buffer, sizeof(wav_buffer));
+        //     flag = true;
+        // }
 
         if (get_tick() - last_sensor_post > 1000 * 60 * 10) {
             api::post_sensor_data(

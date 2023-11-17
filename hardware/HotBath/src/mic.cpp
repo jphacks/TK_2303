@@ -61,7 +61,8 @@ void record_to_wav(WAVWriter* wav_writer)
         if (err == ESP_OK) {
             for (int i = 0; i < num_bytes_read; i += 4) {
                 int32_t* val = (int32_t*)&samples[i];
-                int16_t tmp = (int16_t)(*val >> 16);
+                int32_t val2 = constrain((*val) * 4, -2147483648, 2147483647);
+                int16_t tmp = (int16_t)(val2 >> 16);
                 // Serial.println((int)tmp);
                 if (!wav_writer->write((uint8_t*)&tmp, 2)) {
                     flag = false;
