@@ -12,7 +12,7 @@ import base64
 
 def lambda_handler(event, context):
     # TODO implement
-    wav_base64 = event.get("wav")
+    wav_base64 = json.loads(event["body"])["wav"]
 
     # decode from base64 string
     wav_bytes = base64.b64decode(wav_base64)
