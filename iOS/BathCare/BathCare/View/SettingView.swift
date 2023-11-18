@@ -15,6 +15,7 @@ struct SettingView: View {
                 TokenManager.shared.deleteToken()
                 exit(0)
             }
+            Text(TokenManager.shared.getToken())
             #endif
         }
     }

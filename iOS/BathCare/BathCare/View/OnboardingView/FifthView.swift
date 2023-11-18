@@ -98,9 +98,9 @@ struct FifthView: View {
                 .background(Color.backGround)
                 .cornerRadius(12)
                 #if DEBUG
-//                Button("debug") {
-//                    viewModel.gotNetworkAvailability(isNetworkAvailable: true)
-//                }
+                Button("debug") {
+                    viewModel.gotNetworkAvailability(isNetworkAvailable: true)
+                }
                 #endif
                 Spacer()
             }
@@ -136,7 +136,6 @@ struct FifthView: View {
         }
         .onAppear {
             viewModel.onAppear()
-            viewModel.gotNetworkAvailability(isNetworkAvailable: true)
         }
         .alert(
             "接続に失敗しました。",
