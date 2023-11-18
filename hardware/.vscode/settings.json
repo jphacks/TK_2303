@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "config.h": "c",
+        "mdns_private.h": "c",
+        "ssl.h": "c"
+    }
+}

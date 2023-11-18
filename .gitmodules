@@ -1,0 +1,15 @@
+[submodule "hardware/HotBath/lib/libpeer"]
+	path = hardware/HotBath/lib/libpeer
+	url = https://github.com/sepfy/libpeer.git
+[submodule "hardware/HotBath/lib/SparkFun_SHTC3_Arduino_Library"]
+	path = hardware/HotBath/lib/SparkFun_SHTC3_Arduino_Library
+	url = https://github.com/sparkfun/SparkFun_SHTC3_Arduino_Library.git
+[submodule "hardware/HotBathIDF/lib/libpeer"]
+	path = hardware/HotBathIDF/lib/libpeer
+	url = https://github.com/hamataku/libpeer.git
+[submodule "hardware/HotBathIDF/components/srtp"]
+	path = hardware/HotBathIDF/components/srtp
+	url = https://github.com/sepfy/esp_ports.git
+[submodule "hardware/HotBathIDF/components/arduino"]
+	path = hardware/HotBathIDF/components/arduino
+	url = https://github.com/espressif/arduino-esp32.git
