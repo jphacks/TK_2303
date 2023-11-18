@@ -37,7 +37,7 @@ __NOINIT_ATTR float max_bath_temperature;
 __NOINIT_ATTR float temperature_before_enter;
 
 // humid
-static constexpr float HUMID_ENTER_THRESHOLD = 5.0f;
+static constexpr float HUMID_ENTER_THRESHOLD = 3.0f;
 static constexpr float ALPHA_HUMID = 0.01f;
 
 __NOINIT_ATTR float humidity;
