@@ -2,6 +2,7 @@
 
 #include "ble.hpp"
 #include "speaker.hpp"
+#include "config.hpp"
 #include <Arduino.h>
 
 #define RED_LED_PIN 40
@@ -14,6 +15,7 @@ namespace led
 static LED_Mode mode_ = Normal;
 static int count_ = 0;
 static bool direction_ = false;
+static int pairing_count_ = 0;
 
 void led_task(void* pvParameters)
 {
@@ -63,7 +65,15 @@ void led_task(void* pvParameters)
         }
 
         if (digitalRead(SW_PIN) == LOW) {
-            ble::open_request();
+            pairing_count_++;
+            if (pairing_count_ > 40) {
+                ble::open_request();
+            } else if (pairing_count_ > 80) {
+                config::factory_reset();
+                ESP.restart();
+            }
+        } else {
+            pairing_count_ = 0;
         }
 
         vTaskDelay(50);

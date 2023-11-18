@@ -64,7 +64,7 @@ void play(const uint16_t* audio_data, size_t remain)
         // ボリューム調整.
         for (int i = 0; i < sizeof(soundBuf) / sizeof(soundBuf[0]); ++i) {
             int16_t v = (int16_t)soundBuf[i];
-            soundBuf[i] = v * 0.2f;
+            soundBuf[i] = v * 0.4f;
         }
 
         i2s_write(I2S_NUM, soundBuf, size, &written, portMAX_DELAY);

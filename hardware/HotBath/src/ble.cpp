@@ -17,7 +17,7 @@
 
 #define BT_NAME "HotBath"
 
-#define BLE_TIMEOUT 1000 * 60 * 2
+#define BLE_TIMEOUT 1000 * 60 * 3
 namespace ble
 {
 typedef enum {
@@ -35,6 +35,7 @@ static volatile BLE_Status status = Normal;
 static int64_t last_operation_tick = 0;
 static const char TAG[] = "BLE";
 static volatile bool wifi_connect_request = false;
+static volatile bool restart_request = false;
 
 static void ble_task(void* pvParameters);
 static void send(etl::string_view data);
@@ -65,20 +66,24 @@ class BleCallbacks : public BLECharacteristicCallbacks
                 doc.clear();
                 if (config::data.token_configured) {
                     doc["token"] = config::data.token;
+                    serializeJson(doc, json_buf);
+                    send(json_buf);
+                    restart_request = true;
                 } else {
                     doc["token"] = "";
+                    serializeJson(doc, json_buf);
+                    send(json_buf);
                 }
-                serializeJson(doc, json_buf);
-                send(json_buf);
             } else if (doc["ssid"] != nullptr && doc["pass"] != nullptr) {
                 snprintf(config::data.ssid, sizeof(config::data.ssid), "%s", doc["ssid"].as<const char*>());
                 snprintf(config::data.pass, sizeof(config::data.pass), "%s", doc["pass"].as<const char*>());
                 wifi_connect_request = true;
+                config::save();
             } else if (doc["token"] != nullptr) {
                 snprintf(config::data.token, sizeof(config::data.token), "%s", doc["token"].as<const char*>());
                 config::data.token_configured = true;
                 config::save();
-                status = CloseRequest;
+                restart_request = true;
             } else {
                 ESP_LOGE(TAG, "Unknown json format");
             }
@@ -159,7 +164,8 @@ void open_request()
 
 void close_request()
 {
-    status = CloseRequest;
+    ESP.restart();
+    // status = CloseRequest;
 }
 
 void ble_task(void* pvParameters)
@@ -188,6 +194,10 @@ void ble_task(void* pvParameters)
             send(json_buf);
             config::save();
             wifi_connect_request = false;
+        }
+        if (restart_request) {
+            vTaskDelay(2000);
+            ESP.restart();
         }
         vTaskDelay(1000);
     }
