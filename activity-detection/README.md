@@ -6,3 +6,6 @@
 # install requirements
 pip install -r requirements.txt -t ./libs/
 ```
+
+- ラムダ関数ビルド用のイメージ`Dockerfile`
+  - webrtcvadが

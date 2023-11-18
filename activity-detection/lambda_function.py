@@ -14,9 +14,10 @@ import numpy as np
 
 
 def lambda_handler(event, context):
-    wav_base64 = event.get("wav")
-    if wav_base64 == None:
-        wav_base64 = json.loads(event["body"])["wav"]
+    # wav_base64 = event.get("wav")
+    # if wav_base64 == None:
+    wav_base64 = json.loads(event["body"])["wav"]
+    print(wav_base64[:20])
 
     # decode from base64 string
     wav_bytes = base64.b64decode(wav_base64)
@@ -24,9 +25,9 @@ def lambda_handler(event, context):
     # run detection
     results = run_detection(wav_bytes)
 
-    audio_urls = event.get("audio_urls")
-    if audio_urls == None:
-        audio_urls = json.loads(event["body"])["audio_urls"]
+    # audio_urls = event.get("audio_urls")
+    audio_urls = json.loads(event["body"])["audio_urls"]
+    print(audio_urls)
 
     mfcc_dists = comp_mfccs(audio_urls)
 
@@ -86,8 +87,8 @@ def comp_mfccs(audio_urls: list[str]):
     return dists
 
 def get_mfccs(url: str):
-    req = urllib.request.Request(url, headers={"User-Agent": "urllib"})
-    with urllib.request.urlopen(req) as f:
+    req = urllib.request.Request(url, headers={"User-Agent": "vad detector on lambda"})
+    with urllib.request.urlopen(req, timeout=3) as f:
         wav_bytes = f.read()
         with io.BytesIO(wav_bytes) as wav_file:
             audio, sr = librosa.load(wav_file, sr=8000)
