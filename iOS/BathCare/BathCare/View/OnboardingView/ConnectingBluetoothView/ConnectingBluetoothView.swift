@@ -16,9 +16,11 @@ struct ConnectingBluetoothView: View {
     @ObservedObject var viewModel: ConnectingBluetoothViewModel
     var body: some View {
         VStack(spacing: 24) {
+            #if DEBUG
             Button("debug"){
                 viewModel.connected(token: "")
             }
+            #endif
             Text("デバイスを探しています")
                 .font(.title2)
                 .bold()

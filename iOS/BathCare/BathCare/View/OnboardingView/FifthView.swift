@@ -97,9 +97,11 @@ struct FifthView: View {
                 }
                 .background(Color.backGround)
                 .cornerRadius(12)
-                Button("debug") {
-                    viewModel.gotNetworkAvailability(isNetworkAvailable: true)
-                }
+                #if DEBUG
+//                Button("debug") {
+//                    viewModel.gotNetworkAvailability(isNetworkAvailable: true)
+//                }
+                #endif
                 Spacer()
             }
             .padding(.horizontal, 32)
@@ -134,6 +136,7 @@ struct FifthView: View {
         }
         .onAppear {
             viewModel.onAppear()
+            viewModel.gotNetworkAvailability(isNetworkAvailable: true)
         }
         .alert(
             "接続に失敗しました。",
@@ -144,9 +147,17 @@ struct FifthView: View {
 }
 
 #Preview {
-    FifthView(
-        isOnboardingFinished: .constant(false),
-        state: .constant(.stable),
-        viewModel: .init(bluetoothManager: .shared)
-    )
+    struct PreviewWrapper: View {
+        let viewModel: FifthViewModel = .init(bluetoothManager: .shared)
+        var body: some View {
+            viewModel.ssidInput = "TP-Link3308"
+            viewModel.passwordInput = "TP-Link3308"
+            return FifthView(
+                isOnboardingFinished: .constant(false),
+                state: .constant(.stable),
+                viewModel: viewModel
+            )
+        }
+    }
+    return PreviewWrapper()
 }
