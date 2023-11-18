@@ -2,13 +2,12 @@ FROM public.ecr.aws/lambda/python:3.11
 
 ARG ARCH
 
-COPY requirements.txt ./
 
 RUN yum update -y
 RUN yum install -y gcc
 RUN yum install -y tar
 RUN yum install -y xz
-RUN pip install -r requirements.txt
+RUN yum install libsndfile-devel -y
 
 # install ffmpeg
 WORKDIR /tmp
@@ -19,6 +18,8 @@ RUN mv ffmpeg-6.1-${ARCH}-static/ffprobe /usr/local/bin/ffprobe
 RUN rm -rf ffmpeg-6.1-${ARCH}-static
 
 WORKDIR /var/task
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
 COPY lambda_function.py ./
 
 CMD ["lambda_function.lambda_handler"]

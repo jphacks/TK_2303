@@ -8,11 +8,15 @@ import webrtcvad
 from pydub import AudioSegment
 import io
 import base64
+import urllib.request
+import librosa
+import numpy as np
 
 
 def lambda_handler(event, context):
-    # TODO implement
-    wav_base64 = json.loads(event["body"])["wav"]
+    wav_base64 = event.get("wav")
+    if wav_base64 == None:
+        wav_base64 = json.loads(event["body"])["wav"]
 
     # decode from base64 string
     wav_bytes = base64.b64decode(wav_base64)
@@ -20,7 +24,16 @@ def lambda_handler(event, context):
     # run detection
     results = run_detection(wav_bytes)
 
-    return {"statusCode": 200, "body": json.dumps({"results": results})}
+    audio_urls = event.get("audio_urls")
+    if audio_urls == None:
+        audio_urls = json.loads(event["body"])["audio_urls"]
+
+    mfcc_dists = comp_mfccs(audio_urls)
+
+    return {
+        "statusCode": 200,
+        "body": json.dumps({"results": results, "mfcc_dists": mfcc_dists}),
+    }
 
 
 def run_detection(wav_bytes, frame_duration=10) -> list:
@@ -50,3 +63,35 @@ def run_detection(wav_bytes, frame_duration=10) -> list:
         )
 
     return results
+
+
+def comp_mfccs(audio_urls: list[str]):
+    mfccs_list = []
+    for url in audio_urls:
+        mfccs = get_mfccs(url)
+        mfccs_list.append(mfccs)
+
+    num_mfccs = len(mfccs_list)
+
+    means = [np.mean(mfccs_list[i], axis=1) for i in range(num_mfccs)]
+
+    dists = []
+    for i in range(num_mfccs):
+        dists_tmp = []
+        for j in range(num_mfccs):
+            dist = np.linalg.norm(means[i] - means[j]) if i != j else -1
+            dists_tmp.append(float(dist))
+        dists.append(dists_tmp)
+
+    return dists
+
+def get_mfccs(url: str):
+    req = urllib.request.Request(url, headers={"User-Agent": "urllib"})
+    with urllib.request.urlopen(req) as f:
+        wav_bytes = f.read()
+        with io.BytesIO(wav_bytes) as wav_file:
+            audio, sr = librosa.load(wav_file, sr=8000)
+
+    mfccs = librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=32)
+
+    return mfccs
