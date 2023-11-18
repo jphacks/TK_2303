@@ -3,6 +3,7 @@
 #include "api.hpp"
 #include "mic.hpp"
 #include "speaker.hpp"
+#include "config.hpp"
 #include "utils.hpp"
 #include "wav.hpp"
 #include <Arduino.h>
@@ -19,8 +20,8 @@ static SHTC3 shtc3;
 
 static const char TAG[] = "SENSOR";
 
-static constexpr int64_t MAX_BATH_TIME = 10 * 1000;            // 30 min
-static constexpr int64_t BATH_TIME_INTERVAL = 10 * 60 * 1000;  // 10 min
+static constexpr int64_t MAX_BATH_TIME = 10 * 1000;  // 30 min
+static constexpr int64_t BATH_TIME_INTERVAL = 0;     // 10 min
 
 // temp
 static constexpr float TEMP_ENTER_THRESHOLD = 1.0f;
@@ -29,28 +30,28 @@ static constexpr float TEMP_EXIT_THRESHOLD_BEFORE_ENTER = TEMP_ENTER_THRESHOLD /
 static constexpr float ALPHA_TEMP = 0.005f;
 static constexpr float ALPHA_TEMP_LONG_TERM = 0.0001f;
 
-static float temperature = 0;
-static float temperature_filtered = 0;
-static float temperature_filtered_long_term = 0;
-static int16_t temperature_enter_possibility = 0;
-static float max_bath_temperature = 0;
-static float temperature_before_enter = 0;
+static __NOINIT_ATTR float temperature;
+static __NOINIT_ATTR float temperature_filtered;
+static __NOINIT_ATTR float temperature_filtered_long_term;
+static __NOINIT_ATTR int16_t temperature_enter_possibility;
+static __NOINIT_ATTR float max_bath_temperature;
+static __NOINIT_ATTR float temperature_before_enter;
 
 // humid
 static constexpr float HUMID_ENTER_THRESHOLD = 10.0f;
 static constexpr float ALPHA_HUMID = 0.01f;
 
-static float humidity = 0;
-static float humidity_filtered = 0;
-static int16_t humidity_enter_possibility = 0;
+static __NOINIT_ATTR float humidity;
+static __NOINIT_ATTR float humidity_filtered;
+static __NOINIT_ATTR int16_t humidity_enter_possibility;
 
 // pressure
 static float pressure = 0;
 
 // flags
-static bool initialized = false;
+static __NOINIT_ATTR bool initialized;
 
-static int64_t bath_in_time = 0;
+static __NOINIT_ATTR int64_t bath_in_time;
 
 static SemaphoreHandle_t xMutex = NULL;
 
@@ -92,7 +93,7 @@ static void sensor_task(void* pvParameters)
 {
     {
         I2CLock lock;
-        Wire.setPins(I2C_PIN_SDA, I2C_PIN_SCL);
+        Wire.begin(I2C_PIN_SDA, I2C_PIN_SCL, static_cast<uint32_t>(4000));
         shtc3.begin();
         Dps3xxPressureSensor.begin(Wire);
     }
@@ -129,10 +130,9 @@ static void sensor_task(void* pvParameters)
                 max_bath_temperature = -100;
                 temperature_before_enter = temperature_filtered_long_term;
                 api::set_bath_status(api::BathIn);
-                speaker::play(chime_sound, sizeof(chime_sound));
-                // speaker::play(heat_sound, sizeof(heat_sound));
                 bath_in_time = get_tick();
                 ESP_LOGI(TAG, "BathIn");
+                speaker::set_sound_and_restart(speaker::Heat);
             }
             Serial.printf("N,%.2f,%.2f,%d,%.2f,%.2f,%d\n", temperature, temperature_filtered, temperature_enter_possibility, humidity, humidity_filtered, humidity_enter_possibility);
             break;
@@ -145,8 +145,6 @@ static void sensor_task(void* pvParameters)
                 ESP_LOGI(TAG, "BathOut");
             }
             if (get_tick() - bath_in_time > MAX_BATH_TIME) {
-                // speaker::play(chime_sound, sizeof(chime_sound));
-                // speaker::play(long_time_sound, sizeof(long_time_sound));
                 WAVWriter wav_writer((uint8_t*)wav_buffer, sizeof(wav_buffer), 8000, 16);
                 mic::record_to_wav(&wav_writer);
 
@@ -178,7 +176,24 @@ static void sensor_task(void* pvParameters)
 
 void init()
 {
+    if (config::is_first_boot()) {
+        temperature = 0;
+        temperature_filtered = 0;
+        temperature_filtered_long_term = 0;
+        temperature_enter_possibility = 0;
+        max_bath_temperature = 0;
+        temperature_before_enter = 0;
+
+        humidity = 0;
+        humidity_filtered = 0;
+        humidity_enter_possibility = 0;
+
+        initialized = false;
+        bath_in_time = 0;
+    }
     xMutex = xSemaphoreCreateRecursiveMutex();
+
+    mic::init();
     xTaskCreatePinnedToCore(sensor_task, "sensor_task", 16384, NULL, 1, NULL, 1);
 }
 

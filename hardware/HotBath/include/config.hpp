@@ -21,5 +21,5 @@ extern EEPROM_DATA data;
 void init();
 void save();
 void factory_reset();
-
+bool is_first_boot();
 }  // namespace config

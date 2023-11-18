@@ -19,6 +19,7 @@ void setup()
     Serial.begin(115200);
     update::rollback_check();
     config::init();
+    speaker::init_play_and_restart();
 
     // debug
     strncpy(config::data.ssid, MYSSID, sizeof(config::data.ssid));
@@ -27,39 +28,24 @@ void setup()
     strncpy(config::data.token, API_KEY, sizeof(config::data.token));
     config::data.token_configured = true;
     config::save();
-
     sensor::init();
     led::init();
-    mic::init();
     api::init();
     xTaskCreatePinnedToCore(main_task, "main_task", 10240, NULL, 1, NULL, 1);
 }
 
 void main_task(void* pvParameters)
 {
-    wifi::update();
-    update::check();
-    // speaker::play(heat_sound, sizeof(heat_sound));
+    if (config::is_first_boot()) {
+        wifi::update();
+        update::check();
+    }
 
     ble::init();
     int64_t last_sensor_post = 0;
     int64_t last_firmware_check = 0;
 
     while (true) {
-        wifi::update();
-
-        // static bool flag = false;
-        // if (!flag) {
-        //     api::post_sensor_data(
-        //         sensor::get_temperature(),
-        //         sensor::get_pressure(),
-        //         sensor::get_humidity());
-        //     WAVWriter wav_writer((uint8_t*)wav_buffer, sizeof(wav_buffer), 8000, 16);
-        //     mic::record_to_wav(&wav_writer);
-        //     api::post_wav_data((uint8_t*)wav_buffer, sizeof(wav_buffer));
-        //     flag = true;
-        // }
-
         if (get_tick() - last_sensor_post > 1000 * 60 * 10) {  // every 10 minutes
             api::post_sensor_data(
                 sensor::get_temperature(),

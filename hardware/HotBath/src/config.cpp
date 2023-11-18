@@ -7,9 +7,19 @@ namespace config
 {
 EEPROM_DATA data;
 static const char TAG[] = "CONFIG";
+__NOINIT_ATTR uint32_t cookie;
+static bool first_boot = false;
 
 void init()
 {
+    if (cookie != 0xdeadbeef) {
+        cookie = 0xdeadbeef;
+        first_boot = true;
+        ESP_LOGI(TAG, "first boot");
+    } else {
+        ESP_LOGI(TAG, "reset boot");
+    }
+
     ESP_LOGI(TAG, "load config size:%ld", sizeof(EEPROM_DATA));
     if (EEPROM.begin(1024)) {
         ESP_LOGI(TAG, "EEPROM.begin success");
@@ -44,6 +54,12 @@ void save()
     } else {
         ESP_LOGE(TAG, "EEPROM.commit failed");
     }
+}
+
+bool is_first_boot()
+{
+    return first_boot;
+    // return true;
 }
 
 }  // namespace config

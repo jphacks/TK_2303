@@ -2,6 +2,7 @@
 #include "driver/i2s.h"
 #include "mic.hpp"
 #include "sensor.hpp"
+#include "config.hpp"
 #include <Arduino.h>
 #include <string.h>
 
@@ -14,8 +15,7 @@ namespace speaker
 {
 static uint16_t soundBuf[512];
 static const char TAG[] = "SPEAKER";
-
-static volatile bool playing = false;
+__NOINIT_ATTR Sound_Type sound_type = NoSound;
 bool initialized = false;
 
 static constexpr i2s_config_t i2s_config = {
@@ -35,13 +35,14 @@ static constexpr i2s_pin_config_t pin_config = {
     .data_in_num = -1  // Not used
 };
 
+void set_sound_and_restart(Sound_Type type)
+{
+    sound_type = type;
+    ESP.restart();
+}
+
 void play(const uint16_t* audio_data, size_t remain)
 {
-    mic::MicLock mic_lock;
-    sensor::I2CLock lock;
-
-    playing = true;
-
     ESP_LOGI(TAG, "play start");
 
     if (!initialized) {
@@ -56,7 +57,7 @@ void play(const uint16_t* audio_data, size_t remain)
 
     size_t written = 0;
     const unsigned char* p = (unsigned char*)audio_data;
-    const int bufSize = sizeof(soundBuf);
+    const size_t bufSize = sizeof(soundBuf);
 
     while (remain > 0) {
         int size = (remain < bufSize) ? remain : bufSize;
@@ -65,7 +66,7 @@ void play(const uint16_t* audio_data, size_t remain)
         // ボリューム調整.
         for (int i = 0; i < sizeof(soundBuf) / sizeof(soundBuf[0]); ++i) {
             int16_t v = (int16_t)soundBuf[i];
-            soundBuf[i] = v * 0.5f;
+            soundBuf[i] = v * 0.05f;
         }
 
         i2s_write(I2S_NUM, soundBuf, size, &written, portMAX_DELAY);
@@ -76,15 +77,34 @@ void play(const uint16_t* audio_data, size_t remain)
     i2s_zero_dma_buffer(I2S_NUM);
 
     ESP_LOGI(TAG, "play end");
-
-    // i2s_driver_uninstall(I2S_NUM);
-
-    // delay(1000);
-    playing = false;
 }
 
-bool is_playing()
+void init_play_and_restart()
 {
-    return playing;
+    if (config::is_first_boot()) {
+        return;
+    }
+
+    switch (sound_type) {
+    case NoSound:
+        return;
+        break;
+    case LongTime:
+        play(chime_sound, sizeof(chime_sound));
+        play(long_time_sound, sizeof(long_time_sound));
+        break;
+    case Heat:
+        play(chime_sound, sizeof(chime_sound));
+        play(heat_sound, sizeof(heat_sound));
+        break;
+    case Alert:
+        play(chime_sound, sizeof(chime_sound));
+        play(alert_sound, sizeof(alert_sound));
+        break;
+    default:
+        break;
+    }
+    sound_type = NoSound;
+    ESP.restart();
 }
 }  // namespace speaker

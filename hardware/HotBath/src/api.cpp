@@ -20,7 +20,7 @@ static StaticJsonDocument<512> doc;
 static SemaphoreHandle_t xMutex = NULL;
 static const char TAG[] = "API";
 
-static Bath_Status bath_status = BathNormal;
+static __NOINIT_ATTR Bath_Status bath_status;
 
 static bool post(etl::string_view url, etl::string_view data);
 
@@ -40,10 +40,15 @@ void init()
     client.setCACert(rootCA);
 
     xMutex = xSemaphoreCreateRecursiveMutex();
+
+    if (config::is_first_boot()) {
+        bath_status = BathNormal;
+    }
 }
 
 bool connect_client()
 {
+    wifi::update();
     if (!wifi::get_status()) {
         ESP_LOGE(TAG, "wifi not connected");
         return false;

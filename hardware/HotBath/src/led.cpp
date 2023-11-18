@@ -7,7 +7,7 @@
 #define RED_LED_PIN 40
 #define BLUE_LED_PIN 36
 #define SW_PIN 37
-#define SW_PULLUP_PIN 39
+#define SW_PULLUP_PIN 41
 
 namespace led
 {
@@ -63,9 +63,7 @@ void led_task(void* pvParameters)
         }
 
         if (digitalRead(SW_PIN) == LOW) {
-            if (!speaker::is_playing()) {
-                // ble::open_request();
-            }
+            ble::open_request();
         }
 
         vTaskDelay(50);
