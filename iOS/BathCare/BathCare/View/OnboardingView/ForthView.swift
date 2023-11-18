@@ -17,10 +17,7 @@ struct ForthView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack(spacing: 16) {
-                Color.green.frame(
-                    width: 280,
-                    height: 280
-                )
+                Image("Onboarding4")
                 Text("Connect to Device")
                     .font(.title2)
                     .bold()
