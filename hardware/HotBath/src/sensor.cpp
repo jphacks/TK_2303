@@ -23,9 +23,9 @@ static const char TAG[] = "SENSOR";
 static constexpr int64_t MAX_BATH_TIME = 30 * 1000;  // 30 second
 
 // temp
-static constexpr float TEMP_ENTER_THRESHOLD = 0.5f;
-static constexpr float TEMP_EXIT_THRESHOLD = 1.0f;
-static constexpr float TEMP_EXIT_THRESHOLD_BEFORE_ENTER = TEMP_ENTER_THRESHOLD / 2.0f;
+static constexpr float TEMP_ENTER_THRESHOLD = -5.0f;
+static constexpr float TEMP_EXIT_THRESHOLD = 5.0f;
+static constexpr float TEMP_EXIT_THRESHOLD_BEFORE_ENTER = 5.0f;
 static constexpr float ALPHA_TEMP = 0.005f;
 static constexpr float ALPHA_TEMP_LONG_TERM = 0.0001f;
 
@@ -37,7 +37,7 @@ __NOINIT_ATTR float max_bath_temperature;
 __NOINIT_ATTR float temperature_before_enter;
 
 // humid
-static constexpr float HUMID_ENTER_THRESHOLD = 10.0f;
+static constexpr float HUMID_ENTER_THRESHOLD = 5.0f;
 static constexpr float ALPHA_HUMID = 0.01f;
 
 __NOINIT_ATTR float humidity;
@@ -51,6 +51,7 @@ static float pressure = 0;
 __NOINIT_ATTR bool initialized;
 
 __NOINIT_ATTR int64_t bath_in_time;
+__NOINIT_ATTR int64_t last_vad_time;
 
 static SemaphoreHandle_t xMutex = NULL;
 
@@ -88,6 +89,14 @@ static void update()
     }
 }
 
+static void sensor_update_task(void* pvParameters)
+{
+    while (true) {
+        update();
+        vTaskDelay(1000);
+    }
+}
+
 static void sensor_task(void* pvParameters)
 {
     {
@@ -96,10 +105,10 @@ static void sensor_task(void* pvParameters)
         shtc3.begin();
         Dps3xxPressureSensor.begin(Wire);
     }
+    update();
+    xTaskCreatePinnedToCore(sensor_update_task, "sensor_update_task", 4096, NULL, 1, NULL, 1);
 
     while (true) {
-        update();
-
         switch (api::get_bath_status()) {
         case api::BathNormal:
             // judge humidity
@@ -131,30 +140,46 @@ static void sensor_task(void* pvParameters)
                 api::set_bath_status(api::BathIn);
                 api::post_alart("お風呂に入りました");
                 ESP_LOGI(TAG, "BathIn");
-                speaker::play(chime_sound, sizeof(chime_sound));
-                speaker::play(bathin_sound, sizeof(bathin_sound));
-                speaker::play(heatshock_attention_sound, sizeof(heatshock_attention_sound));
-                bath_in_time = get_tick();
-                ESP.restart();
+                {
+                    I2CLock i2c_lock;
+                    speaker::play(chime_sound, sizeof(chime_sound));
+                    speaker::play(bathin_sound, sizeof(bathin_sound));
+                    speaker::play(heatshock_attention_sound, sizeof(heatshock_attention_sound));
+                    bath_in_time = get_tick();
+                    ESP.restart();
+                }
             }
             Serial.printf("N,%.2f,%.2f,%d,%.2f,%.2f,%d\n", temperature, temperature_filtered, temperature_enter_possibility, humidity, humidity_filtered, humidity_enter_possibility);
             break;
         case api::BathIn:
             max_bath_temperature = max(max_bath_temperature, temperature);
             // Evaluate from the difference from the maximum temperature and the temperature before bathing
-            if ((max_bath_temperature - temperature > TEMP_EXIT_THRESHOLD) || (temperature - temperature_before_enter < TEMP_EXIT_THRESHOLD_BEFORE_ENTER)) {
-                api::set_bath_status(api::BathOut);
-                ESP_LOGI(TAG, "BathOut");
-                speaker::play(chime_sound, sizeof(chime_sound));
-                speaker::play(bathout_sound, sizeof(bathout_sound));
-                ESP.restart();
-                break;
-            }
+            // if ((max_bath_temperature - temperature > TEMP_EXIT_THRESHOLD) || (temperature - temperature_before_enter < TEMP_EXIT_THRESHOLD_BEFORE_ENTER)) {
+            //     api::set_bath_status(api::BathOut);
+            //     ESP_LOGI(TAG, "BathOut");
+            //     {
+            //         I2CLock i2c_lock;
+            //         speaker::play(chime_sound, sizeof(chime_sound));
+            //         speaker::play(bathout_sound, sizeof(bathout_sound));
+            //         ESP.restart();
+            //     }
+            //     break;
+            // }
             if (get_tick() - bath_in_time > MAX_BATH_TIME) {
                 api::set_bath_status(api::BathInLongTime);
-                speaker::play(chime_sound, sizeof(chime_sound));
-                speaker::play(long_time_sound, sizeof(long_time_sound));
-                ESP.restart();
+                {
+                    I2CLock i2c_lock;
+                    speaker::play(chime_sound, sizeof(chime_sound));
+                    speaker::play(long_time_sound, sizeof(long_time_sound));
+                    ESP.restart();
+                }
+            }
+            if (get_tick() - last_vad_time > 1000 * 60) {
+                WAVWriter wav_writer((uint8_t*)wav_buffer, sizeof(wav_buffer), 8000, 16);
+                mic::record_to_wav(&wav_writer);
+                bool alive = true;
+                api::post_wav_data_check_alive((uint8_t*)wav_buffer, sizeof(wav_buffer), alive);
+                last_vad_time = get_tick();
             }
             Serial.printf("I,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n", temperature, temperature_filtered, max_bath_temperature, humidity, humidity_filtered, temperature_before_enter);
             break;
@@ -162,14 +187,17 @@ static void sensor_task(void* pvParameters)
             WAVWriter wav_writer((uint8_t*)wav_buffer, sizeof(wav_buffer), 8000, 16);
             mic::record_to_wav(&wav_writer);
             bool safe = true;
-            api::post_wav_data((uint8_t*)wav_buffer, sizeof(wav_buffer), safe);
+            api::post_wav_data_check_safe((uint8_t*)wav_buffer, sizeof(wav_buffer), safe);
             if (!safe) {
                 api::set_bath_status(api::BathDanger);
                 api::post_alart("お風呂での異常を検知しました");
                 ESP_LOGI(TAG, "BathDanger");
-                speaker::play(chime_sound, sizeof(chime_sound));
-                speaker::play(danger_sound, sizeof(danger_sound));
-                ESP.restart();
+                {
+                    I2CLock i2c_lock;
+                    speaker::play(chime_sound, sizeof(chime_sound));
+                    speaker::play(danger_sound, sizeof(danger_sound));
+                    ESP.restart();
+                }
                 break;
             }
             bath_in_time = get_tick();
@@ -209,6 +237,7 @@ void init()
 
         initialized = false;
         bath_in_time = 0;
+        last_vad_time = 0;
     }
     xMutex = xSemaphoreCreateRecursiveMutex();
 

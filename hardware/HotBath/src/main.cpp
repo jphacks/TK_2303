@@ -24,7 +24,7 @@ void setup()
     config::init();
 
 // debug
-#if 1
+#if 0
     strncpy(config::data.ssid, MYSSID, sizeof(config::data.ssid));
     strncpy(config::data.pass, MYPASS, sizeof(config::data.pass));
     config::data.wifi_configured = true;

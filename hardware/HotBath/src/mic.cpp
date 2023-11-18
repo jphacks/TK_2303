@@ -16,9 +16,6 @@ static uint8_t samples[I2S_BUFFER_SIZE];
 static constexpr i2s_port_t i2s_port = I2S_NUM_0;
 static const char TAG[] = "MIC";
 
-static float alpha_mic = 0.01f;
-static float mic_filtered = 0;
-
 xSemaphoreHandle mux;
 
 MicLock::MicLock()
@@ -81,7 +78,7 @@ void init()
     i2s_set_pin(i2s_port, &pin_config);
 
     mux = xSemaphoreCreateMutex();
-    xTaskCreatePinnedToCore(mic_task, "mic_task", 4096, NULL, 1, NULL, 1);
+    // xTaskCreatePinnedToCore(mic_task, "mic_task", 4096, NULL, 1, NULL, 1);
 }
 
 void record_to_wav(WAVWriter* wav_writer)

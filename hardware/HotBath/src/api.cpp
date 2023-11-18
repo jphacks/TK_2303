@@ -155,7 +155,7 @@ bool post(etl::string_view url, etl::string_view data)
     return true;
 }
 
-bool post_wav_data(const uint8_t* data, size_t data_size, bool& safe)
+bool post_wav_data_check_safe(const uint8_t* data, size_t data_size, bool& safe)
 {
     APILock lock;
 
@@ -184,7 +184,7 @@ bool post_wav_data(const uint8_t* data, size_t data_size, bool& safe)
         client.write(data, write_size);
         data += write_size;
         data_size -= write_size;
-        ESP_LOGE(TAG, "write %d", data_size);
+        // ESP_LOGE(TAG, "write %d", data_size);
     }
     client.print("\r\n");
 
@@ -208,6 +208,66 @@ bool post_wav_data(const uint8_t* data, size_t data_size, bool& safe)
     deserializeJson(doc, line.c_str());
 
     safe = doc["safe"];
+
+    client.stop();
+
+    return true;
+}
+
+bool post_wav_data_check_alive(const uint8_t* data, size_t data_size, bool& alive)
+{
+    APILock lock;
+
+    ESP_LOGI(TAG, "POST WAV");
+
+    if (!connect_client()) {
+        return false;
+    }
+
+    data_buf.clear();
+    etl::string_stream stream(data_buf);
+    stream << "POST https://" HOST_URL << "/misc/check_alive"
+           << " HTTP/1.1\r\n";
+    stream << "Host: " HOST_URL "\r\n";
+    stream << "Authorization: Bearer " << config::data.token << "\r\n";
+    stream << "Content-Type: audio/wav\r\n";
+    stream << "Content-Length: " << data_size << "\r\n";
+    stream << "Keep-Alive: 30\r\n";
+    stream << "Connection: keep-alive";
+    stream << "\r\n\r\n";
+    client.print(data_buf.data());
+
+    size_t bufSize = 2048;
+    while (data_size > 0) {
+        int write_size = (data_size < bufSize) ? data_size : bufSize;
+        client.write(data, write_size);
+        data += write_size;
+        data_size -= write_size;
+        // ESP_LOGE(TAG, "write %d", data_size);
+    }
+    client.print("\r\n");
+
+    ESP_LOGI(TAG, "wait response");
+    int64_t start = get_tick();
+    while (client.connected()) {
+        String line = client.readStringUntil('\n');
+        if (line == "\r") {
+            break;
+        }
+        if (get_tick() - start > 10000) {
+            ESP_LOGE(TAG, "timeout");
+            client.stop();
+            return false;
+        }
+    }
+    ESP_LOGI(TAG, "received header");
+    String line = client.readStringUntil('\n');
+    ESP_LOGI(TAG, "received data: %s", line.c_str());
+
+    // deserializeJson(doc, line.c_str());
+
+    // safe = doc["safe"];
+    alive = true;
 
     client.stop();
 
