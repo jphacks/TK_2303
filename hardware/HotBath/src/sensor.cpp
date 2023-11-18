@@ -20,10 +20,10 @@ static SHTC3 shtc3;
 
 static const char TAG[] = "SENSOR";
 
-static constexpr int64_t MAX_BATH_TIME = 10 * 1000;  // 30 min
+static constexpr int64_t MAX_BATH_TIME = 30 * 1000;  // 30 second
 
 // temp
-static constexpr float TEMP_ENTER_THRESHOLD = 1.0f;
+static constexpr float TEMP_ENTER_THRESHOLD = 0.5f;
 static constexpr float TEMP_EXIT_THRESHOLD = 1.0f;
 static constexpr float TEMP_EXIT_THRESHOLD_BEFORE_ENTER = TEMP_ENTER_THRESHOLD / 2.0f;
 static constexpr float ALPHA_TEMP = 0.005f;
@@ -132,7 +132,8 @@ static void sensor_task(void* pvParameters)
                 api::post_alart("お風呂に入りました");
                 ESP_LOGI(TAG, "BathIn");
                 speaker::play(chime_sound, sizeof(chime_sound));
-                speaker::play(heat_sound, sizeof(heat_sound));
+                speaker::play(bathin_sound, sizeof(bathin_sound));
+                speaker::play(heatshock_attention_sound, sizeof(heatshock_attention_sound));
                 bath_in_time = get_tick();
                 ESP.restart();
             }
@@ -144,6 +145,9 @@ static void sensor_task(void* pvParameters)
             if ((max_bath_temperature - temperature > TEMP_EXIT_THRESHOLD) || (temperature - temperature_before_enter < TEMP_EXIT_THRESHOLD_BEFORE_ENTER)) {
                 api::set_bath_status(api::BathOut);
                 ESP_LOGI(TAG, "BathOut");
+                speaker::play(chime_sound, sizeof(chime_sound));
+                speaker::play(bathout_sound, sizeof(bathout_sound));
+                ESP.restart();
                 break;
             }
             if (get_tick() - bath_in_time > MAX_BATH_TIME) {
@@ -163,6 +167,9 @@ static void sensor_task(void* pvParameters)
                 api::set_bath_status(api::BathDanger);
                 api::post_alart("お風呂での異常を検知しました");
                 ESP_LOGI(TAG, "BathDanger");
+                speaker::play(chime_sound, sizeof(chime_sound));
+                speaker::play(danger_sound, sizeof(danger_sound));
+                ESP.restart();
                 break;
             }
             bath_in_time = get_tick();

@@ -90,6 +90,10 @@ bool set_bath_status(Bath_Status status)
 {
     APILock lock;
 
+    if (status == bath_status) {
+        return true;
+    }
+
     doc.clear();
     if (status == BathIn) {
         if (bath_status == BathInLongTime) {

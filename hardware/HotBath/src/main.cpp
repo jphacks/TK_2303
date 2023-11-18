@@ -22,14 +22,16 @@ void setup()
     Serial.begin(115200);
     update::rollback_check();
     config::init();
-    
-    // debug
-    // strncpy(config::data.ssid, MYSSID, sizeof(config::data.ssid));
-    // strncpy(config::data.pass, MYPASS, sizeof(config::data.pass));
-    // config::data.wifi_configured = true;
-    // strncpy(config::data.token, API_KEY, sizeof(config::data.token));
-    // config::data.token_configured = true;
-    // config::save();
+
+// debug
+#if 1
+    strncpy(config::data.ssid, MYSSID, sizeof(config::data.ssid));
+    strncpy(config::data.pass, MYPASS, sizeof(config::data.pass));
+    config::data.wifi_configured = true;
+    strncpy(config::data.token, API_KEY, sizeof(config::data.token));
+    config::data.token_configured = true;
+    config::save();
+#endif
 
     sensor::init();
     led::init();

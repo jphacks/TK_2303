@@ -83,7 +83,6 @@ class BleCallbacks : public BLECharacteristicCallbacks
                 snprintf(config::data.token, sizeof(config::data.token), "%s", doc["token"].as<const char*>());
                 config::data.token_configured = true;
                 config::save();
-                restart_request = true;
             } else {
                 ESP_LOGE(TAG, "Unknown json format");
             }
