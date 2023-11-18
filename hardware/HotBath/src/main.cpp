@@ -14,20 +14,23 @@
 
 static void main_task(void* pvParameters);
 
+__NOINIT_ATTR int64_t last_sensor_post;
+__NOINIT_ATTR int64_t last_firmware_check;
+
 void setup()
 {
     Serial.begin(115200);
     update::rollback_check();
     config::init();
-    speaker::init_play_and_restart();
-
+    
     // debug
-    strncpy(config::data.ssid, MYSSID, sizeof(config::data.ssid));
-    strncpy(config::data.pass, MYPASS, sizeof(config::data.pass));
-    config::data.wifi_configured = true;
-    strncpy(config::data.token, API_KEY, sizeof(config::data.token));
-    config::data.token_configured = true;
-    config::save();
+    // strncpy(config::data.ssid, MYSSID, sizeof(config::data.ssid));
+    // strncpy(config::data.pass, MYPASS, sizeof(config::data.pass));
+    // config::data.wifi_configured = true;
+    // strncpy(config::data.token, API_KEY, sizeof(config::data.token));
+    // config::data.token_configured = true;
+    // config::save();
+
     sensor::init();
     led::init();
     api::init();
@@ -39,11 +42,11 @@ void main_task(void* pvParameters)
     if (config::is_first_boot()) {
         wifi::update();
         update::check();
+        last_sensor_post = 0;
+        last_firmware_check = 0;
     }
 
     ble::init();
-    int64_t last_sensor_post = 0;
-    int64_t last_firmware_check = 0;
 
     while (true) {
         if (get_tick() - last_sensor_post > 1000 * 60 * 10) {  // every 10 minutes

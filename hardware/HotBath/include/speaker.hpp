@@ -4,12 +4,5 @@
 
 namespace speaker
 {
-typedef enum {
-    NoSound = 0,
-    LongTime,
-    Heat,
-    Alert,
-} Sound_Type;
-void set_sound_and_restart(Sound_Type type);
-void init_play_and_restart();
+void play(const uint16_t* audio_data, size_t remain);
 }  // namespace speaker

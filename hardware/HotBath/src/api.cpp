@@ -20,7 +20,7 @@ static StaticJsonDocument<512> doc;
 static SemaphoreHandle_t xMutex = NULL;
 static const char TAG[] = "API";
 
-static __NOINIT_ATTR Bath_Status bath_status;
+__NOINIT_ATTR Bath_Status bath_status;
 
 static bool post(etl::string_view url, etl::string_view data);
 
@@ -75,21 +75,37 @@ bool post_sensor_data(float temperature, float pressure, float humidity)
     return post("/bath/sensors", json_buf);
 }
 
+bool post_alart(etl::string_view message)
+{
+    APILock lock;
+
+    doc.clear();
+    doc["message"] = message;
+    serializeJson(doc, json_buf);
+
+    return post("/misc/alart", json_buf);
+}
+
 bool set_bath_status(Bath_Status status)
 {
     APILock lock;
 
     doc.clear();
-    bath_status = status;
     if (status == BathIn) {
+        if (bath_status == BathInLongTime) {
+            bath_status = status;
+            return true;
+        }
         doc["status"] = "in";
     } else if (status == BathOut) {
         doc["status"] = "out";
     } else if (status == BathDanger) {
         doc["status"] = "danger";
     } else {
+        bath_status = status;
         return true;
     }
+    bath_status = status;
     serializeJson(doc, json_buf);
 
     return post("/bath/status", json_buf);

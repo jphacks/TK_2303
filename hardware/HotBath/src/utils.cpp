@@ -1,4 +1,6 @@
 #include "utils.hpp"
+#include "config.hpp"
+#include <Arduino.h>
 
 int64_t get_tick()
 {

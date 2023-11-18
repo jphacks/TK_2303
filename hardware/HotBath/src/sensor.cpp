@@ -21,7 +21,6 @@ static SHTC3 shtc3;
 static const char TAG[] = "SENSOR";
 
 static constexpr int64_t MAX_BATH_TIME = 10 * 1000;  // 30 min
-static constexpr int64_t BATH_TIME_INTERVAL = 0;     // 10 min
 
 // temp
 static constexpr float TEMP_ENTER_THRESHOLD = 1.0f;
@@ -30,28 +29,28 @@ static constexpr float TEMP_EXIT_THRESHOLD_BEFORE_ENTER = TEMP_ENTER_THRESHOLD /
 static constexpr float ALPHA_TEMP = 0.005f;
 static constexpr float ALPHA_TEMP_LONG_TERM = 0.0001f;
 
-static __NOINIT_ATTR float temperature;
-static __NOINIT_ATTR float temperature_filtered;
-static __NOINIT_ATTR float temperature_filtered_long_term;
-static __NOINIT_ATTR int16_t temperature_enter_possibility;
-static __NOINIT_ATTR float max_bath_temperature;
-static __NOINIT_ATTR float temperature_before_enter;
+__NOINIT_ATTR float temperature;
+__NOINIT_ATTR float temperature_filtered;
+__NOINIT_ATTR float temperature_filtered_long_term;
+__NOINIT_ATTR int16_t temperature_enter_possibility;
+__NOINIT_ATTR float max_bath_temperature;
+__NOINIT_ATTR float temperature_before_enter;
 
 // humid
 static constexpr float HUMID_ENTER_THRESHOLD = 10.0f;
 static constexpr float ALPHA_HUMID = 0.01f;
 
-static __NOINIT_ATTR float humidity;
-static __NOINIT_ATTR float humidity_filtered;
-static __NOINIT_ATTR int16_t humidity_enter_possibility;
+__NOINIT_ATTR float humidity;
+__NOINIT_ATTR float humidity_filtered;
+__NOINIT_ATTR int16_t humidity_enter_possibility;
 
 // pressure
 static float pressure = 0;
 
 // flags
-static __NOINIT_ATTR bool initialized;
+__NOINIT_ATTR bool initialized;
 
-static __NOINIT_ATTR int64_t bath_in_time;
+__NOINIT_ATTR int64_t bath_in_time;
 
 static SemaphoreHandle_t xMutex = NULL;
 
@@ -93,7 +92,7 @@ static void sensor_task(void* pvParameters)
 {
     {
         I2CLock lock;
-        Wire.begin(I2C_PIN_SDA, I2C_PIN_SCL, static_cast<uint32_t>(4000));
+        Wire.begin(I2C_PIN_SDA, I2C_PIN_SCL);
         shtc3.begin();
         Dps3xxPressureSensor.begin(Wire);
     }
@@ -130,35 +129,48 @@ static void sensor_task(void* pvParameters)
                 max_bath_temperature = -100;
                 temperature_before_enter = temperature_filtered_long_term;
                 api::set_bath_status(api::BathIn);
-                bath_in_time = get_tick();
+                api::post_alart("お風呂に入りました");
                 ESP_LOGI(TAG, "BathIn");
-                speaker::set_sound_and_restart(speaker::Heat);
+                speaker::play(chime_sound, sizeof(chime_sound));
+                speaker::play(heat_sound, sizeof(heat_sound));
+                bath_in_time = get_tick();
+                ESP.restart();
             }
             Serial.printf("N,%.2f,%.2f,%d,%.2f,%.2f,%d\n", temperature, temperature_filtered, temperature_enter_possibility, humidity, humidity_filtered, humidity_enter_possibility);
             break;
-        case api::BathDanger:
         case api::BathIn:
             max_bath_temperature = max(max_bath_temperature, temperature);
             // Evaluate from the difference from the maximum temperature and the temperature before bathing
             if ((max_bath_temperature - temperature > TEMP_EXIT_THRESHOLD) || (temperature - temperature_before_enter < TEMP_EXIT_THRESHOLD_BEFORE_ENTER)) {
                 api::set_bath_status(api::BathOut);
                 ESP_LOGI(TAG, "BathOut");
+                break;
             }
             if (get_tick() - bath_in_time > MAX_BATH_TIME) {
-                WAVWriter wav_writer((uint8_t*)wav_buffer, sizeof(wav_buffer), 8000, 16);
-                mic::record_to_wav(&wav_writer);
-
-                bool safe = true;
-                api::post_wav_data((uint8_t*)wav_buffer, sizeof(wav_buffer), safe);
-
-                if (!safe) {
-                    api::set_bath_status(api::BathDanger);
-                    ESP_LOGI(TAG, "BathDanger");
-                } else {
-                    bath_in_time = get_tick() - MAX_BATH_TIME + BATH_TIME_INTERVAL;
-                }
+                api::set_bath_status(api::BathInLongTime);
+                speaker::play(chime_sound, sizeof(chime_sound));
+                speaker::play(long_time_sound, sizeof(long_time_sound));
+                ESP.restart();
             }
             Serial.printf("I,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n", temperature, temperature_filtered, max_bath_temperature, humidity, humidity_filtered, temperature_before_enter);
+            break;
+        case api::BathInLongTime: {
+            WAVWriter wav_writer((uint8_t*)wav_buffer, sizeof(wav_buffer), 8000, 16);
+            mic::record_to_wav(&wav_writer);
+            bool safe = true;
+            api::post_wav_data((uint8_t*)wav_buffer, sizeof(wav_buffer), safe);
+            if (!safe) {
+                api::set_bath_status(api::BathDanger);
+                api::post_alart("お風呂での異常を検知しました");
+                ESP_LOGI(TAG, "BathDanger");
+                break;
+            }
+            bath_in_time = get_tick();
+            api::set_bath_status(api::BathIn);
+            break;
+        }
+        case api::BathDanger:
+            ESP_LOGI(TAG, "in BathDanger");
             break;
         case api::BathOut:
             if (temperature - temperature_before_enter < TEMP_EXIT_THRESHOLD_BEFORE_ENTER) {
