@@ -130,7 +130,7 @@ static void sensor_task(void* pvParameters)
                 temperature_before_enter = temperature_filtered_long_term;
                 api::set_bath_status(api::BathIn);
                 speaker::play(chime_sound, sizeof(chime_sound));
-                speaker::play(heat_sound, sizeof(heat_sound));
+                // speaker::play(heat_sound, sizeof(heat_sound));
                 bath_in_time = get_tick();
                 ESP_LOGI(TAG, "BathIn");
             }

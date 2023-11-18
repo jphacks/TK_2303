@@ -13,6 +13,7 @@
 namespace speaker
 {
 static uint16_t soundBuf[512];
+static const char TAG[] = "SPEAKER";
 
 static volatile bool playing = false;
 bool initialized = false;
@@ -41,9 +42,15 @@ void play(const uint16_t* audio_data, size_t remain)
 
     playing = true;
 
-    i2s_driver_install(I2S_NUM, &i2s_config, 0, NULL);
-    i2s_set_pin(I2S_NUM, &pin_config);
-    i2s_set_sample_rates(I2S_NUM, i2s_config.sample_rate);
+    ESP_LOGI(TAG, "play start");
+
+    if (!initialized) {
+        ESP_LOGI(TAG, "i2s_driver_install");
+        i2s_driver_install(I2S_NUM, &i2s_config, 0, NULL);
+        i2s_set_pin(I2S_NUM, &pin_config);
+        i2s_set_sample_rates(I2S_NUM, i2s_config.sample_rate);
+        initialized = true;
+    }
 
     i2s_zero_dma_buffer(I2S_NUM);
 
@@ -67,7 +74,10 @@ void play(const uint16_t* audio_data, size_t remain)
         remain -= written;
     }
     i2s_zero_dma_buffer(I2S_NUM);
-    i2s_driver_uninstall(I2S_NUM);
+
+    ESP_LOGI(TAG, "play end");
+
+    // i2s_driver_uninstall(I2S_NUM);
 
     // delay(1000);
     playing = false;

@@ -81,7 +81,7 @@ void init()
     i2s_set_pin(i2s_port, &pin_config);
 
     mux = xSemaphoreCreateMutex();
-    // xTaskCreatePinnedToCore(mic_task, "mic_task", 4096, NULL, 1, NULL, 0);
+    xTaskCreatePinnedToCore(mic_task, "mic_task", 4096, NULL, 1, NULL, 1);
 }
 
 void record_to_wav(WAVWriter* wav_writer)
