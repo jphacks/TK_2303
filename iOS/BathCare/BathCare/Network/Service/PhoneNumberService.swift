@@ -17,4 +17,15 @@ class PhoneNumberService: Service {
         let (data, _) = try await URLSession.shared.data(for: request)
         return try JSONDecoder().decode(PhoneNumberJson.self, from: data)
     }
+    
+    func post(number: String) async throws {
+        let data = PhoneNumberJson(number: number)
+        let url = URL(string: baseUrl + "/misc/phonenumber")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue(bearerToken, forHTTPHeaderField: "Authorization")
+        request.httpBody = try JSONEncoder().encode(data)
+        
+        let (_, _) = try await URLSession.shared.data(for: request)
+    }
 }

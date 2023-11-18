@@ -6,6 +6,6 @@
 //
 
 import Foundation
-struct PhoneNumberJson: Decodable {
+struct PhoneNumberJson: Codable {
     var number: String
 }

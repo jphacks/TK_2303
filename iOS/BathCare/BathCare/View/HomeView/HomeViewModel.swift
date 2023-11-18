@@ -10,7 +10,7 @@ import AudioToolbox
 import Combine
 
 class HomeViewModel: ObservableObject {
-    @Published var isHighHeatShockPossiblity = false
+//    @Published var isHighHeatShockPossiblity = false
     @Published var isAlertViewPresented = false
     @Published var notifications: [ActionNotification] = []
     private var heatShockPopupShowed = false
@@ -24,7 +24,7 @@ class HomeViewModel: ObservableObject {
     @Published var bathStatus: BathStatus?
     @Published var temperature: Double?
     @Published var humidity: Double?
-    private var phoneNumber: String?
+    @Published var phoneNumber: String?
     
     var bathStatusColor: Color {
         switch bathStatus {
@@ -69,15 +69,14 @@ class HomeViewModel: ObservableObject {
                 await self.refresh()
             }
         }
-        print("appeared: ", heatShockPopupShowed, isHighHeatShockPossiblity)
-        if !heatShockPopupShowed {
-            withAnimation(.default.delay(1.0)) {
-                self.isHighHeatShockPossiblity = true
-            }
-            heatShockPopupShowed = true
-        } else {
-            isHighHeatShockPossiblity = false
-        }
+//        if !heatShockPopupShowed {
+//            withAnimation(.default.delay(1.0)) {
+//                self.isHighHeatShockPossiblity = true
+//            }
+//            heatShockPopupShowed = true
+//        } else {
+//            isHighHeatShockPossiblity = false
+//        }
     }
     
     func onDisapear() {
@@ -85,7 +84,13 @@ class HomeViewModel: ObservableObject {
     }
     
     func refresh() async {
+        let oldBathStatus = bathStatus
         await appDataStore.refresh()
+        if bathStatus == .danger && oldBathStatus != .danger {
+            withAnimation(.default.delay(2.0)) {
+                isAlertViewPresented = true
+            }
+        }
     }
     
     func makeCall() {

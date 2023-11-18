@@ -35,7 +35,7 @@ struct HomeView: View {
                             }
                         }
                     }
-                    HeatShockPopupView(showingPopup: viewModel.isHighHeatShockPossiblity)
+                    // HeatShockPopupView(showingPopup: viewModel.isHighHeatShockPossiblity)
                 }
             }
             .onAppear {
@@ -60,7 +60,7 @@ struct HomeView: View {
                     .foregroundStyle(Color.font)
                 Spacer()
                 NavigationLink {
-                    SettingView()
+                    SettingView(numberText: viewModel.phoneNumber ?? "")
                 } label: {
                     Image(systemName: "gearshape.fill")
                         .resizable()
