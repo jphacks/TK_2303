@@ -12,6 +12,8 @@
 #define I2C_PIN_SDA 42
 #define I2C_PIN_SCL 2
 
+#define DEMO
+
 namespace sensor
 {
 static constexpr uint8_t oversampling = 7;
@@ -23,9 +25,15 @@ static const char TAG[] = "SENSOR";
 static constexpr int64_t MAX_BATH_TIME = 30 * 1000;  // 30 second
 
 // temp
+#ifdef DEMO
 static constexpr float TEMP_ENTER_THRESHOLD = -5.0f;
 static constexpr float TEMP_EXIT_THRESHOLD = 5.0f;
 static constexpr float TEMP_EXIT_THRESHOLD_BEFORE_ENTER = 5.0f;
+#else
+static constexpr float TEMP_ENTER_THRESHOLD = 0.5f;
+static constexpr float TEMP_EXIT_THRESHOLD = 1.0f;
+static constexpr float TEMP_EXIT_THRESHOLD_BEFORE_ENTER = TEMP_ENTER_THRESHOLD / 2.0f;
+#endif
 static constexpr float ALPHA_TEMP = 0.005f;
 static constexpr float ALPHA_TEMP_LONG_TERM = 0.0001f;
 
@@ -37,8 +45,13 @@ __NOINIT_ATTR float max_bath_temperature;
 __NOINIT_ATTR float temperature_before_enter;
 
 // humid
+#ifdef DEMO
 static constexpr float HUMID_ENTER_THRESHOLD = 3.0f;
+#else
+static constexpr float HUMID_ENTER_THRESHOLD = 10.0f;
+#endif
 static constexpr float ALPHA_HUMID = 0.01f;
+
 
 __NOINIT_ATTR float humidity;
 __NOINIT_ATTR float humidity_filtered;
@@ -153,18 +166,20 @@ static void sensor_task(void* pvParameters)
             break;
         case api::BathIn:
             max_bath_temperature = max(max_bath_temperature, temperature);
-            // Evaluate from the difference from the maximum temperature and the temperature before bathing
-            // if ((max_bath_temperature - temperature > TEMP_EXIT_THRESHOLD) || (temperature - temperature_before_enter < TEMP_EXIT_THRESHOLD_BEFORE_ENTER)) {
-            //     api::set_bath_status(api::BathOut);
-            //     ESP_LOGI(TAG, "BathOut");
-            //     {
-            //         I2CLock i2c_lock;
-            //         speaker::play(chime_sound, sizeof(chime_sound));
-            //         speaker::play(bathout_sound, sizeof(bathout_sound));
-            //         ESP.restart();
-            //     }
-            //     break;
-            // }
+// Evaluate from the difference from the maximum temperature and the temperature before bathing
+#ifndef DEMO
+            if ((max_bath_temperature - temperature > TEMP_EXIT_THRESHOLD) || (temperature - temperature_before_enter < TEMP_EXIT_THRESHOLD_BEFORE_ENTER)) {
+                api::set_bath_status(api::BathOut);
+                ESP_LOGI(TAG, "BathOut");
+                {
+                    I2CLock i2c_lock;
+                    speaker::play(chime_sound, sizeof(chime_sound));
+                    speaker::play(bathout_sound, sizeof(bathout_sound));
+                    ESP.restart();
+                }
+                break;
+            }
+#endif
             if (get_tick() - bath_in_time > MAX_BATH_TIME) {
                 api::set_bath_status(api::BathInLongTime);
                 {
