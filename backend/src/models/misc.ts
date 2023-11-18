@@ -7,6 +7,8 @@ import { SignJWT, importPKCS8 } from 'jose';
 import { Alart, CheckSafeResponse, PhoneNumberData } from '../types';
 import { getDevice, updateDevice } from '../db/crud';
 import { retryFetch } from '../util';
+import { aliveCount } from '../db/schema';
+import { eq } from 'drizzle-orm';
 
 export const getPhoneNumber = async (
   DB: D1Database,
@@ -100,7 +102,7 @@ export const sendAlart = async (
 
   // TODO: アプリへの通知機能を実装
   const notificationMessage = {
-    title: '通知',
+    title: alart.title || '通知',
     body: alart.message,
   };
 
@@ -142,7 +144,8 @@ export const checkSafe = async (
   OPENAI_API_KEY: string,
   OPENAI_ORG_ID: string,
   audio: Uint8Array,
-  AI: any
+  AI: any,
+  useWorkersAi: boolean = false
 ): Promise<CheckSafeResponse> => {
   const openai = new OpenAI({
     apiKey: OPENAI_API_KEY,
@@ -152,9 +155,29 @@ export const checkSafe = async (
   const ai = new Ai(AI);
 
   let perfStart = performance.now();
-  const transcription = (await ai.run('@cf/openai/whisper', {
-    audio: [...audio],
-  })) as AiSpeechRecognitionOutput;
+  let transcription: { text: string } = { text: '' };
+  if (useWorkersAi) {
+    const text = (
+      (await ai.run('@cf/openai/whisper', {
+        audio: [...audio],
+      })) as AiSpeechRecognitionOutput
+    ).text;
+    if (text) transcription = { text };
+  } else {
+    transcription = await retryFetch(
+      async () => {
+        return await openai.audio.transcriptions.create({
+          file: new File([audio], 'audio.wav'),
+          model: 'whisper-1',
+          language: 'ja',
+        });
+      },
+      {
+        retryCount: 5, // 5 times
+        retryTimeout: 4, // 4 sec interval
+      }
+    );
+  }
   const transcriptionDuration = (performance.now() - perfStart) / 1000; // msec -> sec
 
   perfStart = performance.now();
@@ -170,7 +193,7 @@ export const checkSafe = async (
           },
           {
             role: 'user',
-            content: ` ${transcription.text}`,
+            content: `ユーザーの返答: ${transcription.text}`,
           },
         ],
       });
@@ -193,5 +216,54 @@ export const checkSafe = async (
     chatBotResponse,
     transcriptionDuration,
     chatDuration,
+  };
+};
+
+export const checkAlive = async (
+  DB: D1Database,
+  id: string,
+  vadApiUrl: string,
+  wavBuf: ArrayBuffer
+) => {
+  const db = drizzle(DB);
+  const currentStatus = await db
+    .select()
+    .from(aliveCount)
+    .where(eq(aliveCount.id, id));
+
+  const wavArray = new Uint8Array(wavBuf);
+  const wavStr = wavArray.reduce(
+    (acc, i) => (acc += String.fromCharCode.apply(null, [i])),
+    ''
+  );
+
+  const res = await fetch(vadApiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      wav: btoa(wavStr),
+    }),
+  });
+
+  const data = await res.json<{
+    results: boolean[];
+  }>();
+
+  const nonActiveCount = data.results.filter((i) => !i).length;
+  const totalCount = data.results.length;
+
+  const nonActivePercentage = Math.round((nonActiveCount / totalCount) * 100);
+
+  const threashold = 80;
+  if (nonActivePercentage > threashold) {
+    // Mark as out
+  }
+
+  return {
+    totalCount,
+    nonActiveCount,
+    lastUpdate: Date.now(),
   };
 };

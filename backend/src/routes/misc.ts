@@ -144,10 +144,48 @@ miscRoute.post(
       },
     });
 
+    if (!safe.safe) {
+      await model.sendAlart(
+        c.env.DB,
+        c.env.FIREBASE_KEY_FILE,
+        c.get('hashed'),
+        {
+          title: '浴室内で異常を検知しました',
+          message: '安全を確認してください',
+        }
+      );
+    }
+
     return c.json<CheckSafeResponse | { filepath: string }>({
       ...safe,
       filepath,
     });
+  }
+);
+
+miscRoute.post(
+  '/check_alive',
+  async (c, next) => {
+    if (c.req.header('Content-Type') !== 'audio/wav') {
+      return c.json(
+        {
+          message: 'Please set `Content-Type` header `audio/wav`',
+        },
+        400
+      );
+    }
+    await next();
+  },
+  async (c) => {
+    const id = c.get('hashed');
+    const res = await model.checkAlive(
+      c.env.DB,
+      id,
+      c.env.VAD_API_URL,
+      await c.req.arrayBuffer()
+    );
+
+    return c.json(res);
   }
 );
 

@@ -26,3 +26,15 @@ export const devices = sqliteTable(
     idx: uniqueIndex('idx').on(table.id),
   })
 );
+
+export const aliveCount = sqliteTable(
+  'aliveCount',
+  {
+    id: text('id').primaryKey().unique().notNull(),
+    count: integer('count').notNull(),
+    lastUpdate: integer('lastUpdate', { mode: 'timestamp' }),
+  },
+  (table) => ({
+    idx: uniqueIndex('aliveCountIdx').on(table.id),
+  })
+);

@@ -6,6 +6,7 @@ export type Bindings = {
   FIRMWARE_DOWNLOAD_SITE: string;
   OPENAI_API_KEY: string;
   OPENAI_ORG_ID: string;
+  VAD_API_URL: string;
   DB: D1Database;
   AUDIO_BUCKET: R2Bucket;
   AI: any;

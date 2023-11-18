@@ -22,10 +22,12 @@ export const DeviceStatusSchema = z.object({
 });
 
 export type Alart = {
+  title?: string;
   message: string;
 };
 
 export const AlartSchema = z.object({
+  title: z.string().optional(),
   message: z.string(),
 });
 
