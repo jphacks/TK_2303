@@ -1,0 +1,10 @@
+boto3==1.29.3
+botocore==1.32.3
+jmespath==1.0.1
+pydub==0.25.1
+python-dateutil==2.8.2
+python-lambda-local==0.1.13
+s3transfer==0.7.0
+six==1.16.0
+urllib3==2.0.7
+webrtcvad==2.0.10
